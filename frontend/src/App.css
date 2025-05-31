@@ -1,2 +1,20 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "daisyui";
+@font-face {
+    font-family: 'Niradei';
+    src: url('./assets/fonts/Niradei-Regular-1.otf') format('otf');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Niradei-Bold';
+    src: url('./assets/fonts/Niradei-Bold-2.otf') format('otf');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@layer base {
+    html {
+        font-family: 'Niradei', sans-serif;
+    }
+}
