@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import Button from './Button';
 
 export default function NavBar() {
     return (
@@ -7,28 +7,46 @@ export default function NavBar() {
             {/* left div Logo */}
             <div className="flex-1">
                 <a className="text-xl font-bold text-shadow-black font-Niradei">
-                    <span className='text-[#111729]'>Khod</span><span className='text-[#e79142]'>Kquiz</span>
+                    <span className="text-blue-950">Khod</span>
+                    <span className="text-orange-400">Kquiz</span>
                 </a>
             </div>
             {/* right div */}
-            <div className="flex gap-2 items-center justify-end">
-                <div className="flex justify-between items-center gap-5 text-sm font-bold text-[#111729]">
-                    <Link to="/" className="font-Niradei">
+            <div className="flex gap-5 items-center justify-end">
+                <div className="flex justify-between items-center mr-2 gap-5 text-sm font-bold text-[#111729]">
+                    <NavLink
+                        to="/"
+                        className={({ isActive }) =>
+                            isActive ? 'text-orange-400' : 'text-blue-950 hover:text-orange-400'
+                        }
+                        end
+                    >
                         HOME
-                    </Link>
-                    <Link to="/leaderboard" className="">
+                    </NavLink>
+                    <NavLink
+                        to="/quiz"
+                        className={({ isActive }) =>
+                            isActive ? 'text-orange-400' : 'text-blue-950 hover:text-orange-400'
+                        }
+                    >
+                        TEST YOUR SKILLS
+                    </NavLink>
+                    <NavLink
+                        to="/leaderboard"
+                        className={({ isActive }) =>
+                            isActive ? 'text-orange-400' : 'text-blue-950 hover:text-orange-400'
+                        }
+                    >
                         LEADERBOARD
-                    </Link>
+                    </NavLink>
                 </div>
                 {/* search */}
-                <input
-                    type="text"
-                    placeholder="Search"
-                    className="input input-bordered w-24 md:w-auto"
+                <Button
+                    to="signup"
+                    label="Sign Up"
+                    bgColor="bg-orange-400"
+                    textColor="text-white"
                 />
-                <div className="bg-[#1b274db8] p-2 rounded-2xl text-white hover:bg-[#e79242be] hover:text-[#111729]">
-                    Sign Up
-                </div>
                 {/* avartar */}
                 <div className="dropdown dropdown-end">
                     <div
@@ -39,7 +57,7 @@ export default function NavBar() {
                         <div className="w-10 rounded-full">
                             <img
                                 alt="Tailwind CSS Navbar component"
-                                src="https://z-p3-scontent.fpnh18-4.fna.fbcdn.net/v/t39.30808-1/432759543_969817604505212_1503739999874549244_n.jpg?stp=c0.82.480.480a_dst-jpg_s480x479_tt6&_nc_cat=102&ccb=1-7&_nc_sid=2d3e12&_nc_eui2=AeGVQCCiPOJ1mGct3ycOxUjSs4Kd30N1Klqzgp3fQ3UqWuGvDEwpigL7GwtrB6vV9WtyQiR8VJR8zd6zSOsLWWXt&_nc_ohc=__T8dAChLyQQ7kNvwFZrU-Z&_nc_oc=Adm4MUr933ybaUCjcSVxvch5kGzNt9wOE2A6DmSdz_0_-_7BN6sprcHEY4C9zV_gLgA&_nc_zt=24&_nc_ht=z-p3-scontent.fpnh18-4.fna&_nc_gid=N26P1OBM4nzcEZ9qB8ujRg&oh=00_AfLWDuWK4kBzcQq4p1ZPyp21UVibcaU2PkLUZUi2KogZLg&oe=6840D66D"
+                                src="https://z-p3-scontent.fpnh18-4.fna.fbcdn.net/v/t39.30808-6/432759543_969817604505212_1503739999874549244_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGVQCCiPOJ1mGct3ycOxUjSs4Kd30N1Klqzgp3fQ3UqWuGvDEwpigL7GwtrB6vV9WtyQiR8VJR8zd6zSOsLWWXt&_nc_ohc=nM0J52h3yiEQ7kNvwH1Q8XF&_nc_oc=AdmWrIF_s6NgEeTJ-UOQoZjXd4JooN8Ur37TXAmJGNqvagP7KRNsoWndtJmyIWZzE44&_nc_zt=23&_nc_ht=z-p3-scontent.fpnh18-4.fna&_nc_gid=a_vVzDbNAqQYylsVAjtxQQ&oh=00_AfJpyQFfNZJ4ib1XOU5WhAfhftIsaAhbECokC_sqPJ2ByA&oe=68422E2B"
                             />
                         </div>
                     </div>
