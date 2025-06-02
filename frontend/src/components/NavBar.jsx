@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import Button from './Button';
+import { LogOut, Settings, UserPen, UserRoundPen } from 'lucide-react';
 
 export default function NavBar() {
     return (
@@ -17,7 +18,9 @@ export default function NavBar() {
                     <NavLink
                         to="/"
                         className={({ isActive }) =>
-                            isActive ? 'text-orange-400' : 'text-blue-950 hover:text-orange-400'
+                            isActive
+                                ? 'text-orange-400'
+                                : 'text-blue-950 hover:text-orange-400'
                         }
                         end
                     >
@@ -26,7 +29,9 @@ export default function NavBar() {
                     <NavLink
                         to="/quiz"
                         className={({ isActive }) =>
-                            isActive ? 'text-orange-400' : 'text-blue-950 hover:text-orange-400'
+                            isActive
+                                ? 'text-orange-400'
+                                : 'text-blue-950 hover:text-orange-400'
                         }
                     >
                         TEST YOUR SKILLS
@@ -34,7 +39,9 @@ export default function NavBar() {
                     <NavLink
                         to="/leaderboard"
                         className={({ isActive }) =>
-                            isActive ? 'text-orange-400' : 'text-blue-950 hover:text-orange-400'
+                            isActive
+                                ? 'text-orange-400'
+                                : 'text-blue-950 hover:text-orange-400'
                         }
                     >
                         LEADERBOARD
@@ -63,19 +70,31 @@ export default function NavBar() {
                     </div>
                     <ul
                         tabIndex={0}
-                        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-30 p-2 shadow"
                     >
                         <li>
-                            <a className="justify-between">
+                            <a className="">
+                                <span>
+                                    <UserPen size={16} />
+                                </span>
                                 Profile
-                                <span className="badge">New</span>
                             </a>
                         </li>
                         <li>
-                            <a>Settings</a>
+                            <a>
+                                <span>
+                                    <Settings size={16} />
+                                </span>
+                                Settings
+                            </a>
                         </li>
                         <li>
-                            <a>Logout</a>
+                            <a>
+                                <span>
+                                    <LogOut size={16} />
+                                </span>
+                                Logout
+                            </a>
                         </li>
                     </ul>
                 </div>
