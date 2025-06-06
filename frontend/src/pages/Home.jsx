@@ -1,17 +1,13 @@
 import React from 'react';
 import NavBar from '../components/NavBar';
-import image from '../assets/image/heroBackground.png';
 
 export default function Home() {
     return (
         <>
-            <NavBar />
-            <div className="relative mt-20 ">
-                <img src={image} alt='hero background' className='w-full h-auto'/>
-                <h1 className='flex justify-center top-1/2 absolute text-blue-950 text-5xl font-bold w-full item-center'>
-                    Welcome to KhodKquiz
-                </h1>
+            <div className="w-full bg-white">
+              <NavBar />
             </div>
+            <div className="text-2xl text-white-500 text-center mt-5">សូមស្វាគមន៍មកកាន់កូដខ្វីស</div>
         </>
     );
 }
