@@ -1,5 +1,4 @@
-Our team is on the same page right now
-
+i have to close the unclear issue and re-create once they working on it
 # Welcome to KhodKquiz
 # 🧑‍💻 Coding Quiz and Leaderboard System
 
