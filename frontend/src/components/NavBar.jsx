@@ -64,7 +64,7 @@ export default function NavBar() {
                         <div className="w-10 rounded-full">
                             <img
                                 alt="Tailwind CSS Navbar component"
-                                src="https://z-p3-scontent.fpnh18-4.fna.fbcdn.net/v/t39.30808-6/432759543_969817604505212_1503739999874549244_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGVQCCiPOJ1mGct3ycOxUjSs4Kd30N1Klqzgp3fQ3UqWuGvDEwpigL7GwtrB6vV9WtyQiR8VJR8zd6zSOsLWWXt&_nc_ohc=nM0J52h3yiEQ7kNvwH1Q8XF&_nc_oc=AdmWrIF_s6NgEeTJ-UOQoZjXd4JooN8Ur37TXAmJGNqvagP7KRNsoWndtJmyIWZzE44&_nc_zt=23&_nc_ht=z-p3-scontent.fpnh18-4.fna&_nc_gid=a_vVzDbNAqQYylsVAjtxQQ&oh=00_AfJpyQFfNZJ4ib1XOU5WhAfhftIsaAhbECokC_sqPJ2ByA&oe=68422E2B"
+                                src="https://scontent.fpnh19-1.fna.fbcdn.net/v/t39.30808-6/432759543_969817604505212_1503739999874549244_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGVQCCiPOJ1mGct3ycOxUjSs4Kd30N1Klqzgp3fQ3UqWuGvDEwpigL7GwtrB6vV9WtyQiR8VJR8zd6zSOsLWWXt&_nc_ohc=bCdt6PkNOIsQ7kNvwGfFhzs&_nc_oc=Adnq08dfgA_bqcByAEgXt9jwzIi46z0Tex4ML9tJl0T5tgk-NXuFiBYvVJ2Eab8lbkw&_nc_zt=23&_nc_ht=scontent.fpnh19-1.fna&_nc_gid=akzNWYG26-eL1zFiZVOGfg&oh=00_AfN-2gpxqFmlzwV7xdCTEfFJYJFAJnRdmxV3dUGflaAEZQ&oe=6849A6AB"
                             />
                         </div>
                     </div>
