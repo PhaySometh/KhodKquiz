@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import NavBar from '../components/NavBar';
 import image from '../assets/image/heroBackground.svg';
+import Button from '../components/Button';
 
 export default function Home() {
     const [scrollY, setScrollY] = useState(0);
@@ -42,12 +43,33 @@ export default function Home() {
                         opacity: scrollY > 200 ? 0.3 : 1,
                         transition: 'opacity 0.4s ease',
                     }}
-                    className="flex justify-center items-center absolute top-1/2 transform -translate-y-1/2 text-blue-950 w-full text-center px-4
-                    text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold"
-                >
-                    Welcome to {''}
-                    <span className="text-orange-400 ml-2">Khod Kquiz</span>
+                    className="flex justify-center flex-col items-center absolute top-1/2 transform -translate-y-1/2 text-blue-950 w-full text-center px-4
+                    text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold">
+                    <div>
+                        <div>Welcome to {''}</div>
+                        <div className="">
+                            <span className="text-blue-950 ml-2">Khod</span>
+                            <span className="text-orange-400">Kquiz</span>
+                        </div>
+                    </div>
+                    <div className='flex justify-between gap-5 mt-5 text-xl'>
+                        <Button
+                            to="quiz"
+                            label="Test Your Skills"
+                            bgColor="bg-blue-950"
+                            textColor="text-white"
+                        />
+                        <Button
+                            to="signup"
+                            label="Be Our User"
+                            bgColor="bg-orange-400"
+                            textColor="text-white"
+                        />
+                    </div>
                 </motion.h1>
+                <div className='flex justify-center items-center font-bold text-5xl '>
+                    second section
+                </div>
             </div>
         </>
     );
