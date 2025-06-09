@@ -1,6 +1,4 @@
-i have to close the unclear issue and re-create once they working on it
-# Welcome to KhodKquiz
-# 🧑‍💻 Coding Quiz and Leaderboard System
+# Welcome to KhodKquiz 🧑‍💻
 
 A full-stack web-based platform where users can take quizzes by category or difficulty, track their scores, and compete on a public leaderboard. Admins can manage questions, categories, and view analytics.
 
@@ -95,7 +93,9 @@ cd database
 
 ### ✅ Key Features
 
--   **User Authentication** (Sign Up / Log In)
+-   **User Authentication**
+    - Sign Up: Create new acc, Edit, and delete
+    - Login: With exisiting acc and Google
 -   **Quiz Generation**
     -   Randomized or category-based questions
     -   Timed quizzes (optional)
