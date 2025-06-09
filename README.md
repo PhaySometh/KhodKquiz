@@ -48,118 +48,118 @@
 
 - Use Sequelize ORM or Prisma for clean DB interaction
 
-🚀 3. Real-Time Quizzes + Leaderboard
-Tech:
-Socket.IO for real-time quiz play, countdown, and leaderboard updates
+## 🚀 3. Real-Time Quizzes + Leaderboard
+### Tech:
+- Socket.IO for real-time quiz play, countdown, and leaderboard updates
 
-Redis to store and update live leaderboard data quickly
+- Redis to store and update live leaderboard data quickly
 
-Example:
-One socket room per quiz
+### Example: 
+- One socket room per quiz
 
-Clients join the room by quiz code
+- Clients join the room by quiz code
 
-Countdown + questions emitted from server
+- Countdown + questions emitted from server
 
-Leaderboard recalculated live and pushed to clients
+- Leaderboard recalculated live and pushed to clients
 
-🎯 4. Quiz Logic + Scoring
-Backend calculates:
+## 🎯 4. Quiz Logic + Scoring
+- Backend calculates:
 
-Score based on correct answers and time left
+    - Score based on correct answers and time left
 
-Stores attempts per quiz
+    - Stores attempts per quiz
 
-Tracks user quiz history
+    - Tracks user quiz history
 
-Assigns points to user account
+    - Assigns points to user account
 
-Optional: Use serverless functions for scalable score calculations
+-Optional: Use serverless functions for scalable score calculations
 
-🏅 5. Badges + Points
-Logic on the backend:
+## 🏅 5. Badges + Points
 
-Points added on correct answers
+**Logic on the backend:**
 
-Milestones (100, 300, 500...) trigger badge unlocks
+- Points added on correct answers  
+- Milestones (100, 300, 500...) trigger badge unlocks  
+- Store user badges in DB  
+- Display badges with tooltips on profile  
 
-Store user badges in DB
+---
 
-Display badges with tooltips on profile
+## 🧾 6. Admin Panel
 
-🧾 6. Admin Panel
-Tech:
-Use your existing React + Tailwind UI
+**Tech Stack:**
 
-Add Role-based access control to pages
+- Use your existing **React + Tailwind UI**
+- Add **Role-based access control** to pages
+- Only admins can access `/admin`
 
-Only admins can access /admin
+**Admin Features:**
 
-Admin Features:
+- Manage quizzes/questions/categories (CRUD)
+- View analytics:
+  - Number of quiz attempts
+  - Avg score per quiz
+  - Most popular quizzes
 
-Manage quizzes/questions/categories (CRUD)
+**Bonus:**  
+Use a charting library like **Recharts** for score analytics in admin.
 
-View analytics:
+---
 
-Number of quiz attempts
+## 🌍 7. API Calls for Pre-Built MCQs
 
-Avg score per quiz
-
-Most popular quizzes
-
-Bonus:
-Use charting library like Recharts for score analytics in admin.
-
-🌍 7. API Calls for Pre-Built MCQs
 If questions come from an external API:
 
-Use axios to call the API from backend
+- Use **Axios** to call the API from backend
+- Transform & store in your DB for speed/reuse  
+- **Or:** Build your own CMS for quiz content in admin panel
 
-Transform & store in your DB for speed/reuse
+---
 
-Or: Build your own CMS for quiz content in admin panel
+## 🧪 8. Testing & Reliability
 
-🧪 8. Testing & Reliability
-Write unit tests using Jest (backend)
+- Write unit tests using **Jest** (backend)  
+- Use **Postman** to test your API routes  
+- Add middleware for error handling and logging
 
-Use Postman to test your API routes
+---
 
-Add middleware for error handling and logging
+## 🌐 9. Deployment
 
-🌐 9. Deployment
+| Component  | Suggested Service       |
+| ---------- | ----------------------- |
+| Frontend   | Vercel                  |
+| Backend    | Render or Railway       |
+| Database   | PostgreSQL (Render)     |
+| Real-time  | Socket.IO on Node       |
+| Admin      | Part of React frontend  |
 
-| Component | Suggested Service      |
-| --------- | ---------------------- |
-| Frontend  | Vercel                 |
-| Backend   | Render or Railway      |
-| Database  | PostgreSQL (Render)    |
-| Real-time | Socket.IO on Node      |
-| Admin     | Part of React frontend |
+---
 
-🧠 Recommendations to Make It More Reliable
-Use Role-based Access Control (RBAC) – Differentiate admin/user permissions.
+## 🧠 Recommendations to Make It More Reliable
 
-Rate Limiting + Validation – Prevent abuse and bad data.
+- **Role-based Access Control (RBAC)** – Differentiate admin/user permissions
+- **Rate Limiting + Validation** – Prevent abuse and bad data
+- **Session/Token Expiry** – For secure auth (Firebase handles this well)
+- **Quiz Code Expiry** – Auto-expire shared quiz codes after session ends
+- **Database Indexes** – On frequently queried fields like `user_id`, `quiz_id`
+- **Backups** – Use PostgreSQL auto-backup on Render/Railway
 
-Session/Token Expiry – For secure auth (Firebase handles this well).
+---
 
-Quiz Code Expiry – Auto-expire shared quiz codes after session ends.
+## 🔗 Tools to Speed You Up
 
-Database Indexes – On frequently queried fields like user_id, quiz_id.
-
-Backups – Use PostgreSQL auto-backup on Render/Railway.
-
-🔗 Tools to Speed You Up
-
-| Feature               | Tool                  |
-| --------------------- | --------------------- |
-| Real-time leaderboard | Socket.IO + Redis     |
-| Form Validation       | React Hook Form + Zod |
-| Charts in Admin       | Recharts.js           |
-| Authentication        | Firebase/Auth0        |
-| ORM                   | Prisma / Sequelize    |
-| Deployment            | Vercel + Render       |
-| Mail                  | EmailJS or SendGrid   |
+| Feature               | Tool                   |
+| --------------------- | ---------------------- |
+| Real-time leaderboard | Socket.IO + Redis      |
+| Form Validation       | React Hook Form + Zod  |
+| Charts in Admin       | Recharts.js            |
+| Authentication        | Firebase/Auth0         |
+| ORM                   | Prisma / Sequelize     |
+| Deployment            | Vercel + Render        |
+| Mail                  | EmailJS or SendGrid    |
 
 # Welcome to KhodKquiz 🧑‍💻
 
