@@ -194,13 +194,13 @@ npm run dev
 
 -   **User Authentication**
     -   Sign Up: Create new acc, Edit, and delete
-    -   Login: With exisiting signup acc and Google
+    -   Login: With existing sign up acc and Google
 -   **Create quiz**
     -   CRUD quiz
     -   Share link and code for realtime use
 -   **Quiz feature**
     -   User can do Coding Language base quiz(C program, C++, JS, ...) which is API call for Pre-built Multiple Choice Question.
-        -   For Quizzes choice is like C program I, C program II, C program III, or C program Begineer, C program OOP...
+    -   For Quizzes choice is like C program I, C program II, C program III, or C program Beginner, C program OOP...
     -   Real Timed Countdown (Kahoot inspire...)
 -   **Score given**
     -   High score base on answer speed and corrected answer
