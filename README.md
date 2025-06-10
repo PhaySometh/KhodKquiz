@@ -20,8 +20,8 @@
 - Or: Auth0 (more robust, better role-based access)
 
 ### Features:
-- Sign up / login / logout
 
+- SignUp with normal text/ Login with google/ and more
 - Google Auth integration
 
 - Edit profile
