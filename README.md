@@ -194,7 +194,7 @@ npm run dev
 
 -   **User Authentication**
     -   Sign Up: Create new acc, Edit, and delete
-    -   Login: With exisiting signup acc and Google
+    -   Login: With existing sign up acc and Google
 -   **Create quiz**
     -   CRUD quiz
     -   Share link and code for realtime use
