@@ -1,7 +1,30 @@
 import React from 'react';
 import NavBar from '../components/NavBar';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 export default function Leaderboard() {
+    const [leaderboard, setLeaderboard] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchLeaderboard();
+    }, []);
+
+    const fetchLeaderboard = async () => {
+        try{
+            const response = await axios.get('https://localhost:5000/leaderboard');
+            setLeaderboard(response.data);
+            setLoading(false);
+        } catch (error){
+            console.error('Error Fetching leaderboard: ', error);
+            setLoading(false);
+        }
+    };
+
+    if(loading) return <div>Loading... </div>;
+
     return (
         <>
             <NavBar />
