@@ -31,7 +31,7 @@ router.post('/scores', async (req, res) => {
 });
 
 // Get highest score
-router.get('/highest', async (req, res) => {
+router.get('/highest', async (_req, res) => {
     try {
         const highScore = await Score.getHighestScore();
         res.json({ highScore });

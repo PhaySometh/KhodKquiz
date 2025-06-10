@@ -31,7 +31,7 @@ class Score {
     static async addScore(playerName, score) {
         try {
             const [result] = await pool.query(
-                'INSERT INTO scores (playerName, score) VALUES (?, ?)',
+                'INSERT INTO scores (user, score) VALUES (?, ?)',
                 [playerName, score]
             );
             return result;
