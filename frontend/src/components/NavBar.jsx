@@ -27,7 +27,7 @@ export default function NavBar() {
                         HOME
                     </NavLink>
                     <NavLink
-                        to="/quiz"
+                        to="/Selection"
                         className={({ isActive }) =>
                             isActive
                                 ? 'text-orange-400'
