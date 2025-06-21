@@ -1,6 +1,6 @@
 // Example in src/routes/index.jsx
 import { Routes, Route } from 'react-router-dom';
-import Home from '../pages/home';
+import Home from '../pages/Home';
 import Leaderboard from '../pages/Leaderboard';
 import Login from '../pages/Login';
 import Quiz from '../pages/Quiz';
