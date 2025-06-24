@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import helmet from 'helmet';
-import leaderboardRoutes from './routes/leaderboard.routes.js';
+import leaderboardRoutes from './routes/leaderboard.js';
 
 const PORT = process.env.PORT || 5000;
 
