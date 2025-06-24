@@ -1,4 +1,4 @@
-import Score from '../../models/score.model.js';
+import Score from '../../models/score.js';
 
 // Get leaderboard
 export const getLeaderboard = async (req, res) => {
