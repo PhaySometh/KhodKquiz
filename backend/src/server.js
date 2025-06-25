@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import userRoutes from './routes/userRoutes.js'
 
 import db from './models/index.js';
 // import leaderboardRoutes from './routes/leaderboard.js';
@@ -17,6 +18,7 @@ app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(morgan('dev'));
+app.use('/api/users', userRoutes);
 
 try {
     await db.sequelize.authenticate();

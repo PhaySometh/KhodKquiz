@@ -1,15 +1,15 @@
 import React from 'react';
-import NavBar from '../components/NavBar';
+import Navbar from '../components/Navbar/NavBar';
 
 export default function SignUp() {
     return (
         <>
             <div className="w-full">
-                <NavBar />
+                <Navbar />
             </div>
             <div className="flex justify-center items-center h-screen bg-gray-100">
                 <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-                    <h2 className="text-2xl font-semibold mb-6 text-center text-green-600">
+                    <h2 className="text-2xl font-semibold mb-6 text-center text-orange-400">
                         Create an Account
                     </h2>
                     <form className="flex flex-col gap-4">
@@ -28,7 +28,7 @@ export default function SignUp() {
                             placeholder="Password"
                             className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
                         />
-                        <button className="bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition">
+                        <button className="bg-orange-400 text-white py-2 rounded-md hover:bg-green-700 transition">
                             Sign Up
                         </button>
                     </form>
@@ -36,7 +36,7 @@ export default function SignUp() {
                         Already have an account?{' '}
                         <a
                             href="/login"
-                            className="text-green-600 hover:underline"
+                            className="text-orange-400 hover:underline"
                         >
                             Login
                         </a>

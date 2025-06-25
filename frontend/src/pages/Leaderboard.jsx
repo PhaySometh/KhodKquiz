@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import NavBar from '../components/NavBar';
+import Navbar from '../components/Navbar/NavBar';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Crown, Star, Award, RotateCw, ChevronDown, ChevronUp } from 'lucide-react';
@@ -83,7 +83,7 @@ export default function Leaderboard() {
     if (loading) {
         return (
             <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
-                <NavBar />
+                <Navbar />
                 <div className="flex justify-center items-center pt-32">
                     <div className="animate-pulse flex flex-col items-center">
                         <div className="w-16 h-16 bg-yellow-500 rounded-full mb-4"></div>
@@ -97,7 +97,7 @@ export default function Leaderboard() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 pb-20">
-            <NavBar />
+            <Navbar />
             
             <div className="container mx-auto px-4 py-8 mt-16">
                 <motion.div 
