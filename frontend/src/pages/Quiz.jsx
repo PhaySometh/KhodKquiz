@@ -59,7 +59,7 @@ const answerStyles = [
   { bg: 'bg-green-500', hoverBg: 'hover:bg-green-600', icon: <Circle /> },
 ];
 
-const QUESTION_TIME_LIMIT = 10; // Seconds
+const QUESTION_TIME_LIMIT = 25.00; // Seconds
 
 export default function Quiz() {
   const [gameState, setGameState] = useState('intro'); // intro, playing, feedback, finished
@@ -69,24 +69,28 @@ export default function Quiz() {
   const [timerKey, setTimerKey] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(QUESTION_TIME_LIMIT);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
+  const [countCorrectAnswer, setCountCorrectAnswer] = useState(0);
   const timerRef = useRef(null);
 
   // Reset timer
   useEffect(() => {
     if (gameState === 'playing') {
-      setTimeRemaining(QUESTION_TIME_LIMIT);
+      setTimeRemaining(25.00);
       clearInterval(timerRef.current);
-      
+
+      const TICK_RATE = 10; // ms (update every 10 milliseconds)
+
       timerRef.current = setInterval(() => {
         setTimeRemaining(prev => {
-          if (prev <= 1) {
+          const next = +(prev - TICK_RATE / 1000).toFixed(2); // 2 decimal precision
+          if (next <= 0) {
             clearInterval(timerRef.current);
             handleTimeout();
             return 0;
           }
-          return prev - 1;
+          return next;
         });
-      }, 1000);
+      }, TICK_RATE);
     }
 
     return () => clearInterval(timerRef.current);
@@ -117,7 +121,8 @@ export default function Quiz() {
     clearInterval(timerRef.current);
     
     if (answer.isCorrect) {
-      setScore(prev => prev + Math.max(1, Math.floor(timeRemaining * 2)));
+      setScore(prev => prev + Math.max(1, Math.ceil(1000 * (timeRemaining/QUESTION_TIME_LIMIT))));
+      setCountCorrectAnswer(countCorrectAnswer + 1);
       setIsCorrect(true);
     } else {
       setIsCorrect(false);
@@ -243,7 +248,7 @@ export default function Quiz() {
           
           <div className="flex items-center gap-2 bg-gray-700 px-4 py-2 rounded-full">
             <Clock size={18} className="text-red-400" />
-            <span className="font-bold text-lg">{timeRemaining}s</span>
+            <span className="font-bold text-lg">{Math.ceil(timeRemaining)}s</span>
           </div>
         </div>
         
@@ -343,7 +348,7 @@ export default function Quiz() {
           transition={{ delay: 0.6 }}
           className="text-2xl font-bold"
         >
-          +{isCorrect ? Math.max(1, Math.floor(timeRemaining * 2)) : 0} points
+          +{isCorrect ? Math.max(1, Math.ceil(1000 * (timeRemaining/QUESTION_TIME_LIMIT))) : 0} points
         </motion.div>
       </motion.div>
     );
@@ -377,7 +382,13 @@ export default function Quiz() {
         >
           <div className="text-6xl font-bold mb-2">{score} <span className="text-2xl text-gray-300">points</span></div>
           <div className="text-xl">
-            You answered <span className="font-bold text-green-400">{Math.round((score / (quizQuestions.length * 20)) * 100)}%</span> correctly
+            You got <span className="font-bold text-green-400">{countCorrectAnswer} correct
+              {(countCorrectAnswer > 1) ? (
+                <span> answers</span>
+              ) : (
+                <span> answer</span>
+              ) }
+              </span> out of {quizQuestions.length} questions
           </div>
         </motion.div>
         
@@ -391,7 +402,7 @@ export default function Quiz() {
             <div className="text-gray-400">Points</div>
           </div>
           <div className="bg-gray-800/50 p-4 rounded-xl">
-            <div className="text-3xl font-bold text-blue-400">{Math.round(score / (quizQuestions.length * 20) * 100)}%</div>
+            <div className="text-3xl font-bold text-blue-400">{Math.round((countCorrectAnswer / quizQuestions.length) * 100)}%</div>
             <div className="text-gray-400">Accuracy</div>
           </div>
         </div>

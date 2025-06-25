@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import NavBar from '../components/NavBar';
+import Navbar from '../components/Navbar/NavBar';
 import image from '../assets/image/heroBackground.svg';
 import Button from '../components/Button';
 import { BrainCircuit, Trophy, BookOpenCheck } from 'lucide-react';
@@ -91,7 +91,7 @@ export default function Home() {
 
     return (
         <>
-            <NavBar />
+            <Navbar />
             <div className="relative mt-20 overflow-hidden">
                 {/* Hero Section */}
                 <div className="relative w-full h-[calc(100vh-5rem)] flex items-center justify-center">
