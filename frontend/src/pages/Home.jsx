@@ -1,74 +1,231 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 import NavBar from '../components/NavBar';
 import image from '../assets/image/heroBackground.svg';
 import Button from '../components/Button';
+import { BrainCircuit, Trophy, BookOpenCheck } from 'lucide-react';
 
-export default function Home() {
-    const [scrollY, setScrollY] = useState(0);
+// Animation variants for the staggered text
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+        },
+    },
+};
+
+const letterVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            type: 'spring',
+            stiffness: 100,
+        },
+    },
+};
+
+const FeatureCard = ({ icon, title, description, index }) => {
     const controls = useAnimation();
+    const [ref, inView] = useInView({
+        triggerOnce: true,
+        threshold: 0.2,
+    });
 
     useEffect(() => {
-        const handleScroll = () => {
-            const currentY = window.scrollY;
-            setScrollY(currentY);
+        if (inView) {
+            controls.start('visible');
+        }
+    }, [controls, inView]);
 
-            // You can animate or update opacity based on scroll if desired
-        };
+    const cardVariants = {
+        hidden: { opacity: 0, y: 50, scale: 0.9 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: {
+                duration: 0.5,
+                delay: index * 0.2,
+                ease: 'easeOut',
+            },
+        },
+    };
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    return (
+        <motion.div
+            ref={ref}
+            variants={cardVariants}
+            initial="hidden"
+            animate={controls}
+            className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center"
+        >
+            <div className="bg-orange-100 p-4 rounded-full text-orange-500 mb-4">
+                {icon}
+            </div>
+            <h3 className="text-xl font-bold text-blue-950 mb-2">{title}</h3>
+            <p className="text-gray-600">{description}</p>
+        </motion.div>
+    );
+};
+
+
+export default function Home() {
+    const controls = useAnimation();
+    const [ref, inView] = useInView({
+        triggerOnce: true,
+        threshold: 0.5,
+    });
+
+    useEffect(() => {
+        if (inView) {
+            controls.start('visible');
+        }
+    }, [controls, inView]);
+    
+    const khodKquiz = 'KhodKquiz'.split('');
 
     return (
         <>
             <NavBar />
             <div className="relative mt-20 overflow-hidden">
-                {/* Background SVG with fade-in effect */}
-                <motion.img
-                    src={image}
-                    alt="hero background"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1.5, ease: 'easeOut' }}
-                    className="w-full h-auto"
-                />
+                {/* Hero Section */}
+                <div className="relative w-full h-[calc(100vh-5rem)] flex items-center justify-center">
+                    <motion.img
+                        src={image}
+                        alt="hero background"
+                        initial={{ opacity: 0, scale: 1.1 }}
+                        animate={{ opacity: 0.3, scale: 1 }}
+                        transition={{ duration: 1.5, ease: 'easeOut' }}
+                        className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <motion.div
+                        ref={ref}
+                        initial="hidden"
+                        animate={controls}
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: {
+                                opacity: 1,
+                                transition: {
+                                    staggerChildren: 0.3,
+                                    delayChildren: 0.2,
+                                },
+                            },
+                        }}
+                        className="relative z-10 flex flex-col items-center text-center px-4"
+                    >
+                        <motion.h1
+                            variants={{
+                                hidden: { opacity: 0, y: 50 },
+                                visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } },
+                            }}
+                            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-blue-950"
+                        >
+                            Challenge Your Coding Skills
+                        </motion.h1>
+                        <motion.h1
+                             variants={containerVariants}
+                             initial="hidden"
+                             animate="visible"
+                            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mt-2"
+                        >
+                            {khodKquiz.map((letter, index) => (
+                                <motion.span
+                                    key={index}
+                                    variants={letterVariants}
+                                    className={
+                                        index < 4
+                                            ? 'text-blue-950'
+                                            : 'text-orange-400'
+                                    }
+                                >
+                                    {letter}
+                                </motion.span>
+                            ))}
+                        </motion.h1>
 
-                {/* Welcome text with rise and fade animation */}
-                <motion.h1
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1.2, delay: 0.5, ease: 'easeOut' }}
-                    style={{
-                        opacity: scrollY > 200 ? 0.3 : 1,
-                        transition: 'opacity 0.4s ease',
-                    }}
-                    className="flex justify-center flex-col items-center absolute top-1/2 transform -translate-y-1/2 text-blue-950 w-full text-center px-4
-                    text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold">
-                    <div>
-                        <div>Welcome to {''}</div>
-                        <div className="">
-                            <span className="text-blue-950 ml-2">Khod</span>
-                            <span className="text-orange-400">Kquiz</span>
+                        <motion.p
+                            variants={{
+                                hidden: { opacity: 0, y: 30 },
+                                visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } },
+                            }}
+                            className="mt-4 max-w-2xl text-lg text-gray-700"
+                        >
+                            A full-stack real-time quiz application to test your coding knowledge, compete on leaderboards, and earn badges.
+                        </motion.p>
+                        <motion.div
+                            variants={{
+                                hidden: { opacity: 0, y: 20 },
+                                visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } },
+                            }}
+                            className="flex justify-center gap-5 mt-8"
+                        >
+                            <Button
+                                to="quiz"
+                                label="Test Your Skills"
+                                bgColor="bg-blue-950"
+                                textColor="text-white"
+                            />
+                            <Button
+                                to="signup"
+                                label="Be Our User"
+                                bgColor="bg-orange-400"
+                                textColor="text-white"
+                            />
+                        </motion.div>
+                    </motion.div>
+                </div>
+
+                {/* Why KhodKquiz? Section */}
+                <div className="bg-gray-50 py-20">
+                    <div className="container mx-auto px-6">
+                        <h2 className="text-3xl font-bold text-center text-blue-950 mb-12">
+                            Why KhodKquiz?
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <FeatureCard
+                                icon={<BookOpenCheck size={32} />}
+                                title="Category-based Quizzes"
+                                description="Test your knowledge in various programming languages like C, C++, JavaScript, and more."
+                                index={0}
+                            />
+                            <FeatureCard
+                                icon={<Trophy size={32} />}
+                                title="Real-Time Leaderboard"
+                                description="Compete with other users in real-time and see where you stand on the leaderboard."
+                                index={1}
+                            />
+                            <FeatureCard
+                                icon={<BrainCircuit size={32} />}
+                                title="Point System & Badges"
+                                description="Earn points for correct answers, unlock badges, and showcase your achievements."
+                                index={2}
+                            />
                         </div>
                     </div>
-                    <div className='flex justify-between gap-5 mt-5 text-xl'>
-                        <Button
-                            to="quiz"
-                            label="Test Your Skills"
-                            bgColor="bg-blue-950"
-                            textColor="text-white"
-                        />
+                </div>
+
+                {/* Get Started Section */}
+                <div className="bg-blue-950 text-white py-20">
+                    <div className="container mx-auto px-6 text-center">
+                        <h2 className="text-3xl font-bold mb-4">
+                            Ready to Test Your Mettle?
+                        </h2>
+                        <p className="text-lg mb-8">
+                            Sign up now and start your journey to becoming a coding champion.
+                        </p>
                         <Button
                             to="signup"
-                            label="Be Our User"
+                            label="Sign Up for Free"
                             bgColor="bg-orange-400"
                             textColor="text-white"
                         />
                     </div>
-                </motion.h1>
-                <div className='flex justify-center items-center font-bold text-5xl '>
-                    second section
                 </div>
             </div>
         </>

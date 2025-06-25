@@ -5,6 +5,7 @@ import Leaderboard from '../pages/Leaderboard';
 import Login from '../pages/Login';
 import Quiz from '../pages/Quiz';
 import SignUp from '../pages/SignUp';
+import UserDashBoard from '../pages/UserDashBoard';
 
 function AppRoutes() {
     return (
@@ -14,6 +15,7 @@ function AppRoutes() {
             <Route path="/leaderboard" element={<Leaderboard/>} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<UserDashBoard />} />
         </Routes>
     );
 }
