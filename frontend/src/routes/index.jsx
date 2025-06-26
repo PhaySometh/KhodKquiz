@@ -6,6 +6,7 @@ import Login from '../pages/Login';
 import Quiz from '../pages/Quiz';
 import SignUp from '../pages/SignUp';
 import UserDashBoard from '../pages/UserDashBoard';
+import User from '../pages/User.jsx';
 
 function AppRoutes() {
     return (
@@ -16,6 +17,7 @@ function AppRoutes() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<UserDashBoard />} />
+            <Route path='/user' element={<User />} />
         </Routes>
     );
 }
