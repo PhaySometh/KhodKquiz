@@ -94,7 +94,7 @@ export default function Home() {
             <Navbar />
             <div className="relative mt-20 overflow-hidden">
                 {/* Hero Section */}
-                <div className="relative w-full h-[calc(100vh-5rem)] flex items-center justify-center">
+                <div className="relative w-full h-[calc(100vh-5rem)] flex items-center justify-center z-1">
                     <motion.img
                         src={image}
                         alt="hero background"
