@@ -1,7 +1,28 @@
-import React from 'react';
 import Navbar from '../components/Navbar/NavBar';
+import { GoogleLogin } from '@react-oauth/google';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+const BASE_URL = 'http://localhost:3000';
 
 export default function SignUp() {
+    const navigate = useNavigate();
+
+    const handleLoginSuccess = async (credentialResponse) => {
+        try {
+            const user = await axios.post(`${BASE_URL}/api/user/auth/google-login`, { token: credentialResponse.credential });
+
+            if (user.data.token) {
+                localStorage.setItem('userToken', user.data.token);
+                navigate('/user');
+            } else {
+                console.error('Login failed: No token received:', user.data.error);
+            }
+        } catch (error) {
+            console.error('Error during Google login:', error);
+        }
+    }
+
     return (
         <>
             <div className="w-full">
@@ -31,6 +52,12 @@ export default function SignUp() {
                         <button className="bg-orange-400 text-white py-2 rounded-md hover:bg-green-700 transition">
                             Sign Up
                         </button>
+                        <GoogleLogin
+                        onSuccess={handleLoginSuccess}
+                        onError={() => {
+                            console.log('Login Failed');
+                        }}
+                        />;
                     </form>
                     <p className="text-center mt-4 text-sm">
                         Already have an account?{' '}
