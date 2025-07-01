@@ -1,8 +1,8 @@
 import db from '../models/index.js';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from "google-auth-library";
-import { sql } from '../../config/db/database.js';
 import dotenv from 'dotenv';
+import { where } from 'sequelize';
 
 dotenv.config();
 
@@ -31,27 +31,26 @@ export const verifyUser = async (req, res) => {
         const picture = payload.picture.split('=')[0];
 
         // Look for the user in the database
-        const user = await sql `
-            SELECT * FROM users WHERE google_id = ${googleId}
-        `;
+        let user = await db.User.findOne({
+            where: {
+                google_id: googleId
+            }
+        });
 
-        let finalUser;
-
-        if (user.length === 0) {
+        if (!user) {
             // If user does not exist, create a new user
-            const [newUser] = await sql `
-                INSERT INTO users (provider, google_id, name, email, picture)
-                VALUES ('google', ${googleId}, ${payload.name}, ${payload.email}, ${picture})
-                RETURNING *;
-            `;
-            finalUser = newUser;
-        } else {
-            finalUser = user[0];
+            user = await db.User.create({
+                provider: 'google',
+                google_id: googleId,
+                name: payload.name,
+                email: payload.email,
+                picture: picture
+            });
         }
 
         // Generate JWT token for the user
         const tokenData = jwt.sign(
-            { id: finalUser.id, email: finalUser.email },
+            { id: user.id, email: user.email },
             process.env.JWT_USER_SECRET,
             { expiresIn: '1h' }
         );
@@ -75,9 +74,11 @@ export const getUser = async (req, res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_USER_SECRET);
-        const [user] = await sql `
-            SELECT id, name, email, picture FROM users WHERE id = ${decoded.id}
-        `;
+        const [user] = await db.User.findOne({
+            where: { id: decoded.id },
+            attributes: ['id', 'name', 'email', 'picture']
+        });
+        
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }

@@ -1,9 +1,8 @@
 import { Sequelize } from "sequelize";
 import sequelize from "../config/db/database.js";
-
-import UserModel from "../models/user.js";
-import UserProfileModel from "../models/userprofile.js";
-import QuizModel from "../models/quiz.js";
+import UserModel from "./user.model.js";
+import UserProfileModel from "./userprofile.model.js";
+import QuizModel from "./quiz.model.js";
 
 // Initialize models
 const User = UserModel(sequelize, Sequelize.DataTypes);
