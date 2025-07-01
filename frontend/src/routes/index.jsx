@@ -9,6 +9,8 @@ import UserDashBoard from '../pages/UserDashBoard';
 import User from '../pages/User.jsx';
 import TeacherDashboard from'../pages/TeacherDashboard.jsx';
 import CreateQuiz from '../pages/CreateQuiz.jsx';
+import ManageQuizForm from '../pages/ManageQuiz.jsx';
+import QuizAnalytics from '../pages/Analytic.jsx';
 function AppRoutes() {
     return (
         <Routes>
@@ -21,6 +23,8 @@ function AppRoutes() {
             <Route path='/user' element={<User />} />
             <Route path='/teacher' element={<TeacherDashboard />} />
             <Route path='/teacher/createquiz' element={<CreateQuiz />} />
+            <Route path='/teacher/managequiz' element={<ManageQuizForm />} />
+            <Route path='/teacher/analytic' element={<QuizAnalytics />} />
         </Routes>
     );
 }

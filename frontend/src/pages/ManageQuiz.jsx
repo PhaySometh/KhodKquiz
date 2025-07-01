@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Sidebar from '../components/NavBarDashBoard.jsx'
 import { PlusCircle, Trash2, MoveUp, MoveDown, Copy } from 'lucide-react';
 
-export default function CreateQuizForm() {
+export default function ManageQuizForm() {
     const [questions, setQuestions] = useState([createEmptyQuestion()]);
 
     function createEmptyQuestion() {
@@ -56,7 +56,7 @@ export default function CreateQuizForm() {
             <div className='w-full overflow-y-auto'>
                 {/* Header */}
                 <div className="relative z-10 px-6 flex justify-between items-center w-full h-20 bg-white border-b border-gray-200">
-                    <h1 className="text-xl font-bold">📝 Create <span className='text-orange-400'>Quiz</span></h1>
+                    <h1 className="text-xl font-bold">📝 Manage <span className='text-orange-400'>Quiz</span></h1>
                 </div>
                 {/* quiz detail */}
                 <div className='p-6 max-w-5xl mx-auto'>
