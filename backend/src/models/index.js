@@ -1,21 +1,12 @@
-import { Sequelize } from "sequelize";
-import sequelize from "../config/db/database.js";
-import UserModel from "./user.model.js";
-import UserProfileModel from "./userprofile.model.js";
-import QuizModel from "./quiz.model.js";
+import Badge from "./Badge.model.js";
+import User from "./user.model.js";
+import UserBadge from "./UserBadge.model.js";
+import Admin from './Admin.model.js'
 
-// Initialize models
-const User = UserModel(sequelize, Sequelize.DataTypes);
-const UserProfile = UserProfileModel(sequelize, Sequelize.DataTypes);
-const Quiz = QuizModel(sequelize, Sequelize.DataTypes);
+// A user can earn multiple badges and A badge can be earned by multiple users.
+User.belongsToMany(Badge, { through: UserBadge, foreignKey: 'userId', otherKey: 'badgeId' });
+Badge.belongsToMany(User, { through: UserBadge, foreignKey: 'badgeId', otherKey: 'userId' });
 
-// Associations
-User.hasOne(UserProfile, { onDelete: 'CASCADE' });
-UserProfile.belongsTo(User);
+const model = { Badge, User, UserBadge, Admin };
 
-User.hasMany(Quiz, { onDelete: 'CASCADE' });
-Quiz.belongsTo(User);
-
-// Export all
-const db = { sequelize, User, UserProfile, Quiz };
-export default db;
+export default model;
