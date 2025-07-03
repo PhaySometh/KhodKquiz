@@ -1,6 +1,7 @@
 import sequelize from "../config/db/sequelize.js";
 import { DataTypes } from "sequelize";
 
+// Stores all users (teachers and students)
 const User = sequelize.define('User', {
     name: {
         type: DataTypes.STRING(100),
@@ -18,6 +19,10 @@ const User = sequelize.define('User', {
     provider: {
         type: DataTypes.STRING,
 		defaultValue: 'local'
+    },
+    role: {
+        type: DataTypes.ENUM('student', 'teacher'),
+        defaultValue: 'student'
     },
     picture: {
         type: DataTypes.TEXT

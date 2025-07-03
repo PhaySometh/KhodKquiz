@@ -1,6 +1,7 @@
 import sequelize from "../config/db/sequelize.js";
 import { DataTypes } from "sequelize";
 
+// Connects users with earned badges
 const UserBadge = sequelize.define('UserBadge', {
     userId: {
         type: DataTypes.INTEGER,
@@ -8,7 +9,8 @@ const UserBadge = sequelize.define('UserBadge', {
         references: {
             model: 'users',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE'     // Ensure badge assignments are removed if user or badge is deleted.
     },
     badgeId: {
         type: DataTypes.INTEGER,
@@ -16,7 +18,8 @@ const UserBadge = sequelize.define('UserBadge', {
         references: {
             model: 'badges',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE'
     },
     createdAt: {
         type: DataTypes.DATE,
@@ -24,9 +27,14 @@ const UserBadge = sequelize.define('UserBadge', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    underscored: true,
     timestamps: false,
-    tableName: 'userBadges'
+    tableName: 'userBadges',
+    indexes: [
+        {
+            unique: true,
+            fields: ['userId', 'badgeId']
+        }
+    ]
 });
 
 export default UserBadge;

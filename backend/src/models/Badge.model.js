@@ -1,6 +1,7 @@
 import sequelize from "../config/db/sequelize.js";
 import { DataTypes } from "sequelize";
 
+// Stores available badges
 const Badge = sequelize.define('Badge', {
     title: {
         type: DataTypes.STRING(150),
@@ -10,7 +11,11 @@ const Badge = sequelize.define('Badge', {
         type: DataTypes.TEXT,
     },
     picture: {
-        type: DataTypes.TEXT
+        type: DataTypes.STRING(2048)
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 }, {
     timestamps: false,
