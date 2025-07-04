@@ -42,7 +42,7 @@ export default function Navbar() {
                     HOME
                 </NavLink>
                 <NavLink
-                    to="/quiz"
+                    to="/quizzes"
                     className={({ isActive }) =>
                         isActive
                             ? 'text-orange-400'
@@ -86,7 +86,7 @@ export default function Navbar() {
                             HOME
                         </NavLink>
                         <NavLink
-                            to="/quiz"
+                            to="/quizzes"
                             className={({ isActive }) =>
                                 isActive
                                     ? 'text-orange-400'

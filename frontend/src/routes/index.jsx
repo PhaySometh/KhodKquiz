@@ -1,6 +1,6 @@
 // Example in src/routes/index.jsx
 import { Routes, Route } from 'react-router-dom';
-import Home from '../pages/Home';
+
 import Leaderboard from '../pages/Leaderboard';
 import Login from '../pages/Login';
 import Quiz from '../pages/Quiz';
@@ -11,6 +11,8 @@ import TeacherDashboard from'../pages/TeacherDashboard.jsx';
 import CreateQuiz from '../pages/CreateQuiz.jsx';
 import ManageQuizForm from '../pages/ManageQuiz.jsx';
 import QuizAnalytics from '../pages/Analytic.jsx';
+import Quizzes from '../pages/Quizzes.jsx';
+import Home from '../pages/home.jsx';
 function AppRoutes() {
     return (
         <Routes>
@@ -25,6 +27,7 @@ function AppRoutes() {
             <Route path='/teacher/createquiz' element={<CreateQuiz />} />
             <Route path='/teacher/managequiz' element={<ManageQuizForm />} />
             <Route path='/teacher/analytic' element={<QuizAnalytics />} />
+            <Route path='/quizzes' element={<Quizzes />} />
         </Routes>
     );
 }

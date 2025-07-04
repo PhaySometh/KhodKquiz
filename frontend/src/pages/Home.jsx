@@ -166,7 +166,7 @@ export default function Home() {
                             className="flex justify-center gap-5 mt-8"
                         >
                             <Button
-                                to="quiz"
+                                to="quizzes"
                                 label="Test Your Skills"
                                 bgColor="bg-blue-950"
                                 textColor="text-white"
