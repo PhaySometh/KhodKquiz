@@ -37,19 +37,19 @@ export default function SignUp() {
                         <input
                             type="text"
                             placeholder="Name"
-                            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
+                            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
                         />
                         <input
                             type="email"
                             placeholder="Email"
-                            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
+                            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
                         />
                         <input
                             type="password"
                             placeholder="Password"
-                            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
+                            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
                         />
-                        <button className="bg-orange-400 text-white py-2 rounded-md hover:bg-green-700 transition">
+                        <button className="bg-orange-400 text-white py-2 rounded-md hover:bg-blue-950 transition">
                             Sign Up
                         </button>
                         <GoogleLogin
@@ -57,7 +57,7 @@ export default function SignUp() {
                         onError={() => {
                             console.log('Login Failed');
                         }}
-                        />
+                        />;
                     </form>
                     <p className="text-center mt-4 text-sm">
                         Already have an account?{' '}
