@@ -29,4 +29,5 @@ const Class = sequelize.define('Class', {
     timestamps: false
 });
 
+
 export default Class;
