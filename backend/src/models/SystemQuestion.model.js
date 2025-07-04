@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db/sequelize";
 
-const SystemQuestions = sequelize.define('SystemQuestions', {
+const SystemQuestion = sequelize.define('SystemQuestion', {
     systemQuizId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -18,4 +18,4 @@ const SystemQuestions = sequelize.define('SystemQuestions', {
     timestamps: false
 });
 
-export default SystemQuestions;
+export default SystemQuestion;
