@@ -52,14 +52,12 @@ export default function SignUp() {
                         <button className="bg-orange-400 text-white py-2 rounded-md hover:bg-blue-950 transition">
                             Sign Up
                         </button>
-                        <div className='flex justify-center'>
-                            <GoogleLogin
-                            onSuccess={handleLoginSuccess}
-                            onError={() => {
-                                console.log('Login Failed');
-                            }}
-                            />
-                        </div>
+                        <GoogleLogin
+                        onSuccess={handleLoginSuccess}
+                        onError={() => {
+                            console.log('Login Failed');
+                        }}
+                        />;
                     </form>
                     <p className="text-center mt-4 text-sm">
                         Already have an account?{' '}
