@@ -1,7 +1,7 @@
 import sequelize from "../config/db/sequelize.js";
-import { DataTypes, INTEGER } from "sequelize";
+import { DataTypes } from "sequelize";
 
-const SystemQuizzes = sequelize.define('SystemQuizzes', {
+const SystemQuiz = sequelize.define('SystemQuiz', {
     title: {
         type: DataTypes.STRING(150),
         allowNull: false
@@ -29,4 +29,4 @@ const SystemQuizzes = sequelize.define('SystemQuizzes', {
     timestamps: false
 });
 
-export default SystemQuizzes;
+export default SystemQuiz;

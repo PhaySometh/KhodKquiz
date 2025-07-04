@@ -1,7 +1,7 @@
 import sequelize from "../config/db/sequelize.js";
 import { DataTypes } from "sequelize";
 
-const SystemAnswerOptions = sequelize.define('SystemAnswerOptions', {
+const SystemAnswerOption = sequelize.define('SystemAnswerOption', {
     systemQuestionId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -21,4 +21,4 @@ const SystemAnswerOptions = sequelize.define('SystemAnswerOptions', {
     timestamps: false
 })
 
-export default SystemAnswerOptions;
+export default SystemAnswerOption;
