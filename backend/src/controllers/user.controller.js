@@ -33,7 +33,7 @@ export const verifyUser = async (req, res) => {
         // Look for the user in the database
         let user = await db.User.findOne({
             where: {
-                google_id: googleId
+                googleId: googleId
             }
         });
 
@@ -41,7 +41,7 @@ export const verifyUser = async (req, res) => {
             // If user does not exist, create a new user
             user = await db.User.create({
                 provider: 'google',
-                google_id: googleId,
+                googleId: googleId,
                 name: payload.name,
                 email: payload.email,
                 picture: picture

@@ -4,9 +4,7 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import userRoutes from './routes/user.routes.js'
-
-import db from './models/index.js';
-// import leaderboardRoutes from './routes/leaderboard.js';
+import sequelize from './config/db/sequelize.js';
 
 dotenv.config();
 
@@ -21,8 +19,7 @@ app.use(morgan('dev'));
 app.use('/api/user', userRoutes);
 
 try {
-    await db.sequelize.authenticate();
-    await db.sequelize.sync({ alter: true });
+    // await sequelize.sync({ force: true });
     app.listen(PORT, () => {
         console.log(`🚀 Server running at http://localhost:${PORT}`);
     });
