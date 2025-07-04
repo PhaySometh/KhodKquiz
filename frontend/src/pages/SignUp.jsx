@@ -57,7 +57,7 @@ export default function SignUp() {
                         onError={() => {
                             console.log('Login Failed');
                         }}
-                        />;
+                        />
                     </form>
                     <p className="text-center mt-4 text-sm">
                         Already have an account?{' '}
