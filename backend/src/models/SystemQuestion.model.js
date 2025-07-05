@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/db/sequelize";
+import sequelize from "../config/db/sequelize.js";
 
 const SystemQuestion = sequelize.define('SystemQuestion', {
     systemQuizId: {

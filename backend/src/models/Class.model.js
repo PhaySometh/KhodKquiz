@@ -1,4 +1,4 @@
-import sequelize from "../config/db/sequelize";
+import sequelize from "../config/db/sequelize.js";
 import { DataTypes } from "sequelize";
 
 // Each class is created by a teacher

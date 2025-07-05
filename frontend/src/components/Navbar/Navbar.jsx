@@ -3,16 +3,18 @@ import { NavLink } from 'react-router-dom';
 import Button from '../Button';
 import { Menu } from 'lucide-react';
 import UserProfile from './UserProfile';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { isAuthenticated } = useAuth();
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     return (
-        <div className="navbar bg-base-100 shadow-xl z-10 w-full px-4 py-2 flex justify-between items-center fixed top-0">
+        <div className="navbar bg-base-100 shadow-xl z-10 w-full px-4 py-2 flex justify-center items-center fixed top-0">
             {/* Left - Burger button for small screens */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 w-full">
                 {/* Burger button (small screens only) */}
                 <button
                     onClick={toggleMenu}
@@ -29,7 +31,7 @@ export default function Navbar() {
             </div>
 
             {/* Center - Navigation Links */}
-            <div className="hidden md:flex gap-5 items-center text-sm font-bold text-[#111729]">
+            <div className="hidden md:flex gap-5 items-center text-sm font-bold w-full justify-center text-[#111729]">
                 <NavLink
                     to="/"
                     className={({ isActive }) =>
@@ -64,7 +66,7 @@ export default function Navbar() {
             </div>
 
             {/* Right - Sign Up + Avatar */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 w-full justify-end">
                 {/* Sign Up button (only visible on lg and up) */}
                 <UserProfile />
             </div>
