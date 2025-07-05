@@ -29,6 +29,8 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null); // Current user data (name, email, picture, etc.)
     const [loading, setLoading] = useState(true); // Loading state during auth checks
     const [isAuthenticated, setIsAuthenticated] = useState(false); // Authentication status
+    const [loginLoading, setLoginLoading] = useState(false); // Loading state for login operations
+    const [logoutLoading, setLogoutLoading] = useState(false); // Loading state for logout operations
 
     const BASE_URL = 'http://localhost:3000';
 
@@ -123,13 +125,21 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem('userToken');
-        setUser(null);
-        setIsAuthenticated(false);
-        toast.success('Logged out successfully', {
-            icon: '👋',
-        });
+    const logout = async () => {
+        setLogoutLoading(true);
+        try {
+            // Add a brief delay for better UX
+            await new Promise((resolve) => setTimeout(resolve, 800));
+
+            localStorage.removeItem('userToken');
+            setUser(null);
+            setIsAuthenticated(false);
+            toast.success('Logged out successfully', {
+                icon: '👋',
+            });
+        } finally {
+            setLogoutLoading(false);
+        }
     };
 
     const updateProfile = async (profileData) => {
@@ -165,6 +175,8 @@ export const AuthProvider = ({ children }) => {
         user,
         isAuthenticated,
         loading,
+        loginLoading,
+        logoutLoading,
         login,
         logout,
         updateProfile,
