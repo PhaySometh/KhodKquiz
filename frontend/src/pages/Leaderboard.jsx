@@ -9,7 +9,6 @@ import {
     Crown,
     Star,
     Award,
-    RotateCw,
     ChevronDown,
     ChevronUp,
 } from 'lucide-react';

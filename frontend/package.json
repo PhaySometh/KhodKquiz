@@ -17,6 +17,7 @@
     "axios": "^1.9.0",
     "daisyUI": "npm:daisyui@^5.0.43",
     "framer-motion": "^12.19.1",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.511.0",
     "prop-types": "^15.8.1",
     "react": "^19.1.0",
