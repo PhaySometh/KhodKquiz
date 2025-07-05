@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import Button from '../Button';
 import { Menu } from 'lucide-react';
 import UserProfile from './UserProfile';
@@ -44,12 +44,14 @@ export default function Navbar() {
                     HOME
                 </NavLink>
                 <NavLink
-                    to="/quizzes"
-                    className={({ isActive }) =>
-                        isActive
+                    to="/quiz/category"
+                    className={({ isActive }) => {
+                        const isQuizSection =
+                            window.location.pathname.startsWith('/quiz');
+                        return isActive || isQuizSection
                             ? 'text-orange-400'
-                            : 'text-blue-950 hover:text-orange-400'
-                    }
+                            : 'text-blue-950 hover:text-orange-400';
+                    }}
                 >
                     TEST YOUR SKILLS
                 </NavLink>
@@ -88,12 +90,16 @@ export default function Navbar() {
                             HOME
                         </NavLink>
                         <NavLink
-                            to="/quizzes"
-                            className={({ isActive }) =>
-                                isActive
+                            to="/quiz/category"
+                            className={({ isActive }) => {
+                                const isQuizSection =
+                                    window.location.pathname.startsWith(
+                                        '/quiz'
+                                    );
+                                return isActive || isQuizSection
                                     ? 'text-orange-400'
-                                    : 'text-blue-950 hover:text-orange-400'
-                            }
+                                    : 'text-blue-950 hover:text-orange-400';
+                            }}
                             onClick={() => setIsMenuOpen(false)}
                         >
                             TEST YOUR SKILLS

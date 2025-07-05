@@ -12,7 +12,7 @@ import TeacherDashboard from '../pages/TeacherDashboard.jsx';
 import CreateQuiz from '../pages/CreateQuiz.jsx';
 import ManageQuizForm from '../pages/ManageQuiz.jsx';
 import QuizAnalytics from '../pages/Analytic.jsx';
-import Quizzes from '../pages/Quizzes.jsx';
+import QuizCategory from '../pages/QuizCategory.jsx';
 import QuizProgress from '../pages/QuizProgress.jsx';
 import QuizRecent from '../pages/QuizRecent.jsx';
 import Home from '../pages/home.jsx';
@@ -24,12 +24,11 @@ function AppRoutes() {
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/quizzes" element={<Quizzes />} />
-            <Route path="/quizzes/category" element={<Quizzes />} />
+            <Route path="/quiz/category" element={<QuizCategory />} />
 
             {/* Protected Quiz Routes */}
             <Route
-                path="/quizzes/progress"
+                path="/quiz/progress"
                 element={
                     <ProtectedRoute>
                         <QuizProgress />
@@ -37,7 +36,7 @@ function AppRoutes() {
                 }
             />
             <Route
-                path="/quizzes/recent"
+                path="/quiz/recent"
                 element={
                     <ProtectedRoute>
                         <QuizRecent />

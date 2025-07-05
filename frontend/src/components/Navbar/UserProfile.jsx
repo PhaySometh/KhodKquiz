@@ -1,17 +1,38 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import { LogOut, Settings, UserPen, LogIn } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import hourPNG from '../../assets/image/hour.png';
 import toast from 'react-hot-toast';
+import ConfirmationDialog from '../ConfirmationDialog';
+import LoadingSpinner from '../LoadingSpinner';
 
 export default function UserProfile() {
     const { user, isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-    const handleLogout = () => {
-        logout();
-        navigate('/');
+    const handleLogoutClick = () => {
+        setShowLogoutConfirm(true);
+    };
+
+    const handleLogoutConfirm = async () => {
+        setIsLoggingOut(true);
+
+        try {
+            // Add a brief delay for better UX
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+
+            logout();
+            navigate('/');
+        } catch (error) {
+            toast.error('Error logging out. Please try again.');
+        } finally {
+            setIsLoggingOut(false);
+            setShowLogoutConfirm(false);
+        }
     };
 
     const handleProfileClick = () => {
@@ -96,13 +117,36 @@ export default function UserProfile() {
                         </button>
                     </li>
                     <li>
-                        <button onClick={handleLogout}>
+                        <button onClick={handleLogoutClick}>
                             <LogOut size={16} />
                             Logout
                         </button>
                     </li>
                 </ul>
             </div>
+
+            {/* Logout Confirmation Dialog */}
+            <ConfirmationDialog
+                isOpen={showLogoutConfirm}
+                onClose={() => setShowLogoutConfirm(false)}
+                onConfirm={handleLogoutConfirm}
+                title="Confirm Logout"
+                message="Are you sure you want to logout? You'll need to sign in again to access your account."
+                confirmText="Logout"
+                cancelText="Cancel"
+                variant="warning"
+                isLoading={isLoggingOut}
+            />
+
+            {/* Full Screen Loading for Logout */}
+            {isLoggingOut && (
+                <LoadingSpinner
+                    fullScreen={true}
+                    text="Logging out..."
+                    size="lg"
+                    variant="spinner"
+                />
+            )}
         </>
     );
 }

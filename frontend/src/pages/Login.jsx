@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar/NavBar';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../contexts/AuthContext';
 import { LogIn, UserPlus } from 'lucide-react';
@@ -21,12 +22,13 @@ export default function Login() {
     const handleLoginSuccess = async (credentialResponse) => {
         setIsLoading(true);
         try {
-            const response = await axios.post(
-                `${BASE_URL}/api/user/auth/google-login`,
-                {
+            // Add minimum loading time for better UX
+            const [response] = await Promise.all([
+                axios.post(`${BASE_URL}/api/user/auth/google-login`, {
                     token: credentialResponse.credential,
-                }
-            );
+                }),
+                new Promise((resolve) => setTimeout(resolve, 1200)), // Minimum 1.2 seconds loading
+            ]);
 
             if (response.data.token) {
                 const loginSuccess = await login(response.data.token);
@@ -78,8 +80,12 @@ export default function Login() {
                     {/* Google Login */}
                     <div className="mb-6 relative flex justify-center items-center w-full">
                         {isLoading && (
-                            <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-md z-10">
-                                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-950"></div>
+                            <div className="absolute inset-0 bg-white bg-opacity-90 backdrop-blur-sm flex items-center justify-center rounded-md z-10">
+                                <LoadingSpinner
+                                    size="md"
+                                    text="Signing you in..."
+                                    variant="writing"
+                                />
                             </div>
                         )}
                         <GoogleLogin
@@ -136,6 +142,16 @@ export default function Login() {
                     </div>
                 </div>
             </div>
+
+            {/* Full Screen Loading Overlay */}
+            {isLoading && (
+                <LoadingSpinner
+                    fullScreen={true}
+                    text="Authenticating..."
+                    size="lg"
+                    variant="pulse"
+                />
+            )}
         </>
     );
 }
