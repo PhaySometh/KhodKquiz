@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { User as UserIcon, Mail, Edit3, Save, X, Camera } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import Navbar from '../components/Navbar/NavBar';
+import Navbar from '../components/common/Navbar';
 import toast from 'react-hot-toast';
 
 const User = () => {

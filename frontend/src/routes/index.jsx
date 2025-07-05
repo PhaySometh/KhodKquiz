@@ -9,6 +9,8 @@ import SignUp from '../pages/SignUp';
 import UserDashBoard from '../pages/UserDashBoard';
 import User from '../pages/User.jsx';
 import TeacherDashboard from '../pages/TeacherDashboard.jsx';
+import EnhancedTeacherDashboard from '../pages/EnhancedTeacherDashboard.jsx';
+import TeacherRegistrationForm from '../pages/TeacherRegistrationForm.jsx';
 import CreateQuiz from '../pages/CreateQuiz.jsx';
 import ManageQuizForm from '../pages/ManageQuiz.jsx';
 import QuizAnalytics from '../pages/Analytic.jsx';
@@ -26,6 +28,7 @@ function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/quizzes" element={<Quizzes />} />
             <Route path="/quizzes/category" element={<Quizzes />} />
+            <Route path="/teacher-registration" element={<TeacherRegistrationForm />} />
 
             {/* Protected Quiz Routes */}
             <Route
@@ -75,6 +78,14 @@ function AppRoutes() {
                 element={
                     <ProtectedRoute>
                         <TeacherDashboard />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/teacher/enhanced"
+                element={
+                    <ProtectedRoute>
+                        <EnhancedTeacherDashboard />
                     </ProtectedRoute>
                 }
             />
