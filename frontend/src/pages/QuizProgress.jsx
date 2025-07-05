@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { TrendingUp, Award, Calendar, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import Navbar from '../components/Navbar/NavBar';
+import Navbar from '../components/common/Navbar';
 import QuizHero, { QuizTabs } from '../components/QuizHero';
 import AuthPrompt from '../components/AuthPrompt';
 
