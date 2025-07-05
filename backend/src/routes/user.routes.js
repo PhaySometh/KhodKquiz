@@ -1,12 +1,16 @@
-import express from "express"
-import { 
+import express from 'express';
+import {
     getUsers,
-    verifyUser
-} from "../controllers/user.controller.js";
+    verifyUser,
+    getUser,
+    updateUserProfile,
+} from '../controllers/user.controller.js';
 
 const router = express.Router();
 
-router.get('/', getUsers);
+router.get('/all', getUsers);
+router.get('/', getUser);
+router.put('/profile', updateUserProfile);
 router.post('/auth/google-login', verifyUser);
 
 export default router;

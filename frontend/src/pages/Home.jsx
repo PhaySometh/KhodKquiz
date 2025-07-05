@@ -4,7 +4,15 @@ import { useInView } from 'react-intersection-observer';
 import Navbar from '../components/Navbar/NavBar';
 import image from '../assets/image/heroBackground.svg';
 import Button from '../components/Button';
-import { BrainCircuit, Trophy, BookOpenCheck } from 'lucide-react';
+import {
+    BrainCircuit,
+    Trophy,
+    BookOpenCheck,
+    User,
+    Clock,
+    Target,
+} from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 // Animation variants for the staggered text
 const containerVariants = {
@@ -73,8 +81,8 @@ const FeatureCard = ({ icon, title, description, index }) => {
     );
 };
 
-
 export default function Home() {
+    const { user, isAuthenticated } = useAuth();
     const controls = useAnimation();
     const [ref, inView] = useInView({
         triggerOnce: true,
@@ -86,7 +94,7 @@ export default function Home() {
             controls.start('visible');
         }
     }, [controls, inView]);
-    
+
     const khodKquiz = 'KhodKquiz'.split('');
 
     return (
@@ -122,16 +130,23 @@ export default function Home() {
                         <motion.h1
                             variants={{
                                 hidden: { opacity: 0, y: 50 },
-                                visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } },
+                                visible: {
+                                    opacity: 1,
+                                    y: 0,
+                                    transition: {
+                                        duration: 0.8,
+                                        ease: 'easeOut',
+                                    },
+                                },
                             }}
                             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-blue-950"
                         >
                             Challenge Your Coding Skills
                         </motion.h1>
                         <motion.h1
-                             variants={containerVariants}
-                             initial="hidden"
-                             animate="visible"
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="visible"
                             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mt-2"
                         >
                             {khodKquiz.map((letter, index) => (
@@ -152,16 +167,32 @@ export default function Home() {
                         <motion.p
                             variants={{
                                 hidden: { opacity: 0, y: 30 },
-                                visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } },
+                                visible: {
+                                    opacity: 1,
+                                    y: 0,
+                                    transition: {
+                                        duration: 0.8,
+                                        ease: 'easeOut',
+                                    },
+                                },
                             }}
                             className="mt-4 max-w-2xl text-lg text-gray-700"
                         >
-                            A full-stack real-time quiz application to test your coding knowledge, compete on leaderboards, and earn badges.
+                            A full-stack real-time quiz application to test your
+                            coding knowledge, compete on leaderboards, and earn
+                            badges.
                         </motion.p>
                         <motion.div
                             variants={{
                                 hidden: { opacity: 0, y: 20 },
-                                visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } },
+                                visible: {
+                                    opacity: 1,
+                                    y: 0,
+                                    transition: {
+                                        duration: 0.8,
+                                        ease: 'easeOut',
+                                    },
+                                },
                             }}
                             className="flex justify-center gap-5 mt-8"
                         >
@@ -171,12 +202,22 @@ export default function Home() {
                                 bgColor="bg-blue-950"
                                 textColor="text-white"
                             />
-                            <Button
-                                to="signup"
-                                label="Be Our User"
-                                bgColor="bg-orange-400"
-                                textColor="text-white"
-                            />
+                            {!isAuthenticated && (
+                                <Button
+                                    to="signup"
+                                    label="Be Our User"
+                                    bgColor="bg-orange-400"
+                                    textColor="text-white"
+                                />
+                            )}
+                            {isAuthenticated && (
+                                <Button
+                                    to="user"
+                                    label="My Profile"
+                                    bgColor="bg-orange-400"
+                                    textColor="text-white"
+                                />
+                            )}
                         </motion.div>
                     </motion.div>
                 </div>
@@ -210,23 +251,54 @@ export default function Home() {
                     </div>
                 </div>
 
-                {/* Get Started Section */}
-                <div className="bg-blue-950 text-white py-20">
-                    <div className="container mx-auto px-6 text-center">
-                        <h2 className="text-3xl font-bold mb-4">
-                            Ready to Test Your Mettle?
-                        </h2>
-                        <p className="text-lg mb-8">
-                            Sign up now and start your journey to becoming a coding champion.
-                        </p>
-                        <Button
-                            to="signup"
-                            label="Sign Up for Free"
-                            bgColor="bg-orange-400"
-                            textColor="text-white"
-                        />
+                {/* Conditional Bottom Section */}
+                {!isAuthenticated ? (
+                    /* Get Started Section for Unauthenticated Users */
+                    <div className="bg-blue-950 text-white py-20">
+                        <div className="container mx-auto px-6 text-center">
+                            <h2 className="text-3xl font-bold mb-4">
+                                Ready to Test Your Mettle?
+                            </h2>
+                            <p className="text-lg mb-8">
+                                Sign up now and start your journey to becoming a
+                                coding champion.
+                            </p>
+                            <Button
+                                to="signup"
+                                label="Sign Up for Free"
+                                bgColor="bg-orange-400"
+                                textColor="text-white"
+                            />
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    /* Welcome Back Section for Authenticated Users */
+                    <div className="bg-blue-950 text-white py-20">
+                        <div className="container mx-auto px-6 text-center">
+                            <h2 className="text-3xl font-bold mb-4">
+                                Welcome back, {user?.name}!
+                            </h2>
+                            <p className="text-lg mb-8">
+                                Continue your coding journey and improve your
+                                skills.
+                            </p>
+                            <div className="flex justify-center gap-4">
+                                <Button
+                                    to="quizzes/progress"
+                                    label="View Progress"
+                                    bgColor="bg-orange-400"
+                                    textColor="text-white"
+                                />
+                                <Button
+                                    to="quizzes"
+                                    label="Take Quiz"
+                                    bgColor="bg-white"
+                                    textColor="text-blue-950"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );
