@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar/NavBar';
+import Navbar from '../components/common/Navbar';
 import ProfilePicture from '../components/ProfilePicture';
 import LoadingSpinner from '../components/LoadingSpinner';
 import axios from 'axios';

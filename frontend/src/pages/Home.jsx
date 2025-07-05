@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import Navbar from '../components/Navbar/NavBar';
+import Navbar from '../components/common/Navbar';
 import image from '../assets/image/heroBackground.svg';
 import Button from '../components/Button';
+import Footer from '../components/common/Footer';
 import {
     BrainCircuit,
     Trophy,
@@ -251,6 +252,20 @@ export default function Home() {
                     </div>
                 </div>
 
+                {/* Demo Section for Teacher Registration */}
+                <div className="p-6 bg-muted/30 rounded-lg border">
+                <h2 className="text-2xl font-semibold mb-4 text-primary">🎓 Teacher Registration Demo</h2>
+                <p className="text-muted-foreground mb-4">
+                    Check out the KhodKquiz-style teacher registration form
+                </p>
+                <a 
+                    href="/teacher-registration" 
+                    className="inline-flex items-center px-6 py-3 bg-accent text-accent-foreground rounded-lg font-medium hover:bg-accent/90 transition-colors"
+                >
+                    View Teacher Registration Form
+                </a>
+                </div>
+
                 {/* Conditional Bottom Section */}
                 {!isAuthenticated ? (
                     /* Get Started Section for Unauthenticated Users */
@@ -300,6 +315,7 @@ export default function Home() {
                     </div>
                 )}
             </div>
+            <Footer />
         </>
     );
 }
