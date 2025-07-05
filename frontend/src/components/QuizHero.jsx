@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 /**
  * Shared Hero Component for Quiz Pages
- * Provides consistent layout across /quizzes, /quizzes/progress, and /quizzes/recent
+ * Provides consistent layout across /quiz/category, /quiz/progress, and /quiz/recent
  * @param {string} searchQuery - Current search query value
  * @param {function} setSearchQuery - Function to update search query
  * @param {string} activeTab - Currently active tab ('categories', 'progress', 'activity')
@@ -64,7 +64,7 @@ export const QuizTabs = ({ activeTab, handleTabClick }) => {
     return (
         <div className="flex border-b border-gray-200 mb-6">
             <button
-                className={`px-4 py-2 font-medium text-sm ${
+                className={`px-4 py-2 font-medium text-smc hover:cursor-pointer ${
                     activeTab === 'categories'
                         ? 'text-blue-950 border-b-2 border-blue-950'
                         : 'text-gray-500 hover:text-gray-700'
@@ -74,7 +74,7 @@ export const QuizTabs = ({ activeTab, handleTabClick }) => {
                 Categories
             </button>
             <button
-                className={`px-4 py-2 font-medium text-sm relative ${
+                className={`px-4 py-2 font-medium text-sm relative hover:cursor-pointer ${
                     activeTab === 'progress'
                         ? 'text-blue-950 border-b-2 border-blue-950'
                         : 'text-gray-500 hover:text-gray-700'
@@ -87,7 +87,7 @@ export const QuizTabs = ({ activeTab, handleTabClick }) => {
                 )}
             </button>
             <button
-                className={`px-4 py-2 font-medium text-sm relative ${
+                className={`px-4 py-2 font-medium text-sm relative hover:cursor-pointer ${
                     activeTab === 'activity'
                         ? 'text-blue-950 border-b-2 border-blue-950'
                         : 'text-gray-500 hover:text-gray-700'

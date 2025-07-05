@@ -90,11 +90,11 @@ const QuizRecent = () => {
         }
 
         if (tab === 'progress') {
-            navigate('/quizzes/progress');
+            navigate('/quiz/progress');
         } else if (tab === 'activity') {
-            navigate('/quizzes/recent');
+            navigate('/quiz/recent');
         } else {
-            navigate('/quizzes');
+            navigate('/quiz/category');
         }
     };
 

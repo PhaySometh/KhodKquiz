@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/common/Navbar';
 import ProfilePicture from '../components/ProfilePicture';
+import LoadingSpinner from '../components/LoadingSpinner';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -27,12 +28,14 @@ export default function Leaderboard() {
     }, []);
 
     const fetchLeaderboard = async () => {
+        setLoading(true);
         try {
-            const response = await axios.get(
-                'https://localhost:5000/leaderboard'
-            );
+            // Add a minimum loading time for better UX
+            const [response] = await Promise.all([
+                axios.get('https://localhost:5000/leaderboard'),
+                new Promise((resolve) => setTimeout(resolve, 1000)), // Minimum 1 second loading
+            ]);
             setLeaderboard(response.data);
-            setLoading(false);
         } catch (error) {
             console.error('Error Fetching leaderboard: ', error);
             // Enhanced mock data
@@ -181,20 +184,28 @@ export default function Leaderboard() {
         return 'bg-gradient-to-r from-gray-700 to-gray-800 border-gray-600';
     };
 
-    // const refreshLeaderboard = async () => {
-    //     setLoading(true);
-    //     await fetchLeaderboard();
-    // };
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const refreshLeaderboard = async () => {
+        setIsRefreshing(true);
+        try {
+            await fetchLeaderboard();
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
 
     if (loading) {
         return (
             <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
                 <Navbar />
                 <div className="flex justify-center items-center pt-32">
-                    <div className="animate-pulse flex flex-col items-center">
-                        <div className="w-16 h-16 bg-yellow-500 rounded-full mb-4"></div>
-                        <div className="h-6 bg-gray-700 rounded w-48 mb-2"></div>
-                        <div className="h-4 bg-gray-700 rounded w-64"></div>
+                    <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                        <LoadingSpinner
+                            size="xl"
+                            text="Loading leaderboard..."
+                            variant="quiz"
+                        />
                     </div>
                 </div>
             </div>
@@ -220,15 +231,20 @@ export default function Leaderboard() {
                         fastest and most accurate rise to the top!
                     </p>
 
-                    {/* <motion.button
+                    <motion.button
                         onClick={refreshLeaderboard}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="mt-6 bg-gray-800 hover:bg-gray-700 text-white px-5 py-2.5 rounded-lg flex items-center justify-center gap-2 mx-auto"
+                        disabled={isRefreshing || loading}
+                        whileHover={{ scale: isRefreshing ? 1 : 1.05 }}
+                        whileTap={{ scale: isRefreshing ? 1 : 0.95 }}
+                        className="mt-6 bg-blue-950 hover:bg-blue-800 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg flex items-center justify-center gap-2 mx-auto transition-colors"
                     >
-                        <RotateCw size={18} />
-                        Refresh Leaderboard
-                    </motion.button> */}
+                        {isRefreshing ? (
+                            <LoadingSpinner size="sm" text="" variant="dots" />
+                        ) : (
+                            <RotateCw size={18} />
+                        )}
+                        {isRefreshing ? 'Refreshing...' : 'Refresh Leaderboard'}
+                    </motion.button>
                 </motion.div>
 
                 {/* Podium Section */}
@@ -558,7 +574,7 @@ export default function Leaderboard() {
                                                         </div>
                                                     )}
                                                     {mobileColumn ===
-                                                        'quizzes' && (
+                                                        'quiz/category' && (
                                                         <span className="text-white">
                                                             {user.quizzesTaken}
                                                         </span>
@@ -771,7 +787,8 @@ export default function Leaderboard() {
                                                         </span>
                                                     </div>
                                                 )}
-                                                {mobileColumn === 'quizzes' && (
+                                                {mobileColumn ===
+                                                    'quiz/category' && (
                                                     <div className="text-white text-sm">
                                                         {user.quizzesTaken}
                                                     </div>

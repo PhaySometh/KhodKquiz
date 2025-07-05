@@ -198,7 +198,7 @@ export default function Home() {
                             className="flex justify-center gap-5 mt-8"
                         >
                             <Button
-                                to="quizzes"
+                                to="quiz/category"
                                 label="Test Your Skills"
                                 bgColor="bg-blue-950"
                                 textColor="text-white"
@@ -299,13 +299,13 @@ export default function Home() {
                             </p>
                             <div className="flex justify-center gap-4">
                                 <Button
-                                    to="quizzes/progress"
+                                    to="quiz/progress"
                                     label="View Progress"
                                     bgColor="bg-orange-400"
                                     textColor="text-white"
                                 />
                                 <Button
-                                    to="quizzes"
+                                    to="quiz/category"
                                     label="Take Quiz"
                                     bgColor="bg-white"
                                     textColor="text-blue-950"

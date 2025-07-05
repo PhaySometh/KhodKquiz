@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Code,
     Languages,
     Brain,
-    Search,
-    ChevronRight,
     BookOpen,
     Database,
     Cpu,
@@ -13,9 +11,6 @@ import {
     FlaskConical,
     ScrollText,
     AlertCircle,
-    Bell,
-    User,
-    Settings,
 } from 'lucide-react';
 import Navbar from '../components/common/Navbar';
 import { useNavigate } from 'react-router-dom';
@@ -120,51 +115,16 @@ const recentActivities = [
     },
 ];
 
-export default function Quizzes() {
+export default function QuizCategory() {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('categories');
-    const [notifications, setNotifications] = useState([]);
-    const [showNotifications, setShowNotifications] = useState(false);
-    const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [showAuthPrompt, setShowAuthPrompt] = useState(false);
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
 
-    // Mock notifications
-    useEffect(() => {
-        setNotifications([
-            {
-                id: 1,
-                text: 'New JavaScript quiz available!',
-                time: '10 min ago',
-                read: false,
-            },
-            {
-                id: 2,
-                text: 'You earned the "Quick Learner" badge',
-                time: '2 hours ago',
-                read: true,
-            },
-            {
-                id: 3,
-                text: 'Weekly progress report is ready',
-                time: '1 day ago',
-                read: true,
-            },
-        ]);
-    }, []);
-
     const filteredCategories = categories.filter((category) =>
         category.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-    const markNotificationAsRead = (id) => {
-        setNotifications(
-            notifications.map((n) => (n.id === id ? { ...n, read: true } : n))
-        );
-    };
-
-    const unreadNotifications = notifications.filter((n) => !n.read).length;
 
     const handleTabClick = (tab) => {
         if ((tab === 'progress' || tab === 'activity') && !isAuthenticated) {
@@ -173,20 +133,20 @@ export default function Quizzes() {
         }
 
         if (tab === 'progress') {
-            navigate('/quizzes/progress');
+            navigate('/quiz/progress');
         } else if (tab === 'activity') {
-            navigate('/quizzes/recent');
+            navigate('/quiz/recent');
         } else {
             setActiveTab(tab);
         }
     };
 
     return (
-        <section className="flex h-screen bg-gray-50 overflow-hidden">
-            <div className="w-full overflow-y-auto">
-                <Navbar />
+        <div className="min-h-screen bg-gray-50">
+            <Navbar />
 
-                <main className="p-6 mt-15">
+            <main className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-6xl mx-auto">
                     {/* Shared Hero Section */}
                     <QuizHero
                         searchQuery={searchQuery}
@@ -417,8 +377,8 @@ export default function Quizzes() {
                             </motion.div>
                         )}
                     </AnimatePresence>
-                </main>
-            </div>
+                </div>
+            </main>
 
             {/* Authentication Prompt */}
             <AuthPrompt
@@ -427,6 +387,6 @@ export default function Quizzes() {
                 title="Authentication Required"
                 message="Please sign in to access your progress and activity data."
             />
-        </section>
+        </div>
     );
 }
