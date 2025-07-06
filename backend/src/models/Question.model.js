@@ -12,7 +12,7 @@ const Question = sequelize.define('Question', {
         },
         onDelete: 'CASCADE'     // If a quiz is deleted, its related questions are also removed.
     },
-    text: {
+    question: {
         type: DataTypes.TEXT,
         allowNull: false,
     },

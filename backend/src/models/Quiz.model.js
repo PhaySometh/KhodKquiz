@@ -20,6 +20,10 @@ const Quiz = sequelize.define('Quiz', {
         allowNull: false,
         onDelete: 'CASCADE'     // To clean up quizzes if the teacher is removed
     },
+    time: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+    },
     createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,

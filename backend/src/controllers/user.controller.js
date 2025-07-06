@@ -254,3 +254,35 @@ export const updateUserProfile = async (req, res) => {
         return res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+export const createQuiz = async (req, res) => {
+    const { title, time, createdBy, questions } = req.body;
+
+    try {
+        const quiz = await model.Quiz.create({
+            title,
+            time,
+            createdBy
+        });
+
+        for (const q of questions) {
+            const question = await model.Question.create({
+                quizId: quiz.id,
+                question: q.question
+            });
+
+            for (const opt of q.options) {
+                await model.AnswerOption.create({
+                    questionId: question.id,
+                    text: opt.text,
+                    isCorrect: opt.isCorrect
+                });
+            }
+        }
+
+        res.status(201).json({ success: true, message: 'Quiz created successfully' });
+    } catch (error) {
+        console.error('Error creating quiz:', error);
+        res.status(500).json({ success: false, message: 'Internal Server error' });
+    }
+};

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import NavBarDashBoard from "../components/NavBarDashBoard";
+import NavBarDashBoard from "../components/common/TeacherSidebar";
 import { Code, Languages, Brain, Search, ChevronRight, BookOpen, Database, Cpu, Globe, FlaskConical, ScrollText, AlertCircle, Bell, User, Settings } from 'lucide-react';
 
 const categories = [

@@ -1,1 +1,0 @@
-// This folder is for the common component uses in many pages like navbar and footer

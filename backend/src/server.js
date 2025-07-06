@@ -19,7 +19,7 @@ app.use(morgan('dev'));
 app.use('/api/user', userRoutes);
 
 try {
-    await sequelize.sync({ force: false });
+    // await sequelize.sync({ force: true });
     app.listen(PORT, () => {
         console.log(`🚀 Server running at http://localhost:${PORT}`);
     });

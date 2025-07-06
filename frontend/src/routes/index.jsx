@@ -1,7 +1,6 @@
 // Example in src/routes/index.jsx
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from '../components/ProtectedRoute';
-
 import Leaderboard from '../pages/Leaderboard';
 import Login from '../pages/Login';
 import Quiz from '../pages/Quiz';
@@ -9,6 +8,9 @@ import SignUp from '../pages/SignUp';
 import UserDashBoard from '../pages/UserDashBoard';
 import User from '../pages/User.jsx';
 import TeacherDashboard from '../pages/TeacherDashboard.jsx';
+import QuizManagement from '../pages/QuizManagement.jsx';
+import ClassManagement from '../pages/ClassManagement.jsx';
+import TeacherRegistrationForm from '../pages/TeacherRegistrationForm.jsx';
 import CreateQuiz from '../pages/CreateQuiz.jsx';
 import ManageQuizForm from '../pages/ManageQuiz.jsx';
 import QuizAnalytics from '../pages/Analytic.jsx';
@@ -24,7 +26,9 @@ function AppRoutes() {
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/quiz/category" element={<QuizCategory />} />
+            {/* <Route path="/quizzes" element={<Quizzes />} /> */}
+            {/* <Route path="/quizzes/category" element={<Quizzes />} /> */}
+            <Route path="/teacher-registration" element={<TeacherRegistrationForm />} />
 
             {/* Protected Quiz Routes */}
             <Route
@@ -74,6 +78,22 @@ function AppRoutes() {
                 element={
                     <ProtectedRoute>
                         <TeacherDashboard />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/teacher/quizzes"
+                element={
+                    <ProtectedRoute>
+                        <QuizManagement />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/teacher/classes"
+                element={
+                    <ProtectedRoute>
+                        <ClassManagement />
                     </ProtectedRoute>
                 }
             />
