@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Sidebar from '../components/NavBarDashBoard.jsx'
+import Sidebar from '../components/common/TeacherSidebar.jsx'
 import { PlusCircle, Trash2, MoveUp, MoveDown, Copy } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';

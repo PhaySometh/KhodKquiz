@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { LogIn, UserPlus } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const BASE_URL = 'http://localhost:3000';
 
