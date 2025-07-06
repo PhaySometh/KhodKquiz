@@ -13,8 +13,15 @@ const BASE_URL = 'http://localhost:3000';
 export default function Login() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { login } = useAuth();
+    const { login, loginWithEmail, loginLoading } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
+
+    // Form state for traditional login
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+    const [formErrors, setFormErrors] = useState({});
 
     // Get the intended destination from location state, default to dashboard
     const from = location.state?.from?.pathname || '/';
@@ -57,6 +64,63 @@ export default function Login() {
         toast.error('Login was cancelled or failed. Please try again.');
     };
 
+    // Handle form input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+
+        // Clear error for this field when user starts typing
+        if (formErrors[name]) {
+            setFormErrors((prev) => ({
+                ...prev,
+                [name]: '',
+            }));
+        }
+    };
+
+    // Validate form data
+    const validateForm = () => {
+        const errors = {};
+
+        if (!formData.email.trim()) {
+            errors.email = 'Email is required';
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                errors.email = 'Invalid email format';
+            }
+        }
+
+        if (!formData.password) {
+            errors.password = 'Password is required';
+        }
+
+        return errors;
+    };
+
+    // Handle traditional email/password login
+    const handleEmailLogin = async (e) => {
+        e.preventDefault();
+
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            return;
+        }
+
+        const success = await loginWithEmail(
+            formData.email.trim(),
+            formData.password
+        );
+
+        if (success) {
+            navigate(from, { replace: true });
+        }
+    };
+
     return (
         <>
             <div className="w-full">
@@ -94,7 +158,7 @@ export default function Login() {
                             theme="outline"
                             size="large"
                             width="100%"
-                            disabled={isLoading}
+                            disabled={isLoading || loginLoading}
                         />
                     </div>
 
@@ -108,22 +172,60 @@ export default function Login() {
                     </div>
 
                     {/* Email Form */}
-                    <form className="space-y-4">
-                        <input
-                            type="email"
-                            placeholder="Email address"
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-950 focus:border-transparent"
-                        />
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-950 focus:border-transparent"
-                        />
+                    <form className="space-y-4" onSubmit={handleEmailLogin}>
+                        <div>
+                            <input
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleInputChange}
+                                placeholder="Email address"
+                                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ${
+                                    formErrors.email
+                                        ? 'border-red-300 focus:ring-red-400'
+                                        : 'border-gray-300 focus:ring-blue-950'
+                                }`}
+                                disabled={loginLoading}
+                            />
+                            {formErrors.email && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {formErrors.email}
+                                </p>
+                            )}
+                        </div>
+                        <div>
+                            <input
+                                type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleInputChange}
+                                placeholder="Password"
+                                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ${
+                                    formErrors.password
+                                        ? 'border-red-300 focus:ring-red-400'
+                                        : 'border-gray-300 focus:ring-blue-950'
+                                }`}
+                                disabled={loginLoading}
+                            />
+                            {formErrors.password && (
+                                <p className="text-red-500 text-sm mt-1">
+                                    {formErrors.password}
+                                </p>
+                            )}
+                        </div>
                         <button
-                            type="button"
-                            className="w-full bg-blue-950 text-white py-3 rounded-lg font-medium hover:bg-blue-800 transition-colors"
+                            type="submit"
+                            disabled={loginLoading}
+                            className="w-full bg-blue-950 text-white py-3 rounded-lg font-medium hover:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Sign In
+                            {loginLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                    Signing In...
+                                </div>
+                            ) : (
+                                'Sign In'
+                            )}
                         </button>
                     </form>
 

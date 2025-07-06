@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }) => {
 
     /**
      * Handles user login with JWT token
-     * @param {string} token - JWT token received from Google OAuth
+     * @param {string} token - JWT token received from Google OAuth or traditional auth
      * @param {boolean} showSuccessToast - Whether to show welcome toast (default: true)
      * @returns {boolean} - Success status of login attempt
      */
@@ -122,6 +122,92 @@ export const AuthProvider = ({ children }) => {
             localStorage.removeItem('userToken');
             toast.error('Login failed. Please try again.');
             return false;
+        }
+    };
+
+    /**
+     * Handles traditional email/password login
+     * @param {string} email - User's email address
+     * @param {string} password - User's password
+     * @param {boolean} showSuccessToast - Whether to show welcome toast (default: true)
+     * @returns {boolean} - Success status of login attempt
+     */
+    const loginWithEmail = async (email, password, showSuccessToast = true) => {
+        setLoginLoading(true);
+        try {
+            const response = await axios.post(`${BASE_URL}/api/user/login`, {
+                email,
+                password,
+            });
+
+            if (response.data.token) {
+                const loginSuccess = await login(
+                    response.data.token,
+                    showSuccessToast
+                );
+                return loginSuccess;
+            }
+            return false;
+        } catch (error) {
+            console.error('Email login failed:', error);
+            const errorMessage =
+                error.response?.data?.error ||
+                'Login failed. Please try again.';
+            toast.error(errorMessage);
+            return false;
+        } finally {
+            setLoginLoading(false);
+        }
+    };
+
+    /**
+     * Handles traditional email/password registration
+     * @param {string} name - User's full name
+     * @param {string} email - User's email address
+     * @param {string} password - User's password
+     * @returns {boolean} - Success status of registration attempt
+     */
+    const registerWithEmail = async (name, email, password) => {
+        setLoginLoading(true);
+        try {
+            const response = await axios.post(`${BASE_URL}/api/user/register`, {
+                name,
+                email,
+                password,
+            });
+
+            if (response.data.token) {
+                const loginSuccess = await login(response.data.token, false); // Don't show welcome toast for registration
+                if (loginSuccess) {
+                    toast.success(
+                        'Account created successfully! Welcome to KhodKquiz!',
+                        {
+                            icon: '🎉',
+                            duration: 4000,
+                        }
+                    );
+                }
+                return loginSuccess;
+            }
+            return false;
+        } catch (error) {
+            console.error('Email registration failed:', error);
+
+            // Handle validation errors
+            if (error.response?.data?.errors) {
+                const errors = error.response.data.errors;
+                Object.values(errors).forEach((errorMsg) => {
+                    toast.error(errorMsg);
+                });
+            } else {
+                const errorMessage =
+                    error.response?.data?.error ||
+                    'Registration failed. Please try again.';
+                toast.error(errorMessage);
+            }
+            return false;
+        } finally {
+            setLoginLoading(false);
         }
     };
 
@@ -178,6 +264,8 @@ export const AuthProvider = ({ children }) => {
         loginLoading,
         logoutLoading,
         login,
+        loginWithEmail,
+        registerWithEmail,
         logout,
         updateProfile,
         checkAuthStatus,
