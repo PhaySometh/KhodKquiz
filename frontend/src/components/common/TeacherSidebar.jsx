@@ -27,7 +27,14 @@ export default function NavBarDashBoard() {
                     <span>Leaderboard</span>
                 </Link>
                 <Link
-                    to="/quiz"
+                    to="/teacher/classes"
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors"
+                >
+                    <LayoutDashboard size={20} />
+                    <span>My Classes</span>
+                </Link>
+                <Link
+                    to="/teacher/quizzes"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors"
                 >
                     <BookCheck size={20} />

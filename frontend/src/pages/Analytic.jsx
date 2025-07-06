@@ -1,4 +1,4 @@
-import Sidebar from '../components/NavBarDashBoard';
+import Sidebar from '../components/common/TeacherSidebar';
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, User, Settings } from 'lucide-react';
 import {
