@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NavBarDashBoard from "../components/common/TeacherSidebar";
+import UserNavbar from "../components/common/UserNavbar";
 import { Code, Languages, Brain, Search, ChevronRight, BookOpen, Database, Cpu, Globe, FlaskConical, ScrollText, AlertCircle, Bell, User, Settings } from 'lucide-react';
 
 const categories = [
@@ -56,62 +57,11 @@ export default function UserDashBoard() {
 
             <div className="w-full overflow-y-auto">
                 {/* Header */}
-                <header className="relative z-10 px-6 flex justify-between items-center w-full h-16 bg-white border-b border-gray-200">
-                    <div className="text-xl font-bold text-blue-950 hidden md:block">
-                        {activeTab === 'categories' ? 'Learning Dashboard' : 
-                         activeTab === 'progress' ? 'Your Progress' : 
-                         'Recent Activity'}
-                    </div>
-                    
-                    <div className="flex items-center space-x-4">
-                        <div className="relative hidden md:block">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                            <input
-                                className="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="Search..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                            <button 
-                                className="relative p-1 rounded-full hover:bg-gray-100"
-                                onClick={() => setShowNotifications(!showNotifications)}
-                            >
-                                <Bell className="text-gray-600" size={20} />
-                                {unreadNotifications > 0 && (
-                                    <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
-                                )}
-                            </button>
-
-                            <div className="relative">
-                                <button 
-                                    className="flex items-center space-x-2 focus:outline-none"
-                                    onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                >
-                                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                                        <User size={16} />
-                                    </div>
-                                </button>
-
-                                {userMenuOpen && (
-                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                                            <User size={16} className="mr-2" /> Profile
-                                        </a>
-                                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                                            <Settings size={16} className="mr-2" /> Settings
-                                        </a>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                <UserNavbar />
 
                     {/* Notifications dropdown */}
                     {showNotifications && (
-                        <div className="absolute right-4 top-16 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+                        <div>
                             <div className="p-3 border-b border-gray-200 font-medium text-gray-700">
                                 Notifications
                             </div>
@@ -145,7 +95,6 @@ export default function UserDashBoard() {
                             </div>
                         </div>
                     )}
-                </header>
 
                 <main className="p-6">
                     {/* Hero Section */}

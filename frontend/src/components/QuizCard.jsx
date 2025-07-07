@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
     Edit, 
-    Eye, 
     Trash2, 
     Copy, 
     Users, 
@@ -18,7 +17,6 @@ import {
 const QuizCard = ({ 
     quiz, 
     onEdit, 
-    onPreview, 
     onDelete, 
     onDuplicate, 
     onAssignToClass,
@@ -98,16 +96,6 @@ const QuizCard = ({
                                 </button>
                                 <button
                                     onClick={() => {
-                                        onPreview(quiz);
-                                        setShowActions(false);
-                                    }}
-                                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                >
-                                    <Eye size={14} />
-                                    Preview
-                                </button>
-                                <button
-                                    onClick={() => {
                                         onDuplicate(quiz);
                                         setShowActions(false);
                                     }}
@@ -173,31 +161,12 @@ const QuizCard = ({
                     </span>
                 )}
 
-                {/* Quiz Stats */}
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                    <div className="flex items-center gap-1">
-                        <BookOpen size={14} />
-                        <span>{quiz.questionCount || 0} questions</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                        <Clock size={14} />
-                        <span>{quiz.time} min</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                        <Users size={14} />
-                        <span>{quiz.assignedClasses || 0} classes</span>
-                    </div>
-                </div>
-
                 {/* Dates */}
                 <div className="flex items-center justify-between text-xs text-gray-400">
                     <div className="flex items-center gap-1">
                         <Calendar size={12} />
                         <span>Created: {formatDate(quiz.createdAt)}</span>
                     </div>
-                    {quiz.updatedAt !== quiz.createdAt && (
-                        <span>Updated: {formatDate(quiz.updatedAt)}</span>
-                    )}
                 </div>
             </div>
 
@@ -209,13 +178,6 @@ const QuizCard = ({
                     title="Edit Quiz"
                 >
                     <Edit className="h-5 w-5 text-blue-600" />
-                </button>
-                <button 
-                    onClick={() => onPreview(quiz)}
-                    className="p-3 bg-green-100 rounded-full cursor-pointer transition-all duration-300 transform hover:scale-110"
-                    title="Preview Quiz"
-                >
-                    <Eye className="h-5 w-5 text-green-600" />
                 </button>
                 <button 
                     onClick={() => onAssignToClass(quiz)}

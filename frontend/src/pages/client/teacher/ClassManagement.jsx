@@ -2,22 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import Sidebar from '../components/common/TeacherSidebar.jsx';
-import ClassList from '../components/ClassList.jsx';
-import { DeleteClassModal, StudentManagementModal, EditClassModal } from '../components/ClassActionModals.jsx';
-import UserNavbar from '../components/common/UserNavbar.jsx';
-import Footer from '../components/common/Footer.jsx';
+import Sidebar from '../../../components/common/TeacherSidebar.jsx';
+import ClassList from '../../../components/ClassList.jsx';
+import { DeleteClassModal, StudentManagementModal, EditClassModal } from '../../../components/ClassActionModals.jsx';
+import UserNavbar from '../../../components/common/UserNavbar.jsx';
+import Footer from '../../../components/common/Footer.jsx';
 
 const ClassManagement = () => {
     // Modal states
     const [deleteModal, setDeleteModal] = useState({ isOpen: false, classItem: null });
     const [studentModal, setStudentModal] = useState({ isOpen: false, classItem: null });
     const [editModal, setEditModal] = useState({ isOpen: false, classItem: null });
+    const navigate = useNavigate();
 
     // Class action handlers
     const handleCreateClass = () => {
         // Navigate to create class page or open modal
-        toast.success('Opening create class form...');
+        navigate('/teacher/create-class');
         // You can implement actual create functionality here
     };
 

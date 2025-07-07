@@ -25,6 +25,10 @@ const QuizResult = sequelize.define('QuizResult', {
         type: DataTypes.DECIMAL(9, 2),
         allowNull: true,
     },
+    attempt: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1
+    },
     takenAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,

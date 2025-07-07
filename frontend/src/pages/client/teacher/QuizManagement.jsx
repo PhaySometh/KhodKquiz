@@ -3,11 +3,11 @@ import { motion } from 'framer-motion';
 import { Search, Bell, User, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import Sidebar from '../components/common/TeacherSidebar.jsx';
-import QuizList from '../components/QuizList.jsx';
-import { DeleteQuizModal, AssignToClassModal, ArchiveQuizModal } from '../components/QuizActionModals.jsx';
-import UserNavbar from '../components/common/UserNavbar.jsx';
-import Footer from '../components/common/Footer.jsx';
+import Sidebar from '../../../components/common/TeacherSidebar.jsx';
+import QuizList from '../../../components/QuizList.jsx';
+import { DeleteQuizModal, AssignToClassModal, ArchiveQuizModal } from '../../../components/QuizActionModals.jsx';
+import UserNavbar from '../../../components/common/UserNavbar.jsx';
+import Footer from '../../../components/common/Footer.jsx';
 
 const EnhancedTeacherDashboard = () => {
     const navigate = useNavigate();
@@ -25,12 +25,6 @@ const EnhancedTeacherDashboard = () => {
     const handleEditQuiz = (quiz) => {
         // Navigate to edit page with quiz ID
         navigate(`/teacher/managequiz?id=${quiz.id}`);
-    };
-
-    const handlePreviewQuiz = (quiz) => {
-        // Open quiz preview in new tab or modal
-        toast.success(`Opening preview for "${quiz.title}"`);
-        // You can implement actual preview functionality here
     };
 
     const handleDeleteQuiz = (quiz) => {
@@ -98,7 +92,6 @@ const EnhancedTeacherDashboard = () => {
                         <QuizList
                             onCreateQuiz={handleCreateQuiz}
                             onEditQuiz={handleEditQuiz}
-                            onPreviewQuiz={handlePreviewQuiz}
                             onDeleteQuiz={handleDeleteQuiz}
                             onDuplicateQuiz={handleDuplicateQuiz}
                             onAssignToClass={handleAssignToClass}

@@ -8,16 +8,18 @@ import SignUp from '../pages/SignUp';
 import UserDashBoard from '../pages/UserDashBoard';
 import User from '../pages/User.jsx';
 import TeacherDashboard from '../pages/TeacherDashboard.jsx';
-import QuizManagement from '../pages/QuizManagement.jsx';
-import ClassManagement from '../pages/ClassManagement.jsx';
+import QuizManagement from '../pages/client/teacher/QuizManagement.jsx';
+import ClassManagement from '../pages/client/teacher/ClassManagement.jsx';
 import TeacherRegistrationForm from '../pages/TeacherRegistrationForm.jsx';
-import CreateQuiz from '../pages/CreateQuiz.jsx';
+import CreateQuiz from '../pages/client/teacher/CreateQuiz.jsx';
 import ManageQuizForm from '../pages/ManageQuiz.jsx';
 import QuizAnalytics from '../pages/Analytic.jsx';
 import QuizCategory from '../pages/QuizCategory.jsx';
 import QuizProgress from '../pages/QuizProgress.jsx';
 import QuizRecent from '../pages/QuizRecent.jsx';
 import Home from '../pages/home.jsx';
+import CreateClass from '../pages/client/teacher/CreateClass.jsx';
+
 function AppRoutes() {
     return (
         <Routes>
@@ -27,6 +29,7 @@ function AppRoutes() {
             <Route path="/quiz/category" element={<QuizCategory />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/teacher/create-class" element={<CreateClass />} />
             <Route
                 path="/teacher-registration"
                 element={<TeacherRegistrationForm />}

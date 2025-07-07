@@ -4,7 +4,6 @@ import {
     verifyUser,
     getUser,
     updateUserProfile,
-    createQuiz,
     registerUser,
     loginUser
 } from '../controllers/user.controller.js';
@@ -21,7 +20,6 @@ const router = express.Router();
 router.post('/auth/google-login', verifyUser);
 
 // Teacher Routes
-router.post('/quiz', createQuiz);
 router.post('/register', validateRegistration, registerUser);
 router.post('/login', validateLogin, loginUser);
 

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, Grid, List, Plus, ChevronDown } from 'lucide-react';
 import QuizCard from './QuizCard';
+import axios from 'axios';
+
+const BASE_URL='http://localhost:3000';
 
 const QuizList = ({ 
     onCreateQuiz,
     onEditQuiz,
-    onPreviewQuiz,
     onDeleteQuiz,
     onDuplicateQuiz,
     onAssignToClass,
@@ -24,59 +26,13 @@ const QuizList = ({
     // Mock data - replace with actual API call
     useEffect(() => {
         // Simulate API call
-        setTimeout(() => {
-            const mockQuizzes = [
-                {
-                    id: 1,
-                    title: "JavaScript Fundamentals",
-                    description: "Test your knowledge of JavaScript basics including variables, functions, and control structures.",
-                    category: "JavaScript",
-                    status: "published",
-                    time: 30,
-                    questionCount: 15,
-                    assignedClasses: 3,
-                    createdAt: "2024-01-15T10:00:00Z",
-                    updatedAt: "2024-01-20T14:30:00Z"
-                },
-                {
-                    id: 2,
-                    title: "Python Data Structures",
-                    description: "Comprehensive quiz on Python lists, dictionaries, sets, and tuples.",
-                    category: "Python",
-                    status: "draft",
-                    time: 45,
-                    questionCount: 20,
-                    assignedClasses: 0,
-                    createdAt: "2024-01-18T09:15:00Z",
-                    updatedAt: "2024-01-18T09:15:00Z"
-                },
-                {
-                    id: 3,
-                    title: "HTML & CSS Basics",
-                    description: "Essential web development concepts covering HTML structure and CSS styling.",
-                    category: "Web Development",
-                    status: "published",
-                    time: 25,
-                    questionCount: 12,
-                    assignedClasses: 2,
-                    createdAt: "2024-01-10T16:45:00Z",
-                    updatedAt: "2024-01-22T11:20:00Z"
-                },
-                {
-                    id: 4,
-                    title: "React Components",
-                    description: "Advanced React concepts including hooks, state management, and component lifecycle.",
-                    category: "React",
-                    status: "archived",
-                    time: 60,
-                    questionCount: 25,
-                    assignedClasses: 1,
-                    createdAt: "2023-12-05T13:30:00Z",
-                    updatedAt: "2024-01-15T08:45:00Z"
-                }
-            ];
-            setQuizzes(mockQuizzes);
-            setFilteredQuizzes(mockQuizzes);
+        setTimeout(async () => {
+            const quizzes = await axios.get(`${BASE_URL}/api/teacher`);
+
+            console.log(quizzes);
+
+            setQuizzes(quizzes.data.data);
+            setFilteredQuizzes(quizzes.data.data);
             setLoading(false);
         }, 1000);
     }, []);
@@ -288,7 +244,6 @@ const QuizList = ({
                                 key={quiz.id}
                                 quiz={quiz}
                                 onEdit={onEditQuiz}
-                                onPreview={onPreviewQuiz}
                                 onDelete={onDeleteQuiz}
                                 onDuplicate={onDuplicateQuiz}
                                 onAssignToClass={onAssignToClass}
