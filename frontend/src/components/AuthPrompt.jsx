@@ -14,8 +14,16 @@ const AuthPrompt = ({
     message = 'Please sign in to continue',
 }) => {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, loginWithEmail, registerWithEmail, loginLoading } =
+        useAuth();
     const [isLoading, setIsLoading] = useState(false);
+    const [mode, setMode] = useState('options'); // 'options', 'login', 'signup'
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+    });
+    const [formErrors, setFormErrors] = useState({});
     const BASE_URL = 'http://localhost:3000';
 
     const handleGoogleLoginSuccess = async (credentialResponse) => {
@@ -53,13 +61,107 @@ const AuthPrompt = ({
     };
 
     const handleSignUpClick = () => {
-        onClose();
-        navigate('/signup');
+        setMode('signup');
+        setFormData({ name: '', email: '', password: '' });
+        setFormErrors({});
     };
 
     const handleSignInClick = () => {
-        onClose();
-        navigate('/login');
+        setMode('login');
+        setFormData({ name: '', email: '', password: '' });
+        setFormErrors({});
+    };
+
+    const handleBackToOptions = () => {
+        setMode('options');
+        setFormData({ name: '', email: '', password: '' });
+        setFormErrors({});
+    };
+
+    // Handle form input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+
+        // Clear error for this field when user starts typing
+        if (formErrors[name]) {
+            setFormErrors((prev) => ({
+                ...prev,
+                [name]: '',
+            }));
+        }
+    };
+
+    // Validate form data
+    const validateForm = (isSignup = false) => {
+        const errors = {};
+
+        if (isSignup && !formData.name.trim()) {
+            errors.name = 'Name is required';
+        } else if (isSignup && formData.name.trim().length > 100) {
+            errors.name = 'Name must be less than 100 characters';
+        }
+
+        if (!formData.email.trim()) {
+            errors.email = 'Email is required';
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                errors.email = 'Invalid email format';
+            }
+        }
+
+        if (!formData.password) {
+            errors.password = 'Password is required';
+        } else if (isSignup && formData.password.length < 6) {
+            errors.password = 'Password must be at least 6 characters';
+        }
+
+        return errors;
+    };
+
+    // Handle traditional email/password login
+    const handleEmailLogin = async (e) => {
+        e.preventDefault();
+
+        const errors = validateForm(false);
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            return;
+        }
+
+        const success = await loginWithEmail(
+            formData.email.trim(),
+            formData.password
+        );
+
+        if (success) {
+            onClose();
+        }
+    };
+
+    // Handle traditional email/password signup
+    const handleEmailSignUp = async (e) => {
+        e.preventDefault();
+
+        const errors = validateForm(true);
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            return;
+        }
+
+        const success = await registerWithEmail(
+            formData.name.trim(),
+            formData.email.trim(),
+            formData.password
+        );
+
+        if (success) {
+            onClose();
+        }
     };
 
     if (!isOpen) return null;
@@ -89,58 +191,315 @@ const AuthPrompt = ({
                     </button>
 
                     {/* Content */}
-                    <div className="text-center mb-6">
-                        <div className="w-16 h-16 bg-gradient-to-r from-blue-950 to-blue-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <LogIn size={24} className="text-white" />
-                        </div>
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                            {title}
-                        </h2>
-                        <p className="text-gray-600">{message}</p>
-                    </div>
-
-                    {/* Google Login */}
-                    <div className="mb-4 relative flex justify-center items-center w-full">
-                        {isLoading && (
-                            <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-md z-10">
-                                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-950"></div>
+                    {mode === 'options' && (
+                        <>
+                            <div className="text-center mb-6">
+                                <div className="w-16 h-16 bg-gradient-to-r from-blue-950 to-blue-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <LogIn size={24} className="text-white" />
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                                    {title}
+                                </h2>
+                                <p className="text-gray-600">{message}</p>
                             </div>
-                        )}
-                        <GoogleLogin
-                            onSuccess={handleGoogleLoginSuccess}
-                            onError={handleGoogleLoginError}
-                            theme="outline"
-                            size="large"
-                            width="100%"
-                            disabled={isLoading}
-                        />
-                    </div>
 
-                    {/* Divider */}
-                    <div className="flex items-center my-4">
-                        <div className="flex-1 border-t border-gray-300"></div>
-                        <span className="px-3 text-sm text-gray-500">or</span>
-                        <div className="flex-1 border-t border-gray-300"></div>
-                    </div>
+                            {/* Google Login */}
+                            <div className="mb-4 relative flex justify-center items-center w-full">
+                                {isLoading && (
+                                    <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-md z-10">
+                                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-950"></div>
+                                    </div>
+                                )}
+                                <GoogleLogin
+                                    onSuccess={handleGoogleLoginSuccess}
+                                    onError={handleGoogleLoginError}
+                                    theme="outline"
+                                    size="large"
+                                    width="100%"
+                                    disabled={isLoading || loginLoading}
+                                />
+                            </div>
 
-                    {/* Action Buttons */}
-                    <div className="space-y-3">
-                        <button
-                            onClick={handleSignInClick}
-                            className="w-full py-3 bg-blue-950 hover:bg-blue-800 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                        >
-                            <LogIn size={18} />
-                            Sign In
-                        </button>
+                            {/* Divider */}
+                            <div className="flex items-center my-4">
+                                <div className="flex-1 border-t border-gray-300"></div>
+                                <span className="px-3 text-sm text-gray-500">
+                                    or
+                                </span>
+                                <div className="flex-1 border-t border-gray-300"></div>
+                            </div>
 
-                        <button
-                            onClick={handleSignUpClick}
-                            className="w-full py-3 bg-orange-400 hover:bg-orange-500 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                        >
-                            <UserPlus size={18} />
-                            Create Account
-                        </button>
-                    </div>
+                            {/* Action Buttons */}
+                            <div className="space-y-3">
+                                <button
+                                    onClick={handleSignInClick}
+                                    className="w-full py-3 bg-blue-950 hover:bg-blue-800 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                                    disabled={loginLoading}
+                                >
+                                    <LogIn size={18} />
+                                    Sign In
+                                </button>
+
+                                <button
+                                    onClick={handleSignUpClick}
+                                    className="w-full py-3 bg-orange-400 hover:bg-orange-500 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                                    disabled={loginLoading}
+                                >
+                                    <UserPlus size={18} />
+                                    Create Account
+                                </button>
+                            </div>
+                        </>
+                    )}
+
+                    {/* Login Form */}
+                    {mode === 'login' && (
+                        <>
+                            <div className="text-center mb-6">
+                                <div className="w-16 h-16 bg-gradient-to-r from-blue-950 to-blue-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <LogIn size={24} className="text-white" />
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                                    Welcome Back
+                                </h2>
+                                <p className="text-gray-600">
+                                    Sign in to continue
+                                </p>
+                            </div>
+
+                            {/* Google Login */}
+                            <div className="mb-4 relative flex justify-center items-center w-full">
+                                {isLoading && (
+                                    <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-md z-10">
+                                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-950"></div>
+                                    </div>
+                                )}
+                                <GoogleLogin
+                                    onSuccess={handleGoogleLoginSuccess}
+                                    onError={handleGoogleLoginError}
+                                    theme="outline"
+                                    size="large"
+                                    width="100%"
+                                    disabled={isLoading || loginLoading}
+                                />
+                            </div>
+
+                            {/* Divider */}
+                            <div className="flex items-center my-4">
+                                <div className="flex-1 border-t border-gray-300"></div>
+                                <span className="px-3 text-sm text-gray-500">
+                                    or
+                                </span>
+                                <div className="flex-1 border-t border-gray-300"></div>
+                            </div>
+
+                            {/* Email Form */}
+                            <form
+                                className="space-y-4"
+                                onSubmit={handleEmailLogin}
+                            >
+                                <div>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        placeholder="Email address"
+                                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ${
+                                            formErrors.email
+                                                ? 'border-red-300 focus:ring-red-400'
+                                                : 'border-gray-300 focus:ring-blue-950'
+                                        }`}
+                                        disabled={loginLoading}
+                                    />
+                                    {formErrors.email && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {formErrors.email}
+                                        </p>
+                                    )}
+                                </div>
+                                <div>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleInputChange}
+                                        placeholder="Password"
+                                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ${
+                                            formErrors.password
+                                                ? 'border-red-300 focus:ring-red-400'
+                                                : 'border-gray-300 focus:ring-blue-950'
+                                        }`}
+                                        disabled={loginLoading}
+                                    />
+                                    {formErrors.password && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {formErrors.password}
+                                        </p>
+                                    )}
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={loginLoading}
+                                    className="w-full bg-blue-950 text-white py-3 rounded-lg font-medium hover:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {loginLoading ? (
+                                        <div className="flex items-center justify-center">
+                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                            Signing In...
+                                        </div>
+                                    ) : (
+                                        'Sign In'
+                                    )}
+                                </button>
+                            </form>
+
+                            {/* Back Button */}
+                            <button
+                                onClick={handleBackToOptions}
+                                className="w-full mt-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                                disabled={loginLoading}
+                            >
+                                ← Back to options
+                            </button>
+                        </>
+                    )}
+
+                    {/* Signup Form */}
+                    {mode === 'signup' && (
+                        <>
+                            <div className="text-center mb-6">
+                                <div className="w-16 h-16 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <UserPlus
+                                        size={24}
+                                        className="text-white"
+                                    />
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                                    Join KhodKquiz
+                                </h2>
+                                <p className="text-gray-600">
+                                    Create your account and start learning
+                                </p>
+                            </div>
+
+                            {/* Google Login */}
+                            <div className="mb-4 relative flex justify-center items-center w-full">
+                                {isLoading && (
+                                    <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-md z-10">
+                                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-400"></div>
+                                    </div>
+                                )}
+                                <GoogleLogin
+                                    onSuccess={handleGoogleLoginSuccess}
+                                    onError={handleGoogleLoginError}
+                                    theme="outline"
+                                    size="large"
+                                    width="100%"
+                                    disabled={isLoading || loginLoading}
+                                />
+                            </div>
+
+                            {/* Divider */}
+                            <div className="flex items-center my-4">
+                                <div className="flex-1 border-t border-gray-300"></div>
+                                <span className="px-3 text-sm text-gray-500">
+                                    or
+                                </span>
+                                <div className="flex-1 border-t border-gray-300"></div>
+                            </div>
+
+                            {/* Email Form */}
+                            <form
+                                className="space-y-4"
+                                onSubmit={handleEmailSignUp}
+                            >
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        placeholder="Full name"
+                                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ${
+                                            formErrors.name
+                                                ? 'border-red-300 focus:ring-red-400'
+                                                : 'border-gray-300 focus:ring-orange-400'
+                                        }`}
+                                        disabled={loginLoading}
+                                    />
+                                    {formErrors.name && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {formErrors.name}
+                                        </p>
+                                    )}
+                                </div>
+                                <div>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        placeholder="Email address"
+                                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ${
+                                            formErrors.email
+                                                ? 'border-red-300 focus:ring-red-400'
+                                                : 'border-gray-300 focus:ring-orange-400'
+                                        }`}
+                                        disabled={loginLoading}
+                                    />
+                                    {formErrors.email && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {formErrors.email}
+                                        </p>
+                                    )}
+                                </div>
+                                <div>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleInputChange}
+                                        placeholder="Password (min. 6 characters)"
+                                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent ${
+                                            formErrors.password
+                                                ? 'border-red-300 focus:ring-red-400'
+                                                : 'border-gray-300 focus:ring-orange-400'
+                                        }`}
+                                        disabled={loginLoading}
+                                    />
+                                    {formErrors.password && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {formErrors.password}
+                                        </p>
+                                    )}
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={loginLoading}
+                                    className="w-full bg-orange-400 text-white py-3 rounded-lg font-medium hover:bg-orange-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {loginLoading ? (
+                                        <div className="flex items-center justify-center">
+                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                            Creating Account...
+                                        </div>
+                                    ) : (
+                                        'Create Account'
+                                    )}
+                                </button>
+                            </form>
+
+                            {/* Back Button */}
+                            <button
+                                onClick={handleBackToOptions}
+                                className="w-full mt-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                                disabled={loginLoading}
+                            >
+                                ← Back to options
+                            </button>
+                        </>
+                    )}
 
                     {/* Footer */}
                     <p className="text-xs text-gray-500 text-center mt-4">

@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import userRoutes from './routes/user.routes.js'
+import userRoutes from './routes/user.routes.js';
 import sequelize from './config/db/sequelize.js';
 
 dotenv.config();
@@ -24,5 +24,5 @@ try {
         console.log(`🚀 Server running at http://localhost:${PORT}`);
     });
 } catch (error) {
-    console.error("❌ Unable to connect to the database:", error);
+    console.error('❌ Unable to connect to the database:', error);
 }

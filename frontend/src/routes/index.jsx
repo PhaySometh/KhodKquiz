@@ -24,11 +24,13 @@ function AppRoutes() {
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/quiz" element={<Quiz />} />
+            <Route path="/quiz/category" element={<QuizCategory />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
-            {/* <Route path="/quizzes" element={<Quizzes />} /> */}
-            {/* <Route path="/quizzes/category" element={<Quizzes />} /> */}
-            <Route path="/teacher-registration" element={<TeacherRegistrationForm />} />
+            <Route
+                path="/teacher-registration"
+                element={<TeacherRegistrationForm />}
+            />
 
             {/* Protected Quiz Routes */}
             <Route
