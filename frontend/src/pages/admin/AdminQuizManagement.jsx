@@ -3,13 +3,13 @@ import { motion } from 'framer-motion';
 import { Search, Bell, User, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import Sidebar from '../../../components/common/TeacherSidebar.jsx';
+import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx';
 import QuizList from '../../../components/QuizList.jsx';
 import { DeleteQuizModal, AssignToClassModal, ArchiveQuizModal } from '../../../components/QuizActionModals.jsx';
 import UserNavbar from '../../../components/common/UserNavbar.jsx';
 import Footer from '../../../components/common/Footer.jsx';
 
-const EnhancedTeacherDashboard = () => {
+const AdminQuizManagement = () => {
     const navigate = useNavigate();
     
     // Modal states
@@ -127,4 +127,4 @@ const EnhancedTeacherDashboard = () => {
     );
 };
 
-export default EnhancedTeacherDashboard;
+export default AdminQuizManagement;

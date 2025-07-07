@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Sidebar from '../../../components/common/TeacherSidebar.jsx'
+import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx'
 import { PlusCircle, Trash2, MoveUp, MoveDown, Copy } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
@@ -89,13 +89,13 @@ export default function CreateQuizForm() {
         }
     }
 
-    // function moveQuestion(index, direction) {
-    //     const updated = [...questions];
-    //     const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    //     if (targetIndex < 0 || targetIndex >= updated.length) return;
-    //     [updated[index], updated[targetIndex]] = [updated[targetIndex], updated[index]];
-    //     setQuestions(updated);
-    // }
+    function moveQuestion(index, direction) {
+        const updated = [...questions];
+        const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= updated.length) return;
+        [updated[index], updated[targetIndex]] = [updated[targetIndex], updated[index]];
+        setQuestions(updated);
+    }
 
     return (
         <div className='flex h-screen bg-gray-50 overflow-hidden'>
@@ -140,8 +140,8 @@ export default function CreateQuizForm() {
                             className="border border-gray-300 p-6 rounded-lg shadow bg-white space-y-4 relative"
                         >
                         <div className="absolute right-4 top-4 flex items-center gap-2">
-                            {/* <button onClick={() => moveQuestion(index, 'up')} title="Move Up" className='hover:scale-110'><MoveUp size={18} /></button> */}
-                            {/* <button onClick={() => moveQuestion(index, 'down')} title="Move Down" className='hover:scale-110'><MoveDown size={18} /></button> */}
+                            <button onClick={() => moveQuestion(index, 'up')} title="Move Up" className='hover:scale-110'><MoveUp size={18} /></button>
+                            <button onClick={() => moveQuestion(index, 'down')} title="Move Down" className='hover:scale-110'><MoveDown size={18} /></button>
                             <button onClick={() => duplicateQuestion(index)} title="Duplicate" className='hover:scale-110'><Copy size={18} /></button>
                             <button onClick={() => removeQuestion(index)} title="Delete" className="text-red-500 hover:scale-110"><Trash2 size={18} /></button>
                         </div>
