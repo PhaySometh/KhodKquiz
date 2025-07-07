@@ -11,6 +11,10 @@ const Quiz = sequelize.define('Quiz', {
         type: DataTypes.TEXT,
         allowNull: true
     },
+    category: {
+        type: DataTypes.STRING(100),
+        allowNull: true
+    },
     createdBy: {    // Created by teacher
         type: DataTypes.INTEGER,
         references: {
@@ -19,6 +23,10 @@ const Quiz = sequelize.define('Quiz', {
         },
         allowNull: false,
         onDelete: 'CASCADE'     // To clean up quizzes if the teacher is removed
+    },
+    status: {
+        type: DataTypes.ENUM('Published', 'Archived', 'Draft'),
+        defaultValue: 'Draft',
     },
     time: {
         type: DataTypes.FLOAT,

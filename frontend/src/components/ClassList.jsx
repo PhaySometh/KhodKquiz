@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, Grid, List, Plus, ChevronDown } from 'lucide-react';
 import ClassCard from './ClassCard';
+import axios from 'axios';
+
+const BASE_URL='http://localhost:3000';
 
 const ClassList = ({ 
     onCreateClass,
@@ -24,55 +27,10 @@ const ClassList = ({
     // Mock data - replace with actual API call
     useEffect(() => {
         // Simulate API call
-        setTimeout(() => {
-            const mockClasses = [
-                {
-                    id: 1,
-                    name: "Computer Science 101",
-                    description: "Introduction to programming concepts and computer science fundamentals.",
-                    subject: "Computer Science",
-                    isActive: true,
-                    studentCount: 25,
-                    assignedQuizzes: 8,
-                    createdAt: "2024-01-15T10:00:00Z",
-                    updatedAt: "2024-01-20T14:30:00Z"
-                },
-                {
-                    id: 2,
-                    name: "Web Development Bootcamp",
-                    description: "Intensive course covering HTML, CSS, JavaScript, and modern web frameworks.",
-                    subject: "Web Development",
-                    isActive: true,
-                    studentCount: 18,
-                    assignedQuizzes: 12,
-                    createdAt: "2024-01-18T09:15:00Z",
-                    updatedAt: "2024-01-22T11:20:00Z"
-                },
-                {
-                    id: 3,
-                    name: "Advanced JavaScript",
-                    description: "Deep dive into JavaScript ES6+, async programming, and advanced concepts.",
-                    subject: "JavaScript",
-                    isActive: true,
-                    studentCount: 12,
-                    assignedQuizzes: 6,
-                    createdAt: "2024-01-10T16:45:00Z",
-                    updatedAt: "2024-01-15T08:45:00Z"
-                },
-                {
-                    id: 4,
-                    name: "Python for Beginners",
-                    description: "Learn Python programming from scratch with hands-on projects.",
-                    subject: "Python",
-                    isActive: false,
-                    studentCount: 30,
-                    assignedQuizzes: 4,
-                    createdAt: "2023-12-05T13:30:00Z",
-                    updatedAt: "2024-01-10T10:15:00Z"
-                }
-            ];
-            setClasses(mockClasses);
-            setFilteredClasses(mockClasses);
+        setTimeout(async () => {
+            const classes = await axios.get(`${BASE_URL}/api/teacher/class`);
+            setClasses(classes.data.data);
+            setFilteredClasses(classes.data.data);
             setLoading(false);
         }, 1000);
     }, []);

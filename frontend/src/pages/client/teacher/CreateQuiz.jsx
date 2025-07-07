@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import Sidebar from '../components/common/TeacherSidebar.jsx'
+import Sidebar from '../../../components/common/TeacherSidebar.jsx'
 import { PlusCircle, Trash2, MoveUp, MoveDown, Copy } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const BASE_URL = 'http://localhost:3000';
 
 export default function CreateQuizForm() {
     const [questions, setQuestions] = useState([createEmptyQuestion()]);
+    const navigate = useNavigate();
 
     // Create a new blank question
     function createEmptyQuestion() {
@@ -54,6 +57,8 @@ export default function CreateQuizForm() {
         const payload = {
             title: document.getElementById('text-input').value,
             time: Number(document.getElementById('number-input').value),
+            description: document.getElementById('description-input').value,
+            category: document.getElementById('category-input').value,
             createdBy: teacherId,
             questions: questions.map(q => {
                 const options = q.type === 'multiple-choice'
@@ -73,12 +78,12 @@ export default function CreateQuizForm() {
             })
         };
 
-        console.log(payload);
-
         try {
-            const response = await axios.post(`${BASE_URL}/api/user/quiz`, payload);
-    
-            console.log(response);
+            const response = await axios.post(`${BASE_URL}/api/teacher/class`, payload);
+            if (response.data.success) {
+                toast.success('Quiz created successfully');
+                navigate('/teacher');
+            }
         } catch (error) {
             console.log('Failed to create quiz', error);
         }
@@ -102,14 +107,28 @@ export default function CreateQuizForm() {
                 </div>
                 {/* quiz detail */}
                 <div className='p-6 max-w-5xl mx-auto'>
-                    <div className='w-full border border-gray-300 p-6 rounded-lg shadow bg-white flex justify-center items-center gap-5'>
-                        <div class="w-full">
-                            <label for="text-input" class="text-sm font-medium text-gray-900 dark:text-white">Quiz Name</label>
-                            <input type="text" id="text-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="Enter your quiz name" required />
+                    <div className='w-full border border-gray-300 p-6 rounded-lg shadow bg-white flex flex-col justify-center items-center gap-5'>
+                        <div className='flex justify-center items-center w-full gap-5'>
+                            <div class="w-full">
+                                <label for="text-input" class="text-sm font-medium text-gray-900 dark:text-white">Quiz Name</label>
+                                <input type="text" id="text-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="Enter your quiz name" required />
+                            </div>
+                            <div class="w-full">
+                                <label for="number-input" class="text-sm font-medium text-gray-900 dark:text-white">Time Per Question</label>
+                                <input type="number" id="number-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="15s" required />
+                            </div>
                         </div>
-                        <div class="w-full">
-                            <label for="number-input" class="text-sm font-medium text-gray-900 dark:text-white">Time Per Question</label>
-                            <input type="number" id="number-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="15s" required />
+                        <div className='w-full'>
+                            <div>
+                                <label for="category-input" class="text-sm font-medium text-gray-900 dark:text-white">Category</label>
+                                <input type="text" id="category-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="Quiz category" required />
+                            </div>
+                        </div>
+                        <div className='w-full'>
+                            <div>
+                                <label for="description-input" class="text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                                <textarea type="text" id="description-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="Description or Instruction" required />
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import userRoutes from './routes/user.routes.js';
+import teacherRoutes from './routes/teacher.routes.js';
 import sequelize from './config/db/sequelize.js';
 
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(helmet());
 app.use(morgan('dev'));
 
 app.use('/api/user', userRoutes);
+app.use('/api/teacher', teacherRoutes);
 
 try {
     // await sequelize.sync({ force: true });
