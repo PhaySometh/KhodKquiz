@@ -12,7 +12,6 @@ import {
     Clock,
     BarChart2,
 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
 import AuthPrompt from '../components/AuthPrompt';
 
 // Mock Data
@@ -85,8 +84,6 @@ const answerStyles = [
 const QUESTION_TIME_LIMIT = 25.0; // Seconds
 
 export default function Quiz() {
-    const { isAuthenticated } = useAuth();
-
     const [gameState, setGameState] = useState('intro'); // intro, playing, feedback, finished
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [score, setScore] = useState(0);

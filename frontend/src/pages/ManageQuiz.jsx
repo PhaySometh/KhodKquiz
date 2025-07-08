@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Sidebar from '../components/common/TeacherSidebar.jsx'
+import Sidebar from '../components/client/teacher/TeacherSidebar.jsx'
 import { PlusCircle, Trash2, MoveUp, MoveDown, Copy } from 'lucide-react';
 
 export default function ManageQuizForm() {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import NavBarDashBoard from "../components/common/TeacherSidebar";
-import UserNavbar from "../components/common/UserNavbar";
+import UserNavbar from "../../../components/common/UserNavbar";
 import { Code, Languages, Brain, Search, ChevronRight, BookOpen, Database, Cpu, Globe, FlaskConical, ScrollText, AlertCircle, Bell, User, Settings } from 'lucide-react';
+import StudentSidebar from '../../../components/client/student/StudentSidebar';
 
 const categories = [
     { name: 'JavaScript', icon: <Code />, questions: 125, color: 'bg-yellow-100 text-yellow-600', progress: 65 },
@@ -53,7 +53,7 @@ export default function UserDashBoard() {
 
     return (
         <section className="flex h-screen bg-gray-50 overflow-hidden">
-            <NavBarDashBoard />
+            <StudentSidebar />
 
             <div className="w-full overflow-y-auto">
                 {/* Header */}

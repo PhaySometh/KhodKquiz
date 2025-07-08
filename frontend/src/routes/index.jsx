@@ -1,15 +1,15 @@
 // Example in src/routes/index.jsx
 import { Routes, Route } from 'react-router-dom';
-import ProtectedRoute from '../components/ProtectedRoute';
-import Leaderboard from '../pages/Leaderboard';
-import Login from '../pages/Login';
-import Quiz from '../pages/Quiz';
-import SignUp from '../pages/SignUp';
-import UserDashBoard from '../pages/UserDashBoard';
+import ProtectedRoute from '../components/ProtectedRoute.jsx';
+import Leaderboard from '../pages/Leaderboard.jsx';
+import Login from '../pages/Login.jsx';
+import Quiz from '../pages/Quiz.jsx';
+import SignUp from '../pages/SignUp.jsx';
+import UserDashBoard from '../pages/client/student/UserDashBoard.jsx';
 import User from '../pages/User.jsx';
-import TeacherDashboard from '../pages/TeacherDashboard.jsx';
-import QuizManagement from '../pages/client/teacher/QuizManagement.jsx';
-import ClassManagement from '../pages/client/teacher/ClassManagement.jsx';
+import TeacherDashboard from '../pages/client/teacher/TeacherDashboard.jsx';
+import QuizManagement from '../pages/client/teacher/TeacherQuizManagement.jsx';
+import ClassManagement from '../pages/client/teacher/TeacherClassManagement.jsx';
 import TeacherRegistrationForm from '../pages/TeacherRegistrationForm.jsx';
 import CreateQuiz from '../pages/client/teacher/CreateQuiz.jsx';
 import ManageQuizForm from '../pages/ManageQuiz.jsx';
@@ -18,7 +18,12 @@ import QuizCategory from '../pages/QuizCategory.jsx';
 import QuizProgress from '../pages/QuizProgress.jsx';
 import QuizRecent from '../pages/QuizRecent.jsx';
 import Home from '../pages/home.jsx';
+import AdminLogin from '../pages/admin/AdminLogin.jsx';
 import CreateClass from '../pages/client/teacher/CreateClass.jsx';
+
+import AdminQuizManagement from '../pages/admin/AdminQuizManagement.jsx';
+import AdminDashboard from '../pages/admin/AdminDashboard.jsx';
+import AdminCreateQuiz from '../pages/admin/AdminCreateQuiz.jsx';
 
 function AppRoutes() {
     return (
@@ -30,6 +35,8 @@ function AppRoutes() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
             <Route path="/teacher/create-class" element={<CreateClass />} />
+
+            <Route path='/admin/login' element={<AdminLogin />} />
             <Route
                 path="/teacher-registration"
                 element={<TeacherRegistrationForm />}
@@ -63,7 +70,7 @@ function AppRoutes() {
                 }
             />
             <Route
-                path="/dashboard"
+                path="/student"
                 element={
                     <ProtectedRoute>
                         <UserDashBoard />

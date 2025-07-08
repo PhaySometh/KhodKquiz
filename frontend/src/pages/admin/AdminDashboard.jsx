@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Bell, User, Settings, ChevronRight } from 'lucide-react';
-import Sidebar from '../components/common/TeacherSidebar.jsx'
+import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx'
 import { useNavigate } from 'react-router-dom';
-import UserNavbar from '../components/common/UserNavbar';
+import UserNavbar from '../../../components/common/UserNavbar.jsx';
 
 const TeacherDashboard = () => {
     const navigate = useNavigate();

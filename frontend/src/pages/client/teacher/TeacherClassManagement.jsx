@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import Sidebar from '../../../components/common/TeacherSidebar.jsx';
+import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx';
 import ClassList from '../../../components/ClassList.jsx';
 import { DeleteClassModal, StudentManagementModal, EditClassModal } from '../../../components/ClassActionModals.jsx';
 import UserNavbar from '../../../components/common/UserNavbar.jsx';
