@@ -27,7 +27,7 @@ export default function TeacherSidebar() {
                     <span>My Quizzes</span>
                 </Link>
                 <Link
-                    to="/user"
+                    to="/profile"
                     className="flex items-center gap-3 px-4 py-3 mt-auto rounded-lg hover:bg-blue-800 transition-colors"
                 >
                     <Settings size={20} />

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Bell, User, Settings, ChevronRight } from 'lucide-react';
-import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx'
 import { useNavigate } from 'react-router-dom';
-import UserNavbar from '../../../components/common/UserNavbar.jsx';
+import AdminSidebar from '../../components/admin/AdminSidebar.jsx';
+import AdminNavbar from '../../components/admin/AdminNavbar.jsx';
 
 const TeacherDashboard = () => {
     const navigate = useNavigate();
@@ -30,9 +30,9 @@ const TeacherDashboard = () => {
     return (
         <>
             <div className='flex h-screen bg-gray-50 overflow-hidden'>
-                <Sidebar />
+                <AdminSidebar />
                 <div className='w-full overflow-y-auto'>
-                    <UserNavbar />
+                    <AdminNavbar />
                     {/* Dashboard card */}
                     <div className='p-6 h-full w-full'>
                         {/* Hero Section */}

@@ -40,7 +40,7 @@ export default function UserProfile() {
     };
 
     const handleUserProfileClick = () => {
-        navigate('/user');
+        navigate('/profile');
     };
 
     if (!isAuthenticated) {

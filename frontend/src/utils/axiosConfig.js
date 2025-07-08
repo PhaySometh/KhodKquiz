@@ -9,6 +9,7 @@ const apiClient = axios.create({
 });
 
 // Request interceptor to add auth token
+// Automatically attaches the saved JWT token (userToken) from localStorage in the Authorization header of every request
 apiClient.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('userToken');
@@ -23,6 +24,7 @@ apiClient.interceptors.request.use(
 );
 
 // Response interceptor to handle token expiration
+// Intercepts responses globally to detect when a token expires (HTTP 401), clear it from localStorage, show a toast notification, and redirect the user to /login.
 apiClient.interceptors.response.use(
     (response) => {
         return response;
