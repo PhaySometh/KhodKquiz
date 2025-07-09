@@ -13,7 +13,7 @@
  * - Managing platform settings and user accounts.
  * - Performing administrative actions and oversight.
  * 
- * @author 
+ * @author KhodKquiz Team
  * @version 1.0.0
  */
 

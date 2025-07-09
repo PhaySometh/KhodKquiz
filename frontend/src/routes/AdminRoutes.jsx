@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import ProtectedRoute from '../components/ProtectedRoute.jsx';
+import ProtectedRoute from '../components/auth/ProtectedRoute.jsx';
 import AdminDashboard from '../pages/admin/AdminDashboard.jsx';
 import AdminQuizManagement from '../pages/admin/AdminQuizManagement.jsx';
 import AdminCreateQuiz from '../pages/admin/AdminCreateQuiz.jsx';

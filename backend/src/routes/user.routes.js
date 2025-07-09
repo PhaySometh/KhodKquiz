@@ -6,7 +6,7 @@ import {
     updateUserProfile,
     registerUser,
     loginUser
-} from '../controllers/user.controller.js';
+} from '../controllers/client/user.controller.js';
 import { authenticate, isAdmin } from '../middleware/auth.middleware.js';
 import { 
     validateRegistration, 

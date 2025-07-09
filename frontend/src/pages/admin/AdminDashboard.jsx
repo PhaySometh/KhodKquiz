@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import AdminSidebar from '../../components/admin/AdminSidebar.jsx';
 import AdminNavbar from '../../components/admin/AdminNavbar.jsx';
 
-const TeacherDashboard = () => {
+const AdminDashboard = () => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     
@@ -117,4 +117,4 @@ const TeacherDashboard = () => {
     )
 };
 
-export default TeacherDashboard;
+export default AdminDashboard;

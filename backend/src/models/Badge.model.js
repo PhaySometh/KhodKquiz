@@ -14,7 +14,7 @@
  * - Displaying earned badges on user profiles.
  * - Awarding badges based on user achievements.
  * 
- * @author 
+ * @author KhodKquiz Team
  * @version 1.0.0
  */
 

@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import ProtectedRoute from '../components/ProtectedRoute.jsx';
+import ProtectedRoute from '../components/auth/ProtectedRoute.jsx';
 import StudentDashBoard from '../pages/client/student/StudentDashBoard.jsx';
 
 function StudentRoutes() {

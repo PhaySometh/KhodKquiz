@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import ProtectedRoute from '../components/ProtectedRoute.jsx';
+import ProtectedRoute from '../components/auth/ProtectedRoute.jsx';
 import TeacherDashboard from '../pages/client/teacher/TeacherDashboard.jsx';
 import TeacherClassManagement from '../pages/client/teacher/TeacherClassManagement.jsx';
 import TeacherQuizManagement from '../pages/client/teacher/TeacherQuizManagement.jsx';

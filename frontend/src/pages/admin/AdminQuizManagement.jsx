@@ -19,7 +19,7 @@ const AdminQuizManagement = () => {
 
     // Quiz action handlers
     const handleCreateQuiz = () => {
-        navigate('/teacher/createquiz');
+        navigate('/admin/create-quiz');
     };
 
     const handleEditQuiz = (quiz) => {
