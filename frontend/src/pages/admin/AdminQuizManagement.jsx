@@ -3,11 +3,11 @@ import { motion } from 'framer-motion';
 import { Search, Bell, User, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx';
-import QuizList from '../../../components/QuizList.jsx';
-import { DeleteQuizModal, AssignToClassModal, ArchiveQuizModal } from '../../../components/QuizActionModals.jsx';
-import UserNavbar from '../../../components/common/UserNavbar.jsx';
-import Footer from '../../../components/common/Footer.jsx';
+import AdminSidebar from '../../components/admin/AdminSidebar.jsx';
+import QuizList from '../../components/QuizList.jsx';
+import { DeleteQuizModal, AssignToClassModal, ArchiveQuizModal } from '../../components/QuizActionModals.jsx';
+import AdminNavbar from '../../components/admin/AdminNavbar.jsx';
+import Footer from '../../components/common/Footer.jsx';
 
 const AdminQuizManagement = () => {
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ const AdminQuizManagement = () => {
 
     // Quiz action handlers
     const handleCreateQuiz = () => {
-        navigate('/teacher/createquiz');
+        navigate('/admin/create-quiz');
     };
 
     const handleEditQuiz = (quiz) => {
@@ -67,9 +67,9 @@ const AdminQuizManagement = () => {
     return (
         <>
             <div className='flex h-screen bg-gray-50 overflow-hidden'>
-                <Sidebar />
+                <AdminSidebar />
                 <div className='w-full overflow-y-auto'>
-                    <UserNavbar />
+                    <AdminNavbar />
 
                     {/* Main Content */}
                     <div className='p-6 h-full w-full'>

@@ -13,7 +13,7 @@ export default function StudentSidebar() {
             </div>
             <nav className="flex flex-col p-4">
                 <Link
-                    to="/dashboard"
+                    to="/"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors"
                 >
                     <LayoutDashboard size={20} />
@@ -41,11 +41,11 @@ export default function StudentSidebar() {
                     <span>My Quizzes</span>
                 </Link>
                 <Link
-                    to="/settings"
+                    to="/profile"
                     className="flex items-center gap-3 px-4 py-3 mt-auto rounded-lg hover:bg-blue-800 transition-colors"
                 >
                     <Settings size={20} />
-                    <span>Settings</span>
+                    <span>Profile</span>
                 </Link>
             </nav>
         </aside>

@@ -1,10 +1,16 @@
+// Import required modules
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import morgan from 'morgan';
+
+// Import routes
 import userRoutes from './routes/user.routes.js';
 import teacherRoutes from './routes/teacher.routes.js';
+import adminRoutes from './routes/admin.routes.js';
+
+// Import database configuration
 import sequelize from './config/db/sequelize.js';
 
 dotenv.config();
@@ -19,6 +25,7 @@ app.use(morgan('dev'));
 
 app.use('/api/user', userRoutes);
 app.use('/api/teacher', teacherRoutes);
+app.use('/api/admin', adminRoutes);
 
 try {
     // await sequelize.sync({ force: true });

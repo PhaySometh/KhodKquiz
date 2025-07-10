@@ -23,7 +23,7 @@ const recentActivities = [
     { id: 4, category: 'Data Science', score: null, date: 'In progress', status: 'active' },
 ];
 
-export default function UserDashBoard() {
+export default function StudentDashBoard() {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('categories');
     const [notifications, setNotifications] = useState([]);
@@ -52,7 +52,7 @@ export default function UserDashBoard() {
     const unreadNotifications = notifications.filter(n => !n.read).length;
 
     return (
-        <section className="flex h-screen bg-gray-50 overflow-hidden">
+        <div className="flex h-screen bg-gray-50 overflow-hidden">
             <StudentSidebar />
 
             <div className="w-full overflow-y-auto">
@@ -302,6 +302,6 @@ export default function UserDashBoard() {
                     </AnimatePresence>
                 </main>
             </div>
-        </section>
+        </div>
     );
-}
+};

@@ -15,7 +15,7 @@
  * - Organizing and managing classes in the educational platform.
  * - Assigning teachers and tracking class status.
  * 
- * @author
+ * @author KhodKquiz Team
  * @version 1.0.0
  */
 
