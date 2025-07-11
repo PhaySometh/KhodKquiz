@@ -42,7 +42,8 @@ export default function AdminProfile() {
     return (
         <>
             <div className="hidden lg:block text-sm text-blue-950 font-medium">
-                Welcome, {user?.name?.split(' ')[0] || 'User'}!
+                Welcome, User!
+                {/* Welcome, {user?.name?.split(' ')[0] || 'User'}! */}
             </div>
 
             {/* Avatar Dropdown */}
@@ -55,7 +56,7 @@ export default function AdminProfile() {
                     <div className="w-10 rounded-full">
                         <img
                             alt="User Avatar"
-                            src={user?.picture || hourPNG}
+                            src={hourPNG}
                             className="rounded-full"
                         />
                     </div>

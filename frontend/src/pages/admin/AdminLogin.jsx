@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+const BASE_URL = 'http://localhost:3000';
 
 const AdminLogin = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -14,10 +19,17 @@ const AdminLogin = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add your login logic here
-    console.log('Login submitted:', formData);
+    try {
+      const response = await axios.post(`${BASE_URL}/api/admin/login`, formData);
+      if (response.data.success) {
+        localStorage.setItem('adminToken', response.data.data);
+        navigate('/admin');
+      }
+    } catch (error) {
+      console.log('Failed to login', error);
+    }
   };
 
   return (

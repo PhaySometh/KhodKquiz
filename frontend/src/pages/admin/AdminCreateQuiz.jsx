@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx'
+import AdminSidebar from '../../components/admin/AdminSidebar.jsx';
 import { PlusCircle, Trash2, MoveUp, MoveDown, Copy } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
@@ -52,14 +52,14 @@ export default function AdminCreateQuiz() {
     }
 
     async function handleSubmit() {
-        const userToken = localStorage.getItem('userToken');
-        const teacherId = jwtDecode(userToken).id;
+        const adminToken = localStorage.getItem('adminToken');
+        const adminId = jwtDecode(adminToken).id;
         const payload = {
             title: document.getElementById('text-input').value,
             time: Number(document.getElementById('number-input').value),
             description: document.getElementById('description-input').value,
             category: document.getElementById('category-input').value,
-            createdBy: teacherId,
+            createdBy: adminId,
             questions: questions.map(q => {
                 const options = q.type === 'multiple-choice'
                     ? q.options.map((opt, i) => ({
@@ -79,10 +79,10 @@ export default function AdminCreateQuiz() {
         };
 
         try {
-            const response = await axios.post(`${BASE_URL}/api/teacher/class`, payload);
+            const response = await axios.post(`${BASE_URL}/api/admin/quiz`, payload);
             if (response.data.success) {
                 toast.success('Quiz created successfully');
-                navigate('/teacher');
+                navigate('/admin');
             }
         } catch (error) {
             console.log('Failed to create quiz', error);
@@ -99,7 +99,7 @@ export default function AdminCreateQuiz() {
 
     return (
         <div className='flex h-screen bg-gray-50 overflow-hidden'>
-            <Sidebar />
+            <AdminSidebar />
             <div className='w-full overflow-y-auto'>
                 {/* Header */}
                 <div className="relative z-10 px-6 flex justify-between items-center w-full h-20 bg-white border-b border-gray-200">

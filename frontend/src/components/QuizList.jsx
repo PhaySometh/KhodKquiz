@@ -23,18 +23,21 @@ const QuizList = ({
     const [showFilters, setShowFilters] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    // Mock data - replace with actual API call
+    // Fetch quizzes based on admin token
     useEffect(() => {
-        // Simulate API call
         setTimeout(async () => {
-            const quizzes = await axios.get(`${BASE_URL}/api/teacher`);
-
-            console.log(quizzes);
+            const adminToken = localStorage.getItem('adminToken');
+            let quizzes;
+            if (adminToken) {
+                quizzes = await axios.get(`${BASE_URL}/api/admin/quiz`);
+            } else {
+                quizzes = await axios.get(`${BASE_URL}/api/teacher`);
+            }
 
             setQuizzes(quizzes.data.data);
             setFilteredQuizzes(quizzes.data.data);
             setLoading(false);
-        }, 1000);
+        }, 300);
     }, []);
 
     // Filter and search logic
