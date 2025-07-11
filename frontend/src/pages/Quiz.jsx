@@ -291,7 +291,7 @@ export default function Quiz() {
                         className="bg-gray-800/70 backdrop-blur-sm border border-gray-700 rounded-xl p-6 w-full max-w-2xl shadow-xl"
                     >
                         <h2 className="text-2xl md:text-3xl font-bold text-center">
-                            {currentQuestion.questionText}
+                            {currentQuestion.question}
                         </h2>
                     </motion.div>
                 </div>
@@ -316,7 +316,7 @@ export default function Quiz() {
                                 {answerStyles[index].icon}
                             </span>
                             <span className="text-left">
-                                {answer.answerText}
+                                {answer.text}
                             </span>
                         </motion.button>
                     ))}
@@ -327,7 +327,7 @@ export default function Quiz() {
 
     const renderFeedbackScreen = () => {
         const currentQuestion = quizQuestions[currentQuestionIndex];
-        const correctAnswerIndex = currentQuestion.answerOptions.findIndex(
+        const correctAnswerIndex = currentQuestion.options.findIndex(
             (opt) => opt.isCorrect
         );
 
@@ -375,11 +375,9 @@ export default function Quiz() {
                         <p className="text-xl text-center">
                             Correct answer:{' '}
                             <span className="font-bold">
-                                {
-                                    currentQuestion.answerOptions[
-                                        correctAnswerIndex
-                                    ].answerText
-                                }
+                                {correctAnswerIndex !== -1
+                                    ? currentQuestion.options[correctAnswerIndex].text
+                                    : 'No correct answer set'}
                             </span>
                         </p>
                     </motion.div>
