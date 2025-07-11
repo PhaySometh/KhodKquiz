@@ -64,7 +64,26 @@ const SystemQuiz = sequelize.define('SystemQuiz', {
             model: 'admins',
             key: 'id'
         },
+        allowNull: false,
         comment: 'ID of the admin who created this system quiz'
+    },
+
+    /**
+     * Status - Indicates whether the quiz is published, archived, or still in draft.
+     */
+    status: {
+        type: DataTypes.ENUM('Published', 'Archived', 'Draft'),
+        defaultValue: 'Published',
+        comment: 'Current status of the quiz (e.g., Draft, Published, Archived)'
+    },
+
+    /**
+     * Time - Duration in minutes allowed to complete the quiz.
+     */
+    time: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        comment: 'Time limit (in minutes) for completing the quiz'
     },
 
     /**
@@ -73,6 +92,7 @@ const SystemQuiz = sequelize.define('SystemQuiz', {
     createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
+        allowNull: false,
         comment: 'Date/time when the quiz was created'
     }
 }, {

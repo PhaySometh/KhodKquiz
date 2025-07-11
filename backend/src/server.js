@@ -9,6 +9,7 @@ import morgan from 'morgan';
 import userRoutes from './routes/user.routes.js';
 import teacherRoutes from './routes/teacher.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import studentRoutes from './routes/student.routes.js';
 
 // Import database configuration
 import sequelize from './config/db/sequelize.js';
@@ -26,6 +27,7 @@ app.use(morgan('dev'));
 app.use('/api/user', userRoutes);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/student', studentRoutes);
 
 try {
     // await sequelize.sync({ force: true });

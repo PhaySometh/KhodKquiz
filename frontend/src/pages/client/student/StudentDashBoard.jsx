@@ -4,6 +4,8 @@ import UserNavbar from "../../../components/common/UserNavbar";
 import { Code, Languages, Brain, Search, ChevronRight, BookOpen, Database, Cpu, Globe, FlaskConical, ScrollText, AlertCircle, Bell, User, Settings } from 'lucide-react';
 import StudentSidebar from '../../../components/client/student/StudentSidebar';
 
+import { useNavigate } from 'react-router-dom';
+
 const categories = [
     { name: 'JavaScript', icon: <Code />, questions: 125, color: 'bg-yellow-100 text-yellow-600', progress: 65 },
     { name: 'Python', icon: <BookOpen />, questions: 89, color: 'bg-blue-100 text-blue-600', progress: 42 },
@@ -26,30 +28,11 @@ const recentActivities = [
 export default function StudentDashBoard() {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('categories');
-    const [notifications, setNotifications] = useState([]);
-    const [showNotifications, setShowNotifications] = useState(false);
-    const [userMenuOpen, setUserMenuOpen] = useState(false);
-
-    // Mock notifications
-    useEffect(() => {
-        setNotifications([
-            { id: 1, text: 'New JavaScript quiz available!', time: '10 min ago', read: false },
-            { id: 2, text: 'You earned the "Quick Learner" badge', time: '2 hours ago', read: true },
-            { id: 3, text: 'Weekly progress report is ready', time: '1 day ago', read: true },
-        ]);
-    }, []);
+    const navigate = useNavigate();
 
     const filteredCategories = categories.filter(category =>
         category.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-    const markNotificationAsRead = (id) => {
-        setNotifications(notifications.map(n => 
-            n.id === id ? {...n, read: true} : n
-        ));
-    };
-
-    const unreadNotifications = notifications.filter(n => !n.read).length;
 
     return (
         <div className="flex h-screen bg-gray-50 overflow-hidden">
@@ -58,43 +41,6 @@ export default function StudentDashBoard() {
             <div className="w-full overflow-y-auto">
                 {/* Header */}
                 <UserNavbar />
-
-                    {/* Notifications dropdown */}
-                    {showNotifications && (
-                        <div>
-                            <div className="p-3 border-b border-gray-200 font-medium text-gray-700">
-                                Notifications
-                            </div>
-                            <div className="max-h-80 overflow-y-auto">
-                                {notifications.length > 0 ? (
-                                    notifications.map(notification => (
-                                        <div 
-                                            key={notification.id} 
-                                            className={`p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer ${!notification.read ? 'bg-blue-50' : ''}`}
-                                            onClick={() => markNotificationAsRead(notification.id)}
-                                        >
-                                            <div className="flex justify-between items-start">
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium">{notification.text}</p>
-                                                    <p className="text-xs text-gray-500">{notification.time}</p>
-                                                </div>
-                                                {!notification.read && (
-                                                    <span className="h-2 w-2 bg-blue-500 rounded-full"></span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="p-4 text-center text-gray-500 text-sm">
-                                        No new notifications
-                                    </div>
-                                )}
-                            </div>
-                            <div className="p-2 text-center text-sm text-blue-600 hover:bg-gray-50 cursor-pointer border-t border-gray-200">
-                                View all notifications
-                            </div>
-                        </div>
-                    )}
 
                 <main className="p-6">
                     {/* Hero Section */}
@@ -192,7 +138,8 @@ export default function StudentDashBoard() {
                                                 </div>
                                             </div>
                                             
-                                            <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm">
+                                            <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm"
+                                                onClick={() => navigate(`/quiz/1`)}>
                                                 Start Quiz
                                             </button>
                                         </motion.div>
