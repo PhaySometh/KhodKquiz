@@ -2,8 +2,7 @@ import React from 'react';
 import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
-// TODO: Add requiredRole
-const ProtectedRoute = ({ redirectTo = '/login' }) => {
+const ProtectedRoute = ({ requiredRole, redirectTo = '/login' }) => {
     const { isAuthenticated, loading } = useAuth();
     const location = useLocation();
 
@@ -22,6 +21,10 @@ const ProtectedRoute = ({ redirectTo = '/login' }) => {
     if (!isAuthenticated) {
         // Save the attempted location for redirect after login
         return <Navigate to={redirectTo} state={{ from: location }} replace />;
+    }
+
+    if (requiredRole && user?.role !== requiredRole) {
+        return <Navigate to={'/unauthorized'} replace />;
     }
 
     return <Outlet />;

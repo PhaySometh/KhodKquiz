@@ -13,61 +13,11 @@ import {
     BarChart2,
 } from 'lucide-react';
 import AuthPrompt from '../components/AuthPrompt';
+import { useParams } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
 
-// Mock Data
-const quizQuestions = [
-    {
-        questionText:
-            'In CSS, which property is used to change the text color of an element?',
-        answerOptions: [
-            { answerText: 'font-color', isCorrect: false },
-            { answerText: 'text-color', isCorrect: false },
-            { answerText: 'color', isCorrect: true },
-            { answerText: 'font-style', isCorrect: false },
-        ],
-    },
-    {
-        questionText:
-            'What is the correct syntax for referring to an external script called `app.js`?',
-        answerOptions: [
-            { answerText: '<script href="app.js">', isCorrect: false },
-            { answerText: '<script src="app.js">', isCorrect: true },
-            { answerText: '<script name="app.js">', isCorrect: false },
-            { answerText: '<script file="app.js">', isCorrect: false },
-        ],
-    },
-    {
-        questionText: 'How do you write "Hello World" in an alert box?',
-        answerOptions: [
-            { answerText: 'msg("Hello World");', isCorrect: false },
-            { answerText: 'alertBox("Hello World");', isCorrect: false },
-            { answerText: 'msgBox("Hello World");', isCorrect: false },
-            { answerText: 'alert("Hello World");', isCorrect: true },
-        ],
-    },
-    {
-        questionText:
-            'Which HTML attribute specifies an alternate text for an image?',
-        answerOptions: [
-            { answerText: 'src', isCorrect: false },
-            { answerText: 'title', isCorrect: false },
-            { answerText: 'alt', isCorrect: true },
-            { answerText: 'href', isCorrect: false },
-        ],
-    },
-    {
-        questionText: 'What does the "this" keyword refer to in JavaScript?',
-        answerOptions: [
-            { answerText: 'The function itself', isCorrect: false },
-            { answerText: 'The parent function', isCorrect: false },
-            {
-                answerText: 'The object that owns the function',
-                isCorrect: true,
-            },
-            { answerText: 'The global window object', isCorrect: false },
-        ],
-    },
-];
+const BASE_URL = 'http://localhost:3000';
 
 // Button Styles
 const answerStyles = [
@@ -81,9 +31,10 @@ const answerStyles = [
     { bg: 'bg-green-500', hoverBg: 'hover:bg-green-600', icon: <Circle /> },
 ];
 
-const QUESTION_TIME_LIMIT = 25.0; // Seconds
+const QUESTION_TIME_LIMIT = 25.0;
 
 export default function Quiz() {
+    const { id } = useParams();
     const [gameState, setGameState] = useState('intro'); // intro, playing, feedback, finished
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [score, setScore] = useState(0);
@@ -95,10 +46,27 @@ export default function Quiz() {
     const [showAuthPrompt, setShowAuthPrompt] = useState(false);
     const timerRef = useRef(null);
 
+    const { isAuthenticated } = useAuth();
+
+    const [quizQuestions, setQuizQuestions] = useState([]);
+
+    useEffect(() => {
+        const fetchQuiz = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/api/student/quiz/1`);
+                setQuizQuestions(response.data.data);
+            } catch (error) {
+                console.error('Error fetching quiz:', error);
+            }
+        };
+
+        fetchQuiz();
+    }, [id]);
+
     // Reset timer
     useEffect(() => {
         if (gameState === 'playing') {
-            setTimeRemaining(25.0);
+            setTimeRemaining(QUESTION_TIME_LIMIT);
             clearInterval(timerRef.current);
 
             const TICK_RATE = 10; // ms (update every 10 milliseconds)
@@ -323,14 +291,14 @@ export default function Quiz() {
                         className="bg-gray-800/70 backdrop-blur-sm border border-gray-700 rounded-xl p-6 w-full max-w-2xl shadow-xl"
                     >
                         <h2 className="text-2xl md:text-3xl font-bold text-center">
-                            {currentQuestion.questionText}
+                            {currentQuestion.question}
                         </h2>
                     </motion.div>
                 </div>
 
                 {/* Answer Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 max-w-4xl mx-auto w-full">
-                    {currentQuestion.answerOptions.map((answer, index) => (
+                    {currentQuestion.options.map((answer, index) => (
                         <motion.button
                             key={index}
                             initial={{ scale: 0.5, opacity: 0 }}
@@ -348,7 +316,7 @@ export default function Quiz() {
                                 {answerStyles[index].icon}
                             </span>
                             <span className="text-left">
-                                {answer.answerText}
+                                {answer.text}
                             </span>
                         </motion.button>
                     ))}
@@ -359,7 +327,7 @@ export default function Quiz() {
 
     const renderFeedbackScreen = () => {
         const currentQuestion = quizQuestions[currentQuestionIndex];
-        const correctAnswerIndex = currentQuestion.answerOptions.findIndex(
+        const correctAnswerIndex = currentQuestion.options.findIndex(
             (opt) => opt.isCorrect
         );
 
@@ -407,11 +375,9 @@ export default function Quiz() {
                         <p className="text-xl text-center">
                             Correct answer:{' '}
                             <span className="font-bold">
-                                {
-                                    currentQuestion.answerOptions[
-                                        correctAnswerIndex
-                                    ].answerText
-                                }
+                                {correctAnswerIndex !== -1
+                                    ? currentQuestion.options[correctAnswerIndex].text
+                                    : 'No correct answer set'}
                             </span>
                         </p>
                     </motion.div>
