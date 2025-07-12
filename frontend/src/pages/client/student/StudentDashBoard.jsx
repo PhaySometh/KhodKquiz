@@ -3,20 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import UserNavbar from "../../../components/common/UserNavbar";
 import { Code, Languages, Brain, Search, ChevronRight, BookOpen, Database, Cpu, Globe, FlaskConical, ScrollText, AlertCircle, Bell, User, Settings } from 'lucide-react';
 import StudentSidebar from '../../../components/client/student/StudentSidebar';
+import axios from 'axios';
 
-import { useNavigate } from 'react-router-dom';
-
-const categories = [
-    { name: 'JavaScript', icon: <Code />, questions: 125, color: 'bg-yellow-100 text-yellow-600', progress: 65 },
-    { name: 'Python', icon: <BookOpen />, questions: 89, color: 'bg-blue-100 text-blue-600', progress: 42 },
-    { name: 'C++', icon: <Cpu />, questions: 76, color: 'bg-purple-100 text-purple-600', progress: 28 },
-    { name: 'Web Development', icon: <Globe />, questions: 112, color: 'bg-green-100 text-green-600', progress: 83 },
-    { name: 'Data Science', icon: <Database />, questions: 54, color: 'bg-red-100 text-red-600', progress: 37 },
-    { name: 'General Knowledge', icon: <Brain />, questions: 210, color: 'bg-indigo-100 text-indigo-600', progress: 91 },
-    { name: 'Language Translation', icon: <Languages />, questions: 67, color: 'bg-pink-100 text-pink-600', progress: 19 },
-    { name: 'Science', icon: <FlaskConical />, questions: 98, color: 'bg-cyan-100 text-cyan-600', progress: 56 },
-    { name: 'History', icon: <ScrollText />, questions: 45, color: 'bg-amber-100 text-amber-600', progress: 32 },
-];
+import { Link, useNavigate } from 'react-router-dom';
 
 const recentActivities = [
     { id: 1, category: 'JavaScript', score: 85, date: '2 hours ago', status: 'completed' },
@@ -25,10 +14,28 @@ const recentActivities = [
     { id: 4, category: 'Data Science', score: null, date: 'In progress', status: 'active' },
 ];
 
+const BASE_URL = 'http://localhost:3000';
+
 export default function StudentDashBoard() {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('categories');
     const navigate = useNavigate();
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/api/student/categories`);
+                if (response.data.success) {
+                    setCategories(response.data.data);
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchCategories();
+    });
 
     const filteredCategories = categories.filter(category =>
         category.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -116,16 +123,17 @@ export default function StudentDashBoard() {
                                             className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100"
                                         >
                                             <div className="flex items-center justify-between mb-4">
-                                                <div className={`${category.color} p-3 rounded-full`}>
+                                                {/* <div className={`${category.color} p-3 rounded-full`}>
                                                     {category.icon}
-                                                </div>
-                                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                                </div> */}
+                                                {/* <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
                                                     {category.questions} Questions
-                                                </span>
+                                                </span> */}
                                             </div>
                                             <h5 className="text-lg font-bold text-blue-950 mb-3">{category.name}</h5>
+                                            <p className="text-sm text-gray-500 mb-4">{category.description}</p>
                                             
-                                            <div className="mb-4">
+                                            {/* <div className="mb-4">
                                                 <div className="flex justify-between text-xs text-gray-500 mb-1">
                                                     <span>Progress</span>
                                                     <span>{category.progress}%</span>
@@ -136,12 +144,11 @@ export default function StudentDashBoard() {
                                                         style={{ width: `${category.progress}%` }}
                                                     ></div>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             
-                                            <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm"
-                                                onClick={() => navigate(`/quiz/1`)}>
-                                                Start Quiz
-                                            </button>
+                                            <Link to={`/category/${category.id}`} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm" >
+                                                View Quizzes
+                                            </Link>
                                         </motion.div>
                                     ))}
                                 </div>

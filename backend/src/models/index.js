@@ -14,6 +14,7 @@ import SystemAnswerOption from "./SystemAnswerOption.model.js";
 import SystemQuestion from './SystemQuestion.model.js';
 import SystemQuizResult from "./SystemQuizResult.model.js";
 import SystemQuiz from './SystemQuiz.model.js';
+import SystemCategory from './SystemCategory.model.js';
 
 // A user can earn multiple badges and A badge can be earned by multiple users.
 User.belongsToMany(Badge, { through: UserBadge, foreignKey: 'userId', otherKey: 'badgeId' });
@@ -79,9 +80,12 @@ SystemAnswerOption.belongsTo(SystemQuestion, { foreignKey: 'systemQuestionId' })
 SystemQuiz.hasMany(SystemQuizResult, { foreignKey: 'systemQuizId' });
 SystemQuizResult.belongsTo(SystemQuiz, { foreignKey: 'systemQuizId' });
 
+SystemCategory.hasMany(SystemQuiz, { foreignKey: 'category' });
+SystemQuiz.belongsTo(SystemCategory, { foreignKey: 'category' });
+
 const model = { Badge, User, UserBadge, Admin, AnswerOption, Class, ClassEnrollment, ClassQuiz,
     Question, Quiz, QuizResult, StudentAnswer, SystemAnswerOption, SystemQuestion, SystemQuizResult,
-    SystemQuiz
+    SystemQuiz, SystemCategory
 };
 
 export default model;

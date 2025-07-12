@@ -1,7 +1,7 @@
 import model from '../../models/index.js';
 
 export const createQuiz = async (req, res) => {
-    const { title, description, createdBy, category, questions, time } = req.body;
+    const { title, description, createdBy, category, questions, time, difficulty, questionsCount } = req.body;
 
     try {
         const quiz = await model.SystemQuiz.create({
@@ -9,7 +9,9 @@ export const createQuiz = async (req, res) => {
             description,
             createdBy,
             category,
-            time
+            time,
+            difficulty,
+            questionsCount
         });
 
         for (const q of questions) {
@@ -40,7 +42,7 @@ export const getQuizzes = async (req, res) => {
         if (!quizzes) {
             return res.status(404).json({ success: false, message: 'No quizzes found' });
         }
-        
+
         res.status(200).json({ success: true, data: quizzes });
     } catch(error) {
         console.error('Error in getQuizzes:', error);
