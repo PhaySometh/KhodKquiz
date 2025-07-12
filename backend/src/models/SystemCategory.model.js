@@ -1,0 +1,32 @@
+import sequelize from '../config/db/sequelize.js';
+import { DataTypes } from 'sequelize';
+
+/**
+ * SystemCategory Model Definition
+ * 
+ * Represents a category for system quizzes.
+ */
+const SystemCategory = sequelize.define('SystemCategory', {
+    /**
+     * Name - The name of the category.
+     */
+    name: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        comment: 'Name of the system quiz category'
+    },
+
+    /**
+     * Description - Additional details about the category.
+     */
+    description: {
+        type: DataTypes.TEXT,
+        comment: 'Detailed description of the category'
+    }
+}, {
+    tableName: 'systemCategories',
+    timestamps: false,
+    comment: 'Categories for system-generated quizzes'
+});
+
+export default SystemCategory;

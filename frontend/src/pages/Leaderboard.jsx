@@ -11,6 +11,7 @@ import {
     Award,
     ChevronDown,
     ChevronUp,
+    RotateCw
 } from 'lucide-react';
 
 export default function Leaderboard() {
