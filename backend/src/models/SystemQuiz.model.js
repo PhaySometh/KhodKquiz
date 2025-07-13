@@ -50,9 +50,13 @@ const SystemQuiz = sequelize.define('SystemQuiz', {
      * Category - Classification or grouping of the quiz.
      */
     category: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'systemCategories',
+            key: 'id'
+        },
         allowNull: false,
-        comment: 'Category to which this quiz belongs (e.g., Math, History)'
+        comment: 'Category to which this quiz belongs'
     },
 
     /**
@@ -84,6 +88,42 @@ const SystemQuiz = sequelize.define('SystemQuiz', {
         type: DataTypes.FLOAT,
         allowNull: false,
         comment: 'Time limit (in minutes) for completing the quiz'
+    },
+
+    /**
+     * Attempts - Number of times the quiz has been attempted by students.
+     */
+    attempts: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        comment: 'Number of times the quiz has been attempted by students'
+    },
+
+    /**
+     * Average Score - Average score achieved by students on this quiz.
+     */
+    averageAccuracy: {
+        type: DataTypes.DECIMAL(3, 2),
+        defaultValue: 0,
+        comment: 'Average score achieved by students on this quiz'
+    },
+
+    /**
+     * Difficulty - Level of difficulty of the quiz.
+     */
+    difficulty: {
+        type: DataTypes.ENUM('Easy', 'Medium', 'Hard'),
+        allowNull: false,
+        comment: 'Difficulty level of the quiz (Easy, Medium, Hard)'
+    },
+
+    /**
+     * Questions Count - Number of questions in the quiz.
+     */
+    questionsCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        comment: 'Number of questions in the quiz'
     },
 
     /**
