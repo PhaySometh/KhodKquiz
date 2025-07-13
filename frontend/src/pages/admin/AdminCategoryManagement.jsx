@@ -24,15 +24,17 @@ const AdminCategoryManagement = () => {
     const [editCategory, setEditCategory] = useState({ name: '', description: '' });
 
     useEffect(() => {
-        const mockCategories = [
-            { id: 1, name: 'Mathematics', description: 'All math-related quizzes including algebra, geometry, and calculus' },
-            { id: 2, name: 'Science', description: 'Quizzes covering physics, chemistry, and biology topics' },
-            { id: 3, name: 'History', description: 'World history, ancient civilizations, and important events' },
-            { id: 4, name: 'Languages', description: 'Quizzes for language learning and grammar practice' },
-            { id: 5, name: 'General Knowledge', description: 'Mixed topics and trivia questions' },
-        ];
-        setCategories(mockCategories);
-        setFilteredCategories(mockCategories);
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/api/admin/category`);
+                setCategories(response.data.data);
+                setFilteredCategories(response.data.data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchCategories();
     }, []);
 
     useEffect(() => {
