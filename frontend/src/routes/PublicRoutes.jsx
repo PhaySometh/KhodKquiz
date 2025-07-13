@@ -1,6 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home.jsx';
-import Quiz from '../pages/Quiz.jsx';
 import QuizCategory from '../pages/QuizCategory.jsx';
 import SignUp from '../pages/SignUp.jsx';
 import Login from '../pages/Login.jsx';
@@ -14,7 +13,6 @@ function PublicRoutes() {
         <Routes>
             {/* Public Routes */}
             <Route path="" element={<Home />} />
-            <Route path="quiz" element={<Quiz />} />
             <Route path="quiz/category" element={<QuizCategory />} />
             <Route path="signup" element={<SignUp />} />
             <Route path="login" element={<Login />} />

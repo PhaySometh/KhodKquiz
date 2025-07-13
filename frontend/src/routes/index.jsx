@@ -3,7 +3,6 @@ import PublicRoutes from './PublicRoutes.jsx';
 import StudentRoutes from './StudentRoutes.jsx';
 import TeacherRoutes from './TeacherRoutes.jsx';
 import AdminRoutes from './AdminRoutes.jsx';
-import NotFoundPage from '../pages/NotFoundPage.jsx'; // Optional fallback
 
 function AppRoutes() {
     return (
@@ -19,9 +18,6 @@ function AppRoutes() {
 
             {/* Admin routes */}
             <Route path="/admin/*" element={<AdminRoutes />} />
-
-            {/* Optional: catch-all 404 route */}
-            <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );
 }

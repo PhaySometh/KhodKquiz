@@ -35,7 +35,7 @@ export default function StudentDashBoard() {
         };
 
         fetchCategories();
-    });
+    }, []);
 
     const filteredCategories = categories.filter(category =>
         category.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -146,7 +146,7 @@ export default function StudentDashBoard() {
                                                 </div>
                                             </div> */}
                                             
-                                            <Link to={`/category/${category.id}`} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm" >
+                                            <Link to={`/student/category/${category.id}`} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm" >
                                                 View Quizzes
                                             </Link>
                                         </motion.div>

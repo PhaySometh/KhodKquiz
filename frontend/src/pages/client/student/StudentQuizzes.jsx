@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Code, Clock, Award, BarChart2, ChevronLeft, CheckCircle, XCircle, BookOpen, Search } from 'lucide-react';
 import UserNavbar from "../../../components/common/UserNavbar";
 import StudentSidebar from '../../../components/client/student/StudentSidebar';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+
+const BASE_URL = 'http://localhost:3000';
 
 export default function QuizList() {
-    const { categoryId } = useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
+    const [quizzes, setQuizzes] = useState([]);
     
     // Hardcoded category details
     const category = {
@@ -18,39 +22,18 @@ export default function QuizList() {
         color: "bg-yellow-100 text-yellow-600"
     };
 
-    // Hardcoded quizzes data
-    const quizzes = [
-        {
-            id: 1,
-            title: "JavaScript Basics",
-            description: "Test your knowledge of fundamental JavaScript concepts",
-            difficulty: "Beginner",
-            timeLimit: 20,
-            questionsCount: 15,
-            attempts: 1245,
-            averageAccuracy: 72
-        },
-        {
-            id: 2,
-            title: "ES6 Features",
-            description: "Quiz on modern JavaScript features introduced in ES6",
-            difficulty: "Intermediate",
-            timeLimit: 30,
-            questionsCount: 20,
-            attempts: 892,
-            averageAccuracy: 65
-        },
-        {
-            id: 3,
-            title: "DOM Manipulation",
-            description: "Test your skills in working with the Document Object Model",
-            difficulty: "Intermediate",
-            timeLimit: 25,
-            questionsCount: 18,
-            attempts: 756,
-            averageAccuracy: 68
-        }
-    ];
+    useEffect(() => {
+        const fetchQuizzes = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/api/student/category/${id}`);
+                setQuizzes(response.data.data);
+            } catch (error) {
+                console.error('Error fetching quizzes:', error);
+            }
+        };
+
+        fetchQuizzes();
+    }, [id])
 
     // Filter quizzes based on search query
     const filteredQuizzes = quizzes.filter(quiz => 
@@ -150,7 +133,7 @@ export default function QuizList() {
                                                 <p className="text-gray-700">{quiz.attempts.toLocaleString()}</p>
                                             </div>
                                             <button 
-                                                onClick={() => navigate(`/quiz/${quiz.id}`)}
+                                                onClick={() => navigate(`/student/quiz/${quiz.id}`)}
                                                 className="mt-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm"
                                             >
                                                 Start Quiz
