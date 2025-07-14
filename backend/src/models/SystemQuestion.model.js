@@ -36,7 +36,8 @@ const SystemQuestion = sequelize.define('SystemQuestion', {
         allowNull: false,
         references: {
             model: 'systemQuizzes',
-            key: 'id'
+            key: 'id',
+            onDelete: 'CASCADE'     // Delete questions if quiz is deleted
         },
         comment: 'ID of the system quiz that this question is part of'
     },

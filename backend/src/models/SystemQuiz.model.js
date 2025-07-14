@@ -53,9 +53,9 @@ const SystemQuiz = sequelize.define('SystemQuiz', {
         type: DataTypes.INTEGER,
         references: {
             model: 'systemCategories',
-            key: 'id'
+            key: 'id',
+            onDelete: 'NULL'
         },
-        allowNull: false,
         comment: 'Category to which this quiz belongs'
     },
 
@@ -66,9 +66,9 @@ const SystemQuiz = sequelize.define('SystemQuiz', {
         type: DataTypes.INTEGER,
         references: {
             model: 'admins',
-            key: 'id'
+            key: 'id',
+            onDelete: 'NULL'
         },
-        allowNull: false,
         comment: 'ID of the admin who created this system quiz'
     },
 

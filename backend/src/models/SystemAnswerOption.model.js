@@ -37,7 +37,8 @@ const SystemAnswerOption = sequelize.define('SystemAnswerOption', {
         allowNull: false,
         references: {
             model: 'systemQuestions',
-            key: 'id'
+            key: 'id',
+            onDelete: 'CASCADE'     // Delete options if question is deleted
         },
         comment: 'ID of the system question associated with this answer option'
     },
