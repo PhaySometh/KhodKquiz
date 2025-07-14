@@ -11,7 +11,7 @@ import {
     Award,
     ChevronDown,
     ChevronUp,
-    RotateCw
+    RotateCw,
 } from 'lucide-react';
 
 export default function Leaderboard() {
@@ -33,7 +33,7 @@ export default function Leaderboard() {
         try {
             // Add a minimum loading time for better UX
             const [response] = await Promise.all([
-                axios.get('https://localhost:5000/leaderboard'),
+                axios.get('https://localhost:3000/leaderboard'),
                 new Promise((resolve) => setTimeout(resolve, 1000)), // Minimum 1 second loading
             ]);
             setLeaderboard(response.data);

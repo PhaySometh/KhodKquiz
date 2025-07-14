@@ -10,7 +10,7 @@ export default function AdminNavbar() {
             {/* Header */}
             <header className="relative z-10 px-6 flex justify-between items-center w-full h-20 bg-white border-b border-gray-200">
                 <div className="text-xl font-bold hidden md:block">
-                    <h1 className='text-blue-950'>Khod<span className='text-orange-400'>Kquiz</span></h1>
+                    {/* <h1 className='text-blue-950'>Khod<span className='text-orange-400'>Kquiz</span></h1> */}
                 </div>
                 <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">

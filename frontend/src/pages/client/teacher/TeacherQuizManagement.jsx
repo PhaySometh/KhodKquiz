@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Bell, User, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx';
 import QuizList from '../../../components/QuizList.jsx';
 import { DeleteQuizModal, AssignToClassModal, ArchiveQuizModal } from '../../../components/QuizActionModals.jsx';
 import UserNavbar from '../../../components/common/UserNavbar.jsx';
-import Footer from '../../../components/common/Footer.jsx';
 
 const EnhancedTeacherDashboard = () => {
     const navigate = useNavigate();
@@ -122,7 +120,6 @@ const EnhancedTeacherDashboard = () => {
                     onConfirm={handleConfirmArchive}
                 />
             </div>
-            <Footer />
         </>
     );
 };
