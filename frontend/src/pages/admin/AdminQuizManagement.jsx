@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Bell, User, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import AdminSidebar from '../../components/admin/AdminSidebar.jsx';
 import QuizList from '../../components/QuizList.jsx';
 import { DeleteQuizModal, AssignToClassModal, ArchiveQuizModal } from '../../components/QuizActionModals.jsx';
 import AdminNavbar from '../../components/admin/AdminNavbar.jsx';
-import Footer from '../../components/common/Footer.jsx';
 
 const AdminQuizManagement = () => {
     const navigate = useNavigate();
@@ -122,7 +120,6 @@ const AdminQuizManagement = () => {
                     onConfirm={handleConfirmArchive}
                 />
             </div>
-            <Footer />
         </>
     );
 };

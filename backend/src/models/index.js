@@ -22,6 +22,12 @@ Badge.belongsToMany(User, { through: UserBadge, foreignKey: 'badgeId', otherKey:
 // A user can join many classes
 User.hasMany(ClassEnrollment, { foreignKey: 'studentId' });
 ClassEnrollment.belongsTo(User, { foreignKey: 'studentId' });
+// Class and ClassEnrollment
+Class.hasMany(ClassEnrollment, { foreignKey: 'classId' });
+ClassEnrollment.belongsTo(Class, { foreignKey: 'classId' });
+
+Class.belongsToMany(User, { through: ClassEnrollment, foreignKey: 'classId', otherKey: 'studentId' });
+User.belongsToMany(Class, { through: ClassEnrollment, foreignKey: 'studentId', otherKey: 'classId' });
 
 // A teacher can create many classes
 User.hasMany(Class, { foreignKey: 'teacherId' });
@@ -37,13 +43,6 @@ SystemQuizResult.belongsTo(User, { foreignKey: 'studentId' });
 
 User.hasMany(StudentAnswer, { foreignKey: 'studentId' });
 StudentAnswer.belongsTo(User, { foreignKey: 'studentId' });
-
-// Class and ClassEnrollment
-Class.hasMany(ClassEnrollment, { foreignKey: 'classId' });
-ClassEnrollment.belongsTo(Class, { foreignKey: 'classId' });
-
-Class.belongsToMany(User, { through: ClassEnrollment, foreignKey: 'classId', otherKey: 'studentId' });
-User.belongsToMany(Class, { through: ClassEnrollment, foreignKey: 'studentId', otherKey: 'classId' });
 
 // Teacher created quizzes
 User.hasMany(Quiz, { foreignKey: 'createdBy' });

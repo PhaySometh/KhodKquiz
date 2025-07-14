@@ -14,6 +14,7 @@ import {
     Target,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import TeacherRequestForm from '../components/TeacherRequestForm';
 
 // Animation variants for the staggered text
 const containerVariants = {
@@ -213,7 +214,7 @@ export default function Home() {
                             )}
                             {isAuthenticated && (
                                 <Button
-                                    to="user"
+                                    to="profile"
                                     label="My Profile"
                                     bgColor="bg-orange-400"
                                     textColor="text-white"
@@ -254,16 +255,18 @@ export default function Home() {
 
                 {/* Demo Section for Teacher Registration */}
                 <div className="p-6 bg-muted/30 rounded-lg border">
-                <h2 className="text-2xl font-semibold mb-4 text-primary">🎓 Teacher Registration Demo</h2>
-                <p className="text-muted-foreground mb-4">
-                    Check out the KhodKquiz-style teacher registration form
-                </p>
-                <a 
-                    href="/teacher-registration" 
-                    className="inline-flex items-center px-6 py-3 bg-accent text-accent-foreground rounded-lg font-medium hover:bg-accent/90 transition-colors"
-                >
-                    View Teacher Registration Form
-                </a>
+                    <h2 className="text-2xl font-semibold mb-4 text-primary">
+                        🎓 Teacher Registration Demo
+                    </h2>
+                    <p className="text-muted-foreground mb-4">
+                        Check out the KhodKquiz-style teacher registration form
+                    </p>
+                    <a
+                        href="/teacher-registration"
+                        className="inline-flex items-center px-6 py-3 bg-accent text-accent-foreground rounded-lg font-medium hover:bg-accent/90 transition-colors"
+                    >
+                        View Teacher Registration Form
+                    </a>
                 </div>
 
                 {/* Conditional Bottom Section */}
@@ -315,6 +318,58 @@ export default function Home() {
                     </div>
                 )}
             </div>
+
+            {/* Teacher Request Section */}
+            {isAuthenticated && user?.role === 'student' && (
+                <motion.section
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="py-20 relative overflow-hidden"
+                >
+                    {/* Background decoration */}
+                    <div className="absolute inset-0 -z-10">
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-orange-50 opacity-70" />
+                        <div className="absolute top-0 left-0 w-96 h-96 bg-blue-100 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl opacity-30" />
+                        <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-100 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl opacity-30" />
+                    </div>
+
+                    <div className="container mx-auto px-4">
+                        <div className="max-w-4xl mx-auto text-center mb-12">
+                            <motion.h2
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, delay: 0.2 }}
+                                className="text-4xl font-bold text-gray-900 mb-4"
+                            >
+                                Join Our Teaching Community
+                            </motion.h2>
+                            <motion.p
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, delay: 0.3 }}
+                                className="text-lg text-gray-600 max-w-2xl mx-auto"
+                            >
+                                Share your knowledge, inspire students, and make
+                                a difference in education. Apply to become a
+                                teacher on our platform today.
+                            </motion.p>
+                        </div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.4 }}
+                            className="relative"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-orange-600/5 rounded-3xl transform rotate-1" />
+                            <div className="absolute inset-0 bg-gradient-to-l from-blue-600/5 to-orange-600/5 rounded-3xl transform -rotate-1" />
+                            <TeacherRequestForm />
+                        </motion.div>
+                    </div>
+                </motion.section>
+            )}
+
             <Footer />
         </>
     );
