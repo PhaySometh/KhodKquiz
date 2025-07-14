@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import AdminSidebar from '../../components/admin/AdminSidebar.jsx';
 import AdminNavbar from '../../components/admin/AdminNavbar.jsx';
@@ -84,7 +83,7 @@ export default function AdminCreateQuiz() {
                     options,
                 };
             }),
-            questionsCount: questions.length
+            questionsCount: questions.length,
         };
 
         try {
@@ -115,7 +114,9 @@ export default function AdminCreateQuiz() {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/student/categories`);
+                const response = await axios.get(
+                    `${BASE_URL}/api/student/categories`
+                );
                 setCategories(response.data.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -153,98 +154,97 @@ export default function AdminCreateQuiz() {
                     <div className="max-w-5xl mx-auto">
                         <div className="w-full border border-gray-300 p-6 rounded-lg shadow bg-white flex flex-col justify-center items-center gap-5">
                             <div className="flex justify-center items-center w-full gap-5">
-                                <div class="w-full">
+                                <div className="w-full">
                                     <label
-                                        for="text-input"
-                                        class="text-sm font-medium text-gray-900 dark:text-white"
+                                        htmlFor="text-input"
+                                        className="text-sm font-medium text-gray-900 dark:text-white"
                                     >
                                         Quiz Name
                                     </label>
                                     <input
                                         type="text"
                                         id="text-input"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
                                         placeholder="Enter your quiz name"
                                         required
                                     />
                                 </div>
-                                <div class="w-full">
+                                <div className="w-full">
                                     <label
-                                        for="number-input"
-                                        class="text-sm font-medium text-gray-900 dark:text-white"
+                                        htmlFor="number-input"
+                                        className="text-sm font-medium text-gray-900 dark:text-white"
                                     >
                                         Time Per Question
                                     </label>
                                     <input
                                         type="number"
                                         id="number-input"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
                                         placeholder="15s"
                                         required
                                     />
                                 </div>
                             </div>
-                            <div className="w-full">
-                                <div>
+                            <div className="flex justify-center items-center w-full gap-5">
+                                <div className="w-full">
                                     <label
-                                        for="category-input"
-                                        class="text-sm font-medium text-gray-900 dark:text-white"
+                                        htmlFor="category-input"
+                                        className="text-sm font-medium text-gray-900 dark:text-white"
                                     >
                                         Category
                                     </label>
-                                    <input
-                                        type="text"
+                                    <select
                                         id="category-input"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
-                                        placeholder="Quiz category"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
                                         required
-                                    />
-                                </div>
-                        </div>
-                        <div className='flex justify-center items-center w-full gap-5'>
-                            <div class="w-full">
-                                <label for="category-input" class="text-sm font-medium text-gray-900 dark:text-white">Category</label>
-                                <select
-                                    id="category-input"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
-                                    required
-                                >
-                                    <option value="">Select a category</option>
-                                    {categories.map(category => (
-                                        <option key={category.id} value={category.id}>
-                                            {category.name}
+                                    >
+                                        <option value="">
+                                            Select a category
                                         </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div class="w-full">
-                                <label for="difficulty-input" class="text-sm font-medium text-gray-900 dark:text-white">Difficulty</label>
-                                <select id="difficulty-input"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" 
+                                        {categories.map((category) => (
+                                            <option
+                                                key={category.id}
+                                                value={category.id}
+                                            >
+                                                {category.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="w-full">
+                                    <label
+                                        htmlFor="difficulty-input"
+                                        className="text-sm font-medium text-gray-900 dark:text-white"
+                                    >
+                                        Difficulty
+                                    </label>
+                                    <select
+                                        id="difficulty-input"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
                                         required
-                                >
-                                    <option value="">Select difficulty</option>
-                                    <option value="Easy">Easy</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="Hard">Hard</option>
-                                </select>
+                                    >
+                                        <option value="">
+                                            Select difficulty
+                                        </option>
+                                        <option value="Easy">Easy</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Hard">Hard</option>
+                                    </select>
+                                </div>
                             </div>
                             <div className="w-full">
-                                <div>
-                                    <label
-                                        for="description-input"
-                                        class="text-sm font-medium text-gray-900 dark:text-white"
-                                    >
-                                        Description
-                                    </label>
-                                    <textarea
-                                        type="text"
-                                        id="description-input"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
-                                        placeholder="Description or Instruction"
-                                        required
-                                    />
-                                </div>
+                                <label
+                                    htmlFor="description-input"
+                                    className="text-sm font-medium text-gray-900 dark:text-white"
+                                >
+                                    Description
+                                </label>
+                                <textarea
+                                    id="description-input"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+                                    placeholder="Description or Instruction"
+                                    required
+                                />
                             </div>
                         </div>
                     </div>

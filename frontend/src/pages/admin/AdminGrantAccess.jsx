@@ -354,7 +354,7 @@ export default function AdminGrantAccess() {
                     {/* Dashboard View */}
                     {currentView === 'dashboard' && (
                         <>
-                            <AdminStatsDashboard users={users} roles={roles} />
+                            <AdminStatsDashboard />
                         </>
                     )}
 

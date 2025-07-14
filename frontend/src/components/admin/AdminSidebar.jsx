@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookCheck, ShieldUser, School } from 'lucide-react';
+import { BookCheck, ShieldUser, School, ChartBarStacked } from 'lucide-react';
 
 // The "export default" keywords are what solve the error
 export default function AdminSidebar() {
@@ -44,7 +44,7 @@ export default function AdminSidebar() {
                     to="/admin/category"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors"
                 >
-                    <BookCheck size={20} />
+                    <ChartBarStacked size={20} />
                     <span>My Category</span>
                 </Link>
             </nav>
