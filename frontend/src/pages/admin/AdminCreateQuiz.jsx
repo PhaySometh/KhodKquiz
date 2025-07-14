@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import AdminSidebar from '../../components/admin/AdminSidebar.jsx';
@@ -13,6 +14,7 @@ const BASE_URL = 'http://localhost:3000';
 export default function AdminCreateQuiz() {
     const [questions, setQuestions] = useState([createEmptyQuestion()]);
     const navigate = useNavigate();
+    const [categories, setCategories] = useState([]);
 
     // Create a new blank question
     function createEmptyQuestion() {
@@ -63,6 +65,7 @@ export default function AdminCreateQuiz() {
             time: Number(document.getElementById('number-input').value),
             description: document.getElementById('description-input').value,
             category: document.getElementById('category-input').value,
+            difficulty: document.getElementById('difficulty-input').value,
             createdBy: adminId,
             questions: questions.map((q) => {
                 const options =
@@ -81,6 +84,7 @@ export default function AdminCreateQuiz() {
                     options,
                 };
             }),
+            questionsCount: questions.length
         };
 
         try {
@@ -107,6 +111,19 @@ export default function AdminCreateQuiz() {
         ];
         setQuestions(updated);
     }
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/api/student/categories`);
+                setCategories(response.data.data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     return (
         <div className="flex h-screen bg-gray-50 overflow-hidden">
@@ -183,6 +200,34 @@ export default function AdminCreateQuiz() {
                                         required
                                     />
                                 </div>
+                        </div>
+                        <div className='flex justify-center items-center w-full gap-5'>
+                            <div class="w-full">
+                                <label for="category-input" class="text-sm font-medium text-gray-900 dark:text-white">Category</label>
+                                <select
+                                    id="category-input"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+                                    required
+                                >
+                                    <option value="">Select a category</option>
+                                    {categories.map(category => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div class="w-full">
+                                <label for="difficulty-input" class="text-sm font-medium text-gray-900 dark:text-white">Difficulty</label>
+                                <select id="difficulty-input"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" 
+                                        required
+                                >
+                                    <option value="">Select difficulty</option>
+                                    <option value="Easy">Easy</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Hard">Hard</option>
+                                </select>
                             </div>
                             <div className="w-full">
                                 <div>

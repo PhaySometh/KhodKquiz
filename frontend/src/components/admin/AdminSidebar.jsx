@@ -40,6 +40,13 @@ export default function AdminSidebar() {
                     <School size={20} />
                     <span>Teacher Requests</span>
                 </Link>
+                <Link
+                    to="/admin/category"
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors"
+                >
+                    <BookCheck size={20} />
+                    <span>My Category</span>
+                </Link>
             </nav>
         </aside>
     );

@@ -12,9 +12,9 @@ import {
     Clock,
     BarChart2,
 } from 'lucide-react';
-import AuthPrompt from '../components/AuthPrompt';
+import AuthPrompt from '../../../components/AuthPrompt';
 import { useParams } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000';
@@ -53,7 +53,7 @@ export default function Quiz() {
     useEffect(() => {
         const fetchQuiz = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/student/quiz/1`);
+                const response = await axios.get(`${BASE_URL}/api/student/quiz/${id}`);
                 setQuizQuestions(response.data.data);
             } catch (error) {
                 console.error('Error fetching quiz:', error);
