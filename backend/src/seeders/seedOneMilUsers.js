@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import model from '../models/index.js';
 
-const seedUsers = async () => {
+const seedOneMilUsers = async () => {
     try {
         const batchSize = 1000;
         const totalUsers = 1000000;
@@ -31,4 +31,4 @@ const seedUsers = async () => {
     }
 };
 
-export default seedUsers;
+export default seedOneMilUsers;

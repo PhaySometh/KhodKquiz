@@ -11,9 +11,6 @@ import teacherRoutes from './routes/teacher.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import studentRoutes from './routes/student.routes.js';
 
-// Import database configuration
-import sequelize from './config/db/sequelize.js';
-
 dotenv.config();
 
 const app = express();
@@ -30,10 +27,9 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/student', studentRoutes);
 
 try {
-    // await sequelize.sync({ force: true });
     app.listen(PORT, () => {
         console.log(`🚀 Server running at http://localhost:${PORT}`);
     });
 } catch (error) {
-    console.error('❌ Unable to connect to the database:', error);
+    console.error('❌ Unable to start server:', error);
 }
