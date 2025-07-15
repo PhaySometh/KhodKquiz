@@ -1,90 +1,111 @@
-import Badge from "./Badge.model.js";
-import User from "./User.model.js";
-import UserBadge from "./UserBadge.model.js";
-import Admin from './Admin.model.js'
-import AnswerOption from './AnswerOption.model.js';
-import Class from './Class.model.js';
-import ClassEnrollment from './ClassEnrollment.model.js';
-import ClassQuiz from './ClassQuiz.model.js';
-import Question from './Question.model.js';
-import Quiz from './Quiz.model.js';
-import QuizResult from './QuizResult.model.js';
-import StudentAnswer from './StudentAnswer.model.js';
-import SystemAnswerOption from "./SystemAnswerOption.model.js";
-import SystemQuestion from './SystemQuestion.model.js';
-import SystemQuizResult from "./SystemQuizResult.model.js";
-import SystemQuiz from './SystemQuiz.model.js';
-import SystemCategory from './SystemCategory.model.js';
+import defineBadge from "./Badge.model.js";
+import defineUser from "./User.model.js";
+import defineUserBadge from "./UserBadge.model.js";
+import defineAdmin from './Admin.model.js'
+import defineAnswerOption from './AnswerOption.model.js';
+import defineClass from './Class.model.js';
+import defineClassEnrollment from './ClassEnrollment.model.js';
+import defineClassQuiz from './ClassQuiz.model.js';
+import defineQuestion from './Question.model.js';
+import defineQuiz from './Quiz.model.js';
+import defineQuizResult from './QuizResult.model.js';
+import defineStudentAnswer from './StudentAnswer.model.js';
+import defineSystemAnswerOption from "./SystemAnswerOption.model.js";
+import defineSystemQuestion from './SystemQuestion.model.js';
+import defineSystemQuizResult from "./SystemQuizResult.model.js";
+import defineSystemQuiz from './SystemQuiz.model.js';
+import defineSystemCategory from './SystemCategory.model.js';
 
-// A user can earn multiple badges and A badge can be earned by multiple users.
-User.belongsToMany(Badge, { through: UserBadge, foreignKey: 'userId', otherKey: 'badgeId' });
-Badge.belongsToMany(User, { through: UserBadge, foreignKey: 'badgeId', otherKey: 'userId' });
+const setUpModels = (sequelize) => {
+    const Badge = defineBadge(sequelize);
+    const User = defineUser(sequelize);
+    const UserBadge = defineUserBadge(sequelize);
+    const Admin = defineAdmin(sequelize);
+    const AnswerOption = defineAnswerOption(sequelize);
+    const Class = defineClass(sequelize);
+    const ClassEnrollment = defineClassEnrollment(sequelize);
+    const ClassQuiz = defineClassQuiz(sequelize);
+    const Question = defineQuestion(sequelize);
+    const Quiz = defineQuiz(sequelize);
+    const QuizResult = defineQuizResult(sequelize);
+    const StudentAnswer = defineStudentAnswer(sequelize);
+    const SystemAnswerOption = defineSystemAnswerOption(sequelize);
+    const SystemQuestion = defineSystemQuestion(sequelize);
+    const SystemQuizResult = defineSystemQuizResult(sequelize);
+    const SystemQuiz = defineSystemQuiz(sequelize);
+    const SystemCategory = defineSystemCategory(sequelize);
 
-// A user can join many classes
-User.hasMany(ClassEnrollment, { foreignKey: 'studentId' });
-ClassEnrollment.belongsTo(User, { foreignKey: 'studentId' });
-// Class and ClassEnrollment
-Class.hasMany(ClassEnrollment, { foreignKey: 'classId' });
-ClassEnrollment.belongsTo(Class, { foreignKey: 'classId' });
+    // A user can earn multiple badges and A badge can be earned by multiple users.
+    User.belongsToMany(Badge, { through: UserBadge, foreignKey: 'userId', otherKey: 'badgeId' });
+    Badge.belongsToMany(User, { through: UserBadge, foreignKey: 'badgeId', otherKey: 'userId' });
 
-Class.belongsToMany(User, { through: ClassEnrollment, foreignKey: 'classId', otherKey: 'studentId' });
-User.belongsToMany(Class, { through: ClassEnrollment, foreignKey: 'studentId', otherKey: 'classId' });
+    // A user can join many classes
+    User.hasMany(ClassEnrollment, { foreignKey: 'studentId' });
+    ClassEnrollment.belongsTo(User, { foreignKey: 'studentId' });
+    // Class and ClassEnrollment
+    Class.hasMany(ClassEnrollment, { foreignKey: 'classId' });
+    ClassEnrollment.belongsTo(Class, { foreignKey: 'classId' });
 
-// A teacher can create many classes
-User.hasMany(Class, { foreignKey: 'teacherId' });
-Class.belongsTo(User, { foreignKey: 'teacherId' });
+    Class.belongsToMany(User, { through: ClassEnrollment, foreignKey: 'classId', otherKey: 'studentId' });
+    User.belongsToMany(Class, { through: ClassEnrollment, foreignKey: 'studentId', otherKey: 'classId' });
 
-// Results for classroom quizzes
-User.hasMany(QuizResult, { foreignKey: 'studentId' });
-QuizResult.belongsTo(User, { foreignKey: 'studentId' });
+    // A teacher can create many classes
+    User.hasMany(Class, { foreignKey: 'teacherId' });
+    Class.belongsTo(User, { foreignKey: 'teacherId' });
 
-// Results for system quizzes
-User.hasMany(SystemQuizResult, { foreignKey: 'studentId' });
-SystemQuizResult.belongsTo(User, { foreignKey: 'studentId' });
+    // Results for classroom quizzes
+    User.hasMany(QuizResult, { foreignKey: 'studentId' });
+    QuizResult.belongsTo(User, { foreignKey: 'studentId' });
 
-User.hasMany(StudentAnswer, { foreignKey: 'studentId' });
-StudentAnswer.belongsTo(User, { foreignKey: 'studentId' });
+    // Results for system quizzes
+    User.hasMany(SystemQuizResult, { foreignKey: 'studentId' });
+    SystemQuizResult.belongsTo(User, { foreignKey: 'studentId' });
 
-// Teacher created quizzes
-User.hasMany(Quiz, { foreignKey: 'createdBy' });
-Quiz.belongsTo(User, { foreignKey: 'createdBy' });
+    User.hasMany(StudentAnswer, { foreignKey: 'studentId' });
+    StudentAnswer.belongsTo(User, { foreignKey: 'studentId' });
 
-Quiz.hasMany(Question, { foreignKey: 'quizId' });
-Question.belongsTo(Quiz, { foreignKey: 'quizId' });
+    // Teacher created quizzes
+    User.hasMany(Quiz, { foreignKey: 'createdBy' });
+    Quiz.belongsTo(User, { foreignKey: 'createdBy' });
 
-Question.hasMany(AnswerOption, { foreignKey: 'questionId' });
-AnswerOption.belongsTo(Question, { foreignKey: 'questionId' });
+    Quiz.hasMany(Question, { foreignKey: 'quizId' });
+    Question.belongsTo(Quiz, { foreignKey: 'quizId' });
 
-Class.belongsToMany(Quiz, { through: ClassQuiz, foreignKey: 'classId', otherKey: 'quizId' });
-Quiz.belongsToMany(Class, { through: ClassQuiz, foreignKey: 'quizId', otherKey: 'classId' });
+    Question.hasMany(AnswerOption, { foreignKey: 'questionId' });
+    AnswerOption.belongsTo(Question, { foreignKey: 'questionId' });
 
-Quiz.hasMany(QuizResult, { foreignKey: 'quizId' });
-QuizResult.belongsTo(Quiz, { foreignKey: 'quizId' });
+    Class.belongsToMany(Quiz, { through: ClassQuiz, foreignKey: 'classId', otherKey: 'quizId' });
+    Quiz.belongsToMany(Class, { through: ClassQuiz, foreignKey: 'quizId', otherKey: 'classId' });
 
-Question.hasMany(StudentAnswer, { foreignKey: 'questionId' });
-StudentAnswer.belongsTo(Question, { foreignKey: 'questionId' });
+    Quiz.hasMany(QuizResult, { foreignKey: 'quizId' });
+    QuizResult.belongsTo(Quiz, { foreignKey: 'quizId' });
 
-AnswerOption.hasMany(StudentAnswer, { foreignKey: 'selectedOptionId' });
-StudentAnswer.belongsTo(AnswerOption, { foreignKey: 'selectedOptionId' });
+    Question.hasMany(StudentAnswer, { foreignKey: 'questionId' });
+    StudentAnswer.belongsTo(Question, { foreignKey: 'questionId' });
 
-Admin.hasMany(SystemQuiz, { foreignKey: 'createdBy' });
-SystemQuiz.belongsTo(Admin, { foreignKey: 'createdBy' });
+    AnswerOption.hasMany(StudentAnswer, { foreignKey: 'selectedOptionId' });
+    StudentAnswer.belongsTo(AnswerOption, { foreignKey: 'selectedOptionId' });
 
-SystemQuiz.hasMany(SystemQuestion, { foreignKey: 'systemQuizId' });
-SystemQuestion.belongsTo(SystemQuiz, { foreignKey: 'systemQuizId' });
+    Admin.hasMany(SystemQuiz, { foreignKey: 'createdBy' });
+    SystemQuiz.belongsTo(Admin, { foreignKey: 'createdBy' });
 
-SystemQuestion.hasMany(SystemAnswerOption, { foreignKey: 'systemQuestionId' });
-SystemAnswerOption.belongsTo(SystemQuestion, { foreignKey: 'systemQuestionId' });
+    SystemQuiz.hasMany(SystemQuestion, { foreignKey: 'systemQuizId' });
+    SystemQuestion.belongsTo(SystemQuiz, { foreignKey: 'systemQuizId' });
 
-SystemQuiz.hasMany(SystemQuizResult, { foreignKey: 'systemQuizId' });
-SystemQuizResult.belongsTo(SystemQuiz, { foreignKey: 'systemQuizId' });
+    SystemQuestion.hasMany(SystemAnswerOption, { foreignKey: 'systemQuestionId' });
+    SystemAnswerOption.belongsTo(SystemQuestion, { foreignKey: 'systemQuestionId' });
 
-SystemCategory.hasMany(SystemQuiz, { foreignKey: 'category' });
-SystemQuiz.belongsTo(SystemCategory, { foreignKey: 'category' });
+    SystemQuiz.hasMany(SystemQuizResult, { foreignKey: 'systemQuizId' });
+    SystemQuizResult.belongsTo(SystemQuiz, { foreignKey: 'systemQuizId' });
 
-const model = { Badge, User, UserBadge, Admin, AnswerOption, Class, ClassEnrollment, ClassQuiz,
-    Question, Quiz, QuizResult, StudentAnswer, SystemAnswerOption, SystemQuestion, SystemQuizResult,
-    SystemQuiz, SystemCategory
+    SystemCategory.hasMany(SystemQuiz, { foreignKey: 'category' });
+    SystemQuiz.belongsTo(SystemCategory, { foreignKey: 'category' });
+
+    return {
+        Badge, User, UserBadge, Admin, AnswerOption, Class, ClassEnrollment, ClassQuiz,
+        Question, Quiz, QuizResult, StudentAnswer, SystemAnswerOption, SystemQuestion, SystemQuizResult,
+        SystemQuiz, SystemCategory
+    };
 };
 
-export default model;
+export default setUpModels;

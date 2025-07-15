@@ -27,32 +27,32 @@ import sequelize from "../config/db/sequelize.js";
  * 
  * Represents a predefined question used in system-generated quizzes.
  */
-const SystemQuestion = sequelize.define('SystemQuestion', {
-    /**
-     * System Quiz ID - Foreign key referencing the quiz this question belongs to.
-     */
-    systemQuizId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'systemQuizzes',
-            key: 'id',
-            onDelete: 'CASCADE'     // Delete questions if quiz is deleted
+export default (sequelize) => {
+    return sequelize.define('SystemQuestion', {
+        /**
+         * System Quiz ID - Foreign key referencing the quiz this question belongs to.
+         */
+        systemQuizId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'systemQuizzes',
+                key: 'id',
+                onDelete: 'CASCADE'     // Delete questions if quiz is deleted
+            },
+            comment: 'ID of the system quiz that this question is part of'
         },
-        comment: 'ID of the system quiz that this question is part of'
-    },
 
-    /**
-     * Text - The content of the quiz question.
-     */
-    text: {
-        type: DataTypes.TEXT,
-        comment: 'The actual text or prompt of the system question'
-    }
-}, {
-    tableName: 'systemQuestions',
-    timestamps: false,
-    comment: 'Stores predefined questions for system-generated quizzes'
-});
-
-export default SystemQuestion;
+        /**
+         * Text - The content of the quiz question.
+         */
+        text: {
+            type: DataTypes.TEXT,
+            comment: 'The actual text or prompt of the system question'
+        }
+    }, {
+        tableName: 'systemQuestions',
+        timestamps: false,
+        comment: 'Stores predefined questions for system-generated quizzes'
+    });
+}

@@ -17,7 +17,7 @@ const EnhancedTeacherDashboard = () => {
 
     // Quiz action handlers
     const handleCreateQuiz = () => {
-        navigate('/teacher/createquiz');
+        navigate('/teacher/create-quiz');
     };
 
     const handleEditQuiz = (quiz) => {

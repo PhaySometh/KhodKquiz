@@ -9,7 +9,13 @@ import {
     getQuizzesByCategory
 } from '../controllers/client/student/category.controller.js';
 
+import { authenticate } from '../middleware/auth.middleware.js';
+import { dbConnectionMiddleware } from '../middleware/dbConnection.middleware.js';
+
 const router = express.Router();
+
+router.use(authenticate);
+router.use(dbConnectionMiddleware);
 
 router.get('/quiz/:id', getSystemQuizById);
 

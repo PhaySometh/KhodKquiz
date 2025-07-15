@@ -21,79 +21,78 @@
  */
 
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/db/sequelize.js';
 
 /**
  * QuizResult Model Definition
  * 
  * Represents the final result (score and attempt) of a student for a given quiz.
  */
-const QuizResult = sequelize.define('QuizResult', {
-    /**
-     * Student ID - Foreign key referencing the student who took the quiz.
-     */
-    studentId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id',
+export default (sequelize) => {
+    return sequelize.define('QuizResult', {
+        /**
+         * Student ID - Foreign key referencing the student who took the quiz.
+         */
+        studentId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'users',
+                key: 'id',
+            },
+            onDelete: 'CASCADE',  // Clean up results if student is deleted
+            comment: 'ID of the student who took the quiz'
         },
-        onDelete: 'CASCADE',  // Clean up results if student is deleted
-        comment: 'ID of the student who took the quiz'
-    },
 
-    /**
-     * Quiz ID - Foreign key referencing the quiz that was taken.
-     */
-    quizId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'quizzes',
-            key: 'id',
+        /**
+         * Quiz ID - Foreign key referencing the quiz that was taken.
+         */
+        quizId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'quizzes',
+                key: 'id',
+            },
+            onDelete: 'CASCADE',  // Clean up results if quiz is deleted
+            comment: 'ID of the quiz taken by the student'
         },
-        onDelete: 'CASCADE',  // Clean up results if quiz is deleted
-        comment: 'ID of the quiz taken by the student'
-    },
 
-    /**
-     * Score - The final score obtained by the student.
-     */
-    score: {
-        type: DataTypes.DECIMAL(9, 2),
-        allowNull: true,
-        comment: 'Final score achieved by the student on the quiz'
-    },
+        /**
+         * Score - The final score obtained by the student.
+         */
+        score: {
+            type: DataTypes.DECIMAL(9, 2),
+            allowNull: true,
+            comment: 'Final score achieved by the student on the quiz'
+        },
 
-    /**
-     * Attempt - Number of the attempt (e.g., first, second) for the quiz.
-     */
-    attempt: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1,
-        comment: 'Attempt number of the quiz by the student'
-    },
+        /**
+         * Attempt - Number of the attempt (e.g., first, second) for the quiz.
+         */
+        attempt: {
+            type: DataTypes.INTEGER,
+            defaultValue: 1,
+            comment: 'Attempt number of the quiz by the student'
+        },
 
-    /**
-     * Taken At - Timestamp of when the quiz was completed.
-     */
-    takenAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        comment: 'Date/time when the quiz was taken'
-    },
-}, {
-    tableName: 'quizResults',
-    timestamps: false,
-    indexes: [
-        {
-            unique: true,
-            fields: ['studentId', 'quizId'],
-            name: 'unique_student_quiz_result'
-        }
-    ],
-    comment: 'Records the final quiz results for each student, including score and attempt number'
-});
-
-export default QuizResult;
+        /**
+         * Taken At - Timestamp of when the quiz was completed.
+         */
+        takenAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+            comment: 'Date/time when the quiz was taken'
+        },
+    }, {
+        tableName: 'quizResults',
+        timestamps: false,
+        indexes: [
+            {
+                unique: true,
+                fields: ['studentId', 'quizId'],
+                name: 'unique_student_quiz_result'
+            }
+        ],
+        comment: 'Records the final quiz results for each student, including score and attempt number'
+    });
+}

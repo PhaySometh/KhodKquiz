@@ -6,27 +6,27 @@ import { DataTypes } from 'sequelize';
  * 
  * Represents a category for system quizzes.
  */
-const SystemCategory = sequelize.define('SystemCategory', {
-    /**
-     * Name - The name of the category.
-     */
-    name: {
-        type: DataTypes.STRING(100),
-        allowNull: false,
-        comment: 'Name of the system quiz category'
-    },
+export default (sequelize) => {
+    return sequelize.define('SystemCategory', {
+        /**
+         * Name - The name of the category.
+         */
+        name: {
+            type: DataTypes.STRING(100),
+            allowNull: false,
+            comment: 'Name of the system quiz category'
+        },
 
-    /**
-     * Description - Additional details about the category.
-     */
-    description: {
-        type: DataTypes.TEXT,
-        comment: 'Detailed description of the category'
-    }
-}, {
-    tableName: 'systemCategories',
-    timestamps: false,
-    comment: 'Categories for system-generated quizzes'
-});
-
-export default SystemCategory;
+        /**
+         * Description - Additional details about the category.
+         */
+        description: {
+            type: DataTypes.TEXT,
+            comment: 'Detailed description of the category'
+        }
+    }, {
+        tableName: 'systemCategories',
+        timestamps: false,
+        comment: 'Categories for system-generated quizzes'
+    });
+}

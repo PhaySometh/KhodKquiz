@@ -1,9 +1,10 @@
-import model from '../../models/index.js';
+import setUpModels from '../../models/index.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 export const adminRegister = async (req, res) => {
     try {
+        const model =  setUpModels(req.db);
         const { username, password } = req.body;
 
         if (!username || !password) {
@@ -39,6 +40,7 @@ export const adminLogin = async (req, res) => {
     const { username, password } = req.body;
 
     try {
+        const model =  setUpModels(req.db);
         if (!username || !password) {
             return res.status(400).json({ success: false, message: 'Username and password are required' });
         }
@@ -55,7 +57,7 @@ export const adminLogin = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: admin.id, username: admin.username },
+            { id: admin.id, username: admin.username, role: 'admin' },
             process.env.JWT_ADMIN_SECRET,
             { expiresIn: '1h' }
         );

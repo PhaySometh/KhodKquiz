@@ -1,8 +1,9 @@
-import model from '../../../models/index.js';
+import setUpModels from '../../../models/index.js';
 
 export const getSystemQuizById = async (req, res) => {
     const { id } = req.params;
     try {
+        const model =  setUpModels(req.db);
         const questions = await model.SystemQuestion.findAll({
             where: { systemQuizId: id },
             include: [{

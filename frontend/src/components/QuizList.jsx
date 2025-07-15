@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, Grid, List, Plus, ChevronDown } from 'lucide-react';
 import QuizCard from './QuizCard';
-import axios from 'axios';
+import axios from '../utils/axiosConfig.js';
 
 const BASE_URL='http://localhost:3000';
 

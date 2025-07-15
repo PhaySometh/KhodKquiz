@@ -1,9 +1,10 @@
-import model from '../../models/index.js';
+import setUpModels from '../../models/index.js';
 
 export const createQuiz = async (req, res) => {
     const { title, description, createdBy, category, questions, time, difficulty, questionsCount } = req.body;
 
     try {
+        const model =  setUpModels(req.db);
         const quiz = await model.SystemQuiz.create({
             title,
             description,
@@ -39,6 +40,7 @@ export const createQuiz = async (req, res) => {
 export const getQuizById = async (req, res) => {
     const { id } = req.params;
     try {
+        const model =  setUpModels(req.db);
         const quiz = await model.SystemQuiz.findOne({
             where: { id },
             exclude: ['createdAt', 'updatedAt', 'createdBy', 'attempts', 'averageAccuracy', 'questionsCount']
@@ -81,6 +83,7 @@ export const updateQuiz = async (req, res) => {
     const { title, description, createdBy, category, questions, time, difficulty, questionsCount } = req.body;
 
     try {
+        const model =  setUpModels(req.db);
         const [updatedRowsCount] = await model.SystemQuiz.update(
             { title, description, createdBy, category, time, difficulty, questionsCount },
             {
@@ -121,6 +124,7 @@ export const updateQuiz = async (req, res) => {
 
 export const deleteQuiz = async (req, res) => {
     try {
+        const model =  setUpModels(req.db);
         const { id } = req.params;
 
         const deletedRowsCount = await model.SystemQuiz.destroy({
@@ -140,6 +144,7 @@ export const deleteQuiz = async (req, res) => {
 
 export const getQuizzes = async (req, res) => {
     try {
+        const model =  setUpModels(req.db);
         const quizzes = await model.SystemQuiz.findAll();
         if (!quizzes) {
             return res.status(404).json({ success: false, message: 'No quizzes found' });

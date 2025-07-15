@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+import setUpModels from '../../models/index.js';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
  */
 export const getUsers = async (req, res) => {
     try {
+        const model =  setUpModels(req.db);
         // Add pagination
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -50,6 +52,7 @@ export const verifyUser = async (req, res) => {
     const { token } = req.body;
 
     try {
+        // Verify Google token
         const ticket = await client.verifyIdToken({
             idToken: token,
             audience: process.env.GOOGLE_CLIENT_ID,
@@ -60,6 +63,7 @@ export const verifyUser = async (req, res) => {
         const picture = payload.picture.split('=')[0];
 
         // Look for the user in the database
+        const model =  setUpModels(req.db);
         let user = await model.User.findOne({
             where: {
                 googleId: googleId,
@@ -68,6 +72,7 @@ export const verifyUser = async (req, res) => {
 
         if (!user) {
             // If user does not exist, create a new user
+            const model =  setUpModels(req.db);
             user = await model.User.create({
                 provider: 'google',
                 googleId: googleId,
@@ -79,7 +84,7 @@ export const verifyUser = async (req, res) => {
 
         // Generate JWT token for the user
         const tokenData = jwt.sign(
-            { id: user.id, email: user.email },
+            { id: user.id, email: user.email, role: user.role },
             process.env.JWT_USER_SECRET,
             { expiresIn: '1h' }
         );
@@ -99,6 +104,7 @@ export const registerUser = async (req, res) => {
 
     try {
         // Validate input
+        const model =  setUpModels(req.db);
         if (!name || !email || !password) {
             return res.status(400).json({ error: 'All fields are required' });
         }
@@ -129,7 +135,7 @@ export const registerUser = async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { id: user.id, email: user.email },
+            { id: user.id, email: user.email, role: user.role },
             process.env.JWT_USER_SECRET,
             { expiresIn: '1h' }
         );
@@ -149,6 +155,7 @@ export const loginUser = async (req, res) => {
 
     try {
         // Validate input
+        const model =  setUpModels(req.db);
         if (!email || !password) {
             return res
                 .status(400)
@@ -178,7 +185,7 @@ export const loginUser = async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { id: user.id, email: user.email },
+            { id: user.id, email: user.email, role: user.role },
             process.env.JWT_USER_SECRET,
             { expiresIn: '1h' }
         );
@@ -195,6 +202,7 @@ export const loginUser = async (req, res) => {
  */
 export const getUser = async (req, res) => {
     try {
+        const model =  setUpModels(req.db);
         const user = await model.User.findOne({
             where: { id: req.user.id },
             attributes: ['id', 'name', 'email', 'picture', 'role', 'provider'],
@@ -216,6 +224,7 @@ export const getUser = async (req, res) => {
  */
 export const updateUserProfile = async (req, res) => {
     try {
+        const model =  setUpModels(req.db);
         const { name } = req.body;
 
         // Validate input

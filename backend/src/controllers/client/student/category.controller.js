@@ -1,7 +1,8 @@
-import model from '../../../models/index.js';
+import setUpModels from '../../../models/index.js';
 
 export const getSystemCategories = async (req, res) => {
     try {
+        const model =  setUpModels(req.db);
         const categories = await model.SystemCategory.findAll();
         if (!categories) {
             return res.status(404).json({ success: false, message: 'No categories found' });
@@ -17,6 +18,7 @@ export const getSystemCategories = async (req, res) => {
 export const getQuizzesByCategory = async (req, res) => {
     const { id } = req.params;
     try {
+        const model =  setUpModels(req.db);
         const quizzes = await model.SystemQuiz.findAll({
             where: { category: id }
         });
