@@ -53,6 +53,11 @@ export default (sequelize) => {
     }, {
         tableName: 'systemQuestions',
         timestamps: false,
-        comment: 'Stores predefined questions for system-generated quizzes'
+        comment: 'Stores predefined questions for system-generated quizzes',
+        indexes: [
+            {
+                fields: ['systemQuizId']
+            }
+        ]
     });
 }

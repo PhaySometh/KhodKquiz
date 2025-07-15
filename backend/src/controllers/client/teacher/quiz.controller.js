@@ -1,8 +1,11 @@
-import model from '../../../models/index.js';
+import setUpModels from '../../../models/index.js';
 
 export const getQuizzes = async (req, res) => {
+    const { id } = req.body;
     try {
+        const model =  setUpModels(req.db);
         const quizzes = await model.Quiz.findAll({
+            where: { createdBy: id },
             order: [['createdAt', 'ASC']]
         });
         if (!quizzes) {
@@ -19,6 +22,7 @@ export const getQuizzes = async (req, res) => {
 export const getQuizById = async (req, res) => {
     const { id } = req.params;
     try {
+        const model =  setUpModels(req.db);
         const quiz = await model.Quiz.findOne({
             where: { id },
             exclude: ['createdAt']
@@ -60,6 +64,7 @@ export const createQuiz = async (req, res) => {
     const { title, description, category, time, createdBy, questions } = req.body;
 
     try {
+        const model =  setUpModels(req.db);
         const quiz = await model.Quiz.create({
             title,
             description,
@@ -95,6 +100,7 @@ export const updateQuiz = async (req, res) => {
     const { title, description, category, time, questions } = req.body;
 
     try {
+        const model =  setUpModels(req.db);
         const [updatedRowsCount] = await model.Quiz.update(
             { title, description, category, time },
             {
@@ -136,6 +142,7 @@ export const updateQuiz = async (req, res) => {
 export const deleteQuiz = async (req, res) => {
     const { id } = req.params;
     try {
+        const model =  setUpModels(req.db);
         const deletedRowsCount = await model.Quiz.destroy({
             where: { id }
         });

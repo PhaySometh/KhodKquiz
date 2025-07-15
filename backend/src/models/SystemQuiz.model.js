@@ -20,7 +20,6 @@
  * @author KhodKquiz Team
  */
 
-import sequelize from "../config/db/sequelize.js";
 import { DataTypes } from "sequelize";
 
 /**
@@ -139,6 +138,14 @@ export default (sequelize) => {
     }, {
         tableName: 'systemQuizzes',
         timestamps: false,
-        comment: 'Contains metadata for quizzes created and managed by the system'
+        comment: 'Contains metadata for quizzes created and managed by the system',
+        indexes: [
+            {
+                fields: ['category']
+            },
+            {
+                fields: ['difficulty']
+            }
+        ]
     });
 }

@@ -1,8 +1,12 @@
 import { faker } from '@faker-js/faker';
-import model from '../models/index.js';
+import setUpModels from "../models/index.js";
+import createSequelizeInstance from "../config/db/sequelize.js";
 
 const seedOneMilUsers = async () => {
     try {
+        const sequelize = createSequelizeInstance('admin');
+        const model =  setUpModels(sequelize);
+        
         const batchSize = 1000;
         const totalUsers = 1000000;
 
