@@ -1,7 +1,10 @@
-import model from '../models/index.js';
+import setUpModels from "../models/index.js";
+import createSequelizeInstance from "../config/db/sequelize.js";
 
 const seedAdmins = async () => {
     try {
+        const sequelize = createSequelizeInstance('admin');
+        const model =  setUpModels(sequelize);
         const adminsData = [
             {
                 username: "admin",

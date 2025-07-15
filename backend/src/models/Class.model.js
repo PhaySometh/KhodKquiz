@@ -89,6 +89,11 @@ export default (sequelize) => {
     }, {
         tableName: 'classes',
         timestamps: false,
-        comment: 'Classes created and managed by teachers'
+        comment: 'Classes created and managed by teachers',
+        indexes: [
+            {
+                fields: ['teacherId', 'createdAt']
+            },
+        ]
     });
 }
