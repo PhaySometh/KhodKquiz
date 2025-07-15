@@ -254,7 +254,7 @@ export default function Home() {
                 </div>
 
                 {/* Demo Section for Teacher Registration */}
-                <div className="p-6 bg-muted/30 rounded-lg border">
+                {/* <div className="p-6 bg-muted/30 rounded-lg border">
                     <h2 className="text-2xl font-semibold mb-4 text-primary">
                         🎓 Teacher Registration Demo
                     </h2>
@@ -267,7 +267,7 @@ export default function Home() {
                     >
                         View Teacher Registration Form
                     </a>
-                </div>
+                </div> */}
 
                 {/* Conditional Bottom Section */}
                 {!isAuthenticated ? (
@@ -328,7 +328,7 @@ export default function Home() {
                     className="py-20 relative overflow-hidden"
                 >
                     {/* Background decoration */}
-                    <div className="absolute inset-0 -z-10">
+                    {/* <div className="absolute inset-0 -z-10">
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-orange-50 opacity-70" />
                         <div className="absolute top-0 left-0 w-96 h-96 bg-blue-100 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl opacity-30" />
                         <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-100 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl opacity-30" />
@@ -366,7 +366,7 @@ export default function Home() {
                             <div className="absolute inset-0 bg-gradient-to-l from-blue-600/5 to-orange-600/5 rounded-3xl transform -rotate-1" />
                             <TeacherRequestForm />
                         </motion.div>
-                    </div>
+                    </div> */}
                 </motion.section>
             )}
 

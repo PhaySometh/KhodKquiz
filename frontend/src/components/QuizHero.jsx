@@ -73,7 +73,7 @@ export const QuizTabs = ({ activeTab, handleTabClick }) => {
             >
                 Categories
             </button>
-            <button
+            {/* <button
                 className={`px-4 py-2 font-medium text-sm relative hover:cursor-pointer ${
                     activeTab === 'progress'
                         ? 'text-blue-950 border-b-2 border-blue-950'
@@ -85,8 +85,8 @@ export const QuizTabs = ({ activeTab, handleTabClick }) => {
                 {!isAuthenticated && (
                     <span className="ml-1 text-xs text-orange-500">🔒</span>
                 )}
-            </button>
-            <button
+            </button> */}
+            {/* <button
                 className={`px-4 py-2 font-medium text-sm relative hover:cursor-pointer ${
                     activeTab === 'activity'
                         ? 'text-blue-950 border-b-2 border-blue-950'
@@ -98,7 +98,7 @@ export const QuizTabs = ({ activeTab, handleTabClick }) => {
                 {!isAuthenticated && (
                     <span className="ml-1 text-xs text-orange-500">🔒</span>
                 )}
-            </button>
+            </button> */}
         </div>
     );
 };
