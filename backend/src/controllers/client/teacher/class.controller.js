@@ -3,7 +3,7 @@ import model from '../../../models/index.js';
 export const getClasses = async (req, res) => {
     try {
         const classes = await model.Class.findAll({
-            order: ['createdAt', 'ASC']
+            order: [['createdAt', 'ASC']]
         });
         if (!classes) {
             return res.status(404).json({ success: false, message: 'No classes found' });

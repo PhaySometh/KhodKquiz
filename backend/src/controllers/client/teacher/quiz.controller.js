@@ -3,7 +3,7 @@ import model from '../../../models/index.js';
 export const getQuizzes = async (req, res) => {
     try {
         const quizzes = await model.Quiz.findAll({
-            order: ['createdAt', 'ASC']
+            order: [['createdAt', 'ASC']]
         });
         if (!quizzes) {
             return res.status(404).json({ success: false, message: 'No quizzes found' });
