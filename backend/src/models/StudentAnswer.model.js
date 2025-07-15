@@ -21,75 +21,74 @@
  */
 
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/db/sequelize.js';
 
 /**
  * StudentAnswer Model Definition
  * 
  * Represents a student's selected answer option for a specific question.
  */
-const StudentAnswer = sequelize.define('StudentAnswer', {
-    /**
-     * Student ID - Foreign key referencing the student who answered.
-     */
-    studentId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id',
+export default (sequelize) => {
+    return sequelize.define('StudentAnswer', {
+        /**
+         * Student ID - Foreign key referencing the student who answered.
+         */
+        studentId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'users',
+                key: 'id',
+            },
+            onDelete: 'CASCADE',  // Remove answers if student is deleted
+            comment: 'ID of the student who submitted the answer'
         },
-        onDelete: 'CASCADE',  // Remove answers if student is deleted
-        comment: 'ID of the student who submitted the answer'
-    },
 
-    /**
-     * Question ID - Foreign key referencing the question being answered.
-     */
-    questionId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'questions',
-            key: 'id',
+        /**
+         * Question ID - Foreign key referencing the question being answered.
+         */
+        questionId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'questions',
+                key: 'id',
+            },
+            onDelete: 'CASCADE',  // Remove answers if question is deleted
+            comment: 'ID of the question answered'
         },
-        onDelete: 'CASCADE',  // Remove answers if question is deleted
-        comment: 'ID of the question answered'
-    },
 
-    /**
-     * Selected Option ID - Foreign key referencing the chosen answer option.
-     */
-    selectedOptionId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'answerOptions',
-            key: 'id',
+        /**
+         * Selected Option ID - Foreign key referencing the chosen answer option.
+         */
+        selectedOptionId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'answerOptions',
+                key: 'id',
+            },
+            onDelete: 'CASCADE',  // Remove answers if answer option is deleted
+            comment: 'ID of the selected answer option'
         },
-        onDelete: 'CASCADE',  // Remove answers if answer option is deleted
-        comment: 'ID of the selected answer option'
-    },
 
-    /**
-     * Answered At - Timestamp of when the answer was submitted.
-     */
-    answeredAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        comment: 'Date/time when the student submitted this answer'
-    },
-}, {
-    tableName: 'studentAnswers',
-    timestamps: false,
-    indexes: [
-        {
-            unique: true,
-            fields: ['studentId', 'questionId'],
-            name: 'unique_student_question_answer'
-        }
-    ],
-    comment: 'Stores student selections for quiz questions, ensuring one answer per question per student'
-});
-
-export default StudentAnswer;
+        /**
+         * Answered At - Timestamp of when the answer was submitted.
+         */
+        answeredAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+            comment: 'Date/time when the student submitted this answer'
+        },
+    }, {
+        tableName: 'studentAnswers',
+        timestamps: false,
+        indexes: [
+            {
+                unique: true,
+                fields: ['studentId', 'questionId'],
+                name: 'unique_student_question_answer'
+            }
+        ],
+        comment: 'Stores student selections for quiz questions, ensuring one answer per question per student'
+    });
+}

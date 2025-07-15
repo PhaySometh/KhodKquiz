@@ -17,46 +17,45 @@
  * @version 1.0.0
  */
 
-import { DataTypes } from "sequelize";
-import sequelize from "../config/db/sequelize.js";
+import { DataTypes } from 'sequelize';
 
 /**
  * Admin Model Definition
  * 
  * Stores administrator user credentials and metadata.
  */
-const Admin = sequelize.define('Admin', {
-    /**
-     * Username - Unique identifier for the admin user.
-     */
-    username: {
-        type: DataTypes.STRING(100),
-        allowNull: false,
-        comment: 'Admin username (max 100 characters)'
-    },
+export default (sequelize) => {
+    return sequelize.define('Admin', {
+        /**
+         * Username - Unique identifier for the admin user.
+         */
+        username: {
+            type: DataTypes.STRING(100),
+            allowNull: false,
+            comment: 'Admin username (max 100 characters)'
+        },
 
-    /**
-     * Hashed Password - Securely stored password hash.
-     */
-    hashedPassword: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-        comment: 'Hashed password for admin authentication'
-    },
+        /**
+         * Hashed Password - Securely stored password hash.
+         */
+        hashedPassword: {
+            type: DataTypes.TEXT,
+            allowNull: false,
+            comment: 'Hashed password for admin authentication'
+        },
 
-    /**
-     * Created At - Timestamp when the admin account was created.
-     */
-    createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-        comment: 'Account creation date/time'
-    }
-}, {
-    tableName: 'admins',
-    timestamps: false,
-    comment: 'System administrators with management privileges'
-});
-
-export default Admin;
+        /**
+         * Created At - Timestamp when the admin account was created.
+         */
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            comment: 'Account creation date/time'
+        }
+    }, {
+        tableName: 'admins',
+        timestamps: false,
+        comment: 'System administrators with management privileges'
+    });
+}

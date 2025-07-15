@@ -25,6 +25,8 @@ const AdminLogin = () => {
       const response = await axios.post(`${BASE_URL}/api/admin/login`, formData);
       if (response.data.success) {
         localStorage.setItem('adminToken', response.data.data);
+        // Set header for future requests
+        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.data}`;
         navigate('/admin');
       }
     } catch (error) {

@@ -20,7 +20,6 @@
  * @author KhodKquiz Team
  */
 
-import sequelize from "../config/db/sequelize.js";
 import { DataTypes } from "sequelize";
 
 /**
@@ -28,53 +27,53 @@ import { DataTypes } from "sequelize";
  * 
  * Represents the score and metadata for a student's attempt at a system quiz.
  */
-const SystemQuizResult = sequelize.define('SystemQuizResult', {
-    /**
-     * Student ID - Foreign key referencing the student who took the quiz.
-     */
-    studentId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id'
+export default (sequelize) => {
+    return sequelize.define('SystemQuizResult', {
+        /**
+         * Student ID - Foreign key referencing the student who took the quiz.
+         */
+        studentId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'users',
+                key: 'id'
+            },
+            comment: 'ID of the student who took the quiz'
         },
-        comment: 'ID of the student who took the quiz'
-    },
 
-    /**
-     * System Quiz ID - Foreign key referencing the quiz that was taken.
-     */
-    systemQuizId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'systemQuizzes',
-            key: 'id'
+        /**
+         * System Quiz ID - Foreign key referencing the quiz that was taken.
+         */
+        systemQuizId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'systemQuizzes',
+                key: 'id'
+            },
+            comment: 'ID of the system quiz that was taken'
         },
-        comment: 'ID of the system quiz that was taken'
-    },
 
-    /**
-     * Score - The student’s score on the quiz.
-     */
-    score: {
-        type: DataTypes.DECIMAL(9, 2),
-        allowNull: false,
-        comment: 'Score received by the student for this quiz attempt'
-    },
+        /**
+         * Score - The student’s score on the quiz.
+         */
+        score: {
+            type: DataTypes.DECIMAL(9, 2),
+            allowNull: false,
+            comment: 'Score received by the student for this quiz attempt'
+        },
 
-    /**
-     * Taken At - Timestamp of when the quiz was taken.
-     */
-    takenAt: {
-        type: DataTypes.DATE,
-        comment: 'Date and time when the quiz was taken'
-    }
-}, {
-    modelName: 'systemQuizResult',
-    timestamps: false,
-    comment: 'Stores results of system quizzes taken by students'
-});
-
-export default SystemQuizResult;
+        /**
+         * Taken At - Timestamp of when the quiz was taken.
+         */
+        takenAt: {
+            type: DataTypes.DATE,
+            comment: 'Date and time when the quiz was taken'
+        }
+    }, {
+        modelName: 'systemQuizResult',
+        timestamps: false,
+        comment: 'Stores results of system quizzes taken by students'
+    });
+}

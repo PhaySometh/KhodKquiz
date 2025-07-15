@@ -20,7 +20,6 @@
  * @author KhodKquiz Team
  */
 
-import sequelize from "../config/db/sequelize.js";
 import { DataTypes } from "sequelize";
 
 /**
@@ -28,40 +27,40 @@ import { DataTypes } from "sequelize";
  * 
  * Represents an individual answer option linked to a system-defined question.
  */
-const SystemAnswerOption = sequelize.define('SystemAnswerOption', {
-    /**
-     * System Question ID - Foreign key referencing the system question this option belongs to.
-     */
-    systemQuestionId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'systemQuestions',
-            key: 'id',
-            onDelete: 'CASCADE'     // Delete options if question is deleted
+export default (sequelize) => {
+    return sequelize.define('SystemAnswerOption', {
+        /**
+         * System Question ID - Foreign key referencing the system question this option belongs to.
+         */
+        systemQuestionId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'systemQuestions',
+                key: 'id',
+                onDelete: 'CASCADE'     // Delete options if question is deleted
+            },
+            comment: 'ID of the system question associated with this answer option'
         },
-        comment: 'ID of the system question associated with this answer option'
-    },
 
-    /**
-     * Text - The content of the answer option.
-     */
-    text: {
-        type: DataTypes.TEXT,
-        comment: 'Text content of the answer option'
-    },
+        /**
+         * Text - The content of the answer option.
+         */
+        text: {
+            type: DataTypes.TEXT,
+            comment: 'Text content of the answer option'
+        },
 
-    /**
-     * Is Correct - Indicates whether this option is the correct answer.
-     */
-    isCorrect: {
-        type: DataTypes.BOOLEAN,
-        comment: 'Flag to indicate if this answer option is correct'
-    }
-}, {
-    modelName: 'systemAnswerOptions',
-    timestamps: false,
-    comment: 'Stores possible answer options for system-generated questions'
-});
-
-export default SystemAnswerOption;
+        /**
+         * Is Correct - Indicates whether this option is the correct answer.
+         */
+        isCorrect: {
+            type: DataTypes.BOOLEAN,
+            comment: 'Flag to indicate if this answer option is correct'
+        }
+    }, {
+        modelName: 'systemAnswerOptions',
+        timestamps: false,
+        comment: 'Stores possible answer options for system-generated questions'
+    });
+}

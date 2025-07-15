@@ -19,7 +19,6 @@
  * @version 1.0.0
  */
 
-import sequelize from "../config/db/sequelize.js";
 import { DataTypes } from "sequelize";
 
 /**
@@ -27,69 +26,69 @@ import { DataTypes } from "sequelize";
  * 
  * Stores data for classes including name, teacher, subject, and status.
  */
-const Class = sequelize.define('Class', {
-    /**
-     * Name - The class name/title.
-     */
-    name: {
-        type: DataTypes.STRING(150),
-        allowNull: false,
-        comment: 'Name/title of the class'
-    },
-
-    /**
-     * Description - Additional details about the class.
-     */
-    description: {
-        type: DataTypes.TEXT,
-        comment: 'Description or overview of the class'
-    },
-
-    /**
-     * Teacher ID - Foreign key referencing the teacher who owns the class.
-     */
-    teacherId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id'
+export default (sequelize) => {
+    return sequelize.define('Class', {
+        /**
+         * Name - The class name/title.
+         */
+        name: {
+            type: DataTypes.STRING(150),
+            allowNull: false,
+            comment: 'Name/title of the class'
         },
-        onDelete: 'CASCADE', // Delete classes if teacher is removed
-        comment: 'ID of the teacher who created the class'
-    },
 
-    /**
-     * Subject - Optional subject of the class.
-     */
-    subject: {
-        type: DataTypes.STRING(100),
-        allowNull: true,
-        comment: 'Subject or topic of the class'
-    },
+        /**
+         * Description - Additional details about the class.
+         */
+        description: {
+            type: DataTypes.TEXT,
+            comment: 'Description or overview of the class'
+        },
 
-    /**
-     * Status - Indicates if the class is active or inactive.
-     */
-    status: {
-        type: DataTypes.ENUM('Active', 'Inactive'),
-        defaultValue: 'Active',
-        comment: 'Current status of the class'
-    },
+        /**
+         * Teacher ID - Foreign key referencing the teacher who owns the class.
+         */
+        teacherId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'users',
+                key: 'id'
+            },
+            onDelete: 'CASCADE', // Delete classes if teacher is removed
+            comment: 'ID of the teacher who created the class'
+        },
 
-    /**
-     * Created At - Timestamp when the class was created.
-     */
-    createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-        comment: 'Creation date/time of the class'
-    },
-}, {
-    tableName: 'classes',
-    timestamps: false,
-    comment: 'Classes created and managed by teachers'
-});
+        /**
+         * Subject - Optional subject of the class.
+         */
+        subject: {
+            type: DataTypes.STRING(100),
+            allowNull: true,
+            comment: 'Subject or topic of the class'
+        },
 
-export default Class;
+        /**
+         * Status - Indicates if the class is active or inactive.
+         */
+        status: {
+            type: DataTypes.ENUM('Active', 'Inactive'),
+            defaultValue: 'Active',
+            comment: 'Current status of the class'
+        },
+
+        /**
+         * Created At - Timestamp when the class was created.
+         */
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            comment: 'Creation date/time of the class'
+        },
+    }, {
+        tableName: 'classes',
+        timestamps: false,
+        comment: 'Classes created and managed by teachers'
+    });
+}

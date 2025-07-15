@@ -12,11 +12,13 @@ import {
     BarChart3,
 } from 'lucide-react';
 import UserManagementModal from '../../components/admin/UserManagementModal';
-import RoleManagementModal from '../../components/admin/RoleManagementModal';
+import RolePrivilegesEditor from '../../components/admin/RoleManagementModal.jsx';
 import AdminStatsDashboard from '../../components/admin/AdminStatsDashboard';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import AdminNavbar from '../../components/admin/AdminNavbar';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
+import axios from '../../utils/axiosConfig';
+import toast from 'react-hot-toast';
 
 // Mock data for demonstration
 const MOCK_USERS = [
@@ -66,14 +68,14 @@ const MOCK_USERS = [
 const MOCK_ROLES = [
     {
         id: 1,
-        name: 'student',
+        name: 'students',
         description: 'Basic student access to take quizzes',
         privileges: ['read_quiz', 'take_quiz', 'view_results'],
         userCount: 150,
     },
     {
         id: 2,
-        name: 'teacher',
+        name: 'teachers',
         description: 'Educator with quiz creation and management capabilities',
         privileges: [
             'read_quiz',
@@ -83,25 +85,6 @@ const MOCK_ROLES = [
             'view_analytics',
         ],
         userCount: 25,
-    },
-    {
-        id: 3,
-        name: 'moderator',
-        description: 'Content moderator with user management privileges',
-        privileges: [
-            'read_quiz',
-            'moderate_content',
-            'manage_users',
-            'view_reports',
-        ],
-        userCount: 5,
-    },
-    {
-        id: 4,
-        name: 'admin',
-        description: 'Full system administrator access',
-        privileges: ['all_privileges'],
-        userCount: 2,
     },
 ];
 
@@ -120,6 +103,8 @@ const AVAILABLE_PRIVILEGES = [
     'all_privileges',
 ];
 
+const BASE_URL = 'http://localhost:3000';
+
 export default function AdminGrantAccess() {
     const [users, setUsers] = useState(MOCK_USERS);
     const [roles, setRoles] = useState(MOCK_ROLES);
@@ -129,6 +114,8 @@ export default function AdminGrantAccess() {
     const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'users', or 'roles'
     const [sortBy, setSortBy] = useState('name');
     const [sortOrder, setSortOrder] = useState('asc');
+    const [showViewRole, setShowViewRole] = useState(false);
+    const [viewRole, setViewRole] = useState(null);
 
     // Modal states
     const [isUserModalOpen, setIsUserModalOpen] = useState(false);
@@ -217,10 +204,10 @@ export default function AdminGrantAccess() {
         setIsRoleModalOpen(false);
     };
 
-    const handleEditRole = (role) => {
-        setEditingRole(role);
-        setIsRoleModalOpen(true);
-    };
+    // const handleEditRole = (role) => {
+    //     setEditingRole(role);
+    //     setIsRoleModalOpen(true);
+    // };
 
     const handleUpdateRole = (roleData) => {
         setRoles(
@@ -232,15 +219,20 @@ export default function AdminGrantAccess() {
         setIsRoleModalOpen(false);
     };
 
-    const handleDeleteRole = (roleId) => {
-        setConfirmDialog({
-            isOpen: true,
-            action: 'delete-role',
-            target: roleId,
-            title: 'Delete Role',
-            message:
-                'Are you sure you want to delete this role? All users with this role will need to be reassigned.',
-        });
+    // const handleDeleteRole = (roleId) => {
+    //     setConfirmDialog({
+    //         isOpen: true,
+    //         action: 'delete-role',
+    //         target: roleId,
+    //         title: 'Delete Role',
+    //         message:
+    //             'Are you sure you want to delete this role? All users with this role will need to be reassigned.',
+    //     });
+    // };
+
+    const handleViewRole = (role) => {
+        setShowViewRole(true);
+        setViewRole(role);
     };
 
     const handleConfirmAction = () => {
@@ -615,28 +607,17 @@ export default function AdminGrantAccess() {
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() =>
-                                                        handleEditRole(role)
+                                                        handleViewRole(role)
                                                     }
                                                     className="text-blue-600 hover:text-blue-900 p-1 rounded"
-                                                    title="Edit Role"
+                                                    title="View Role"
                                                 >
-                                                    <Edit size={16} />
-                                                </button>
-                                                <button
-                                                    onClick={() =>
-                                                        handleDeleteRole(
-                                                            role.id
-                                                        )
-                                                    }
-                                                    className="text-red-600 hover:text-red-900 p-1 rounded"
-                                                    title="Delete Role"
-                                                >
-                                                    <Trash2 size={16} />
+                                                    <Eye size={16} />
                                                 </button>
                                             </div>
                                         </div>
 
-                                        <div>
+                                        {/* <div>
                                             <h4 className="text-sm font-medium text-gray-900 mb-2">
                                                 Privileges:
                                             </h4>
@@ -652,7 +633,7 @@ export default function AdminGrantAccess() {
                                                     )
                                                 )}
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 ))}
                             </div>
@@ -673,18 +654,13 @@ export default function AdminGrantAccess() {
                         roles={roles}
                     />
 
-                    <RoleManagementModal
-                        isOpen={isRoleModalOpen}
-                        onClose={() => {
-                            setIsRoleModalOpen(false);
-                            setEditingRole(null);
-                        }}
-                        onSubmit={
-                            editingRole ? handleUpdateRole : handleCreateRole
-                        }
-                        role={editingRole}
-                        availablePrivileges={AVAILABLE_PRIVILEGES}
-                    />
+                    {showViewRole && (
+                        <RolePrivilegesEditor
+                            isOpen={showViewRole}
+                            onClose={() => setShowViewRole(false)}
+                            roleName={viewRole.name}
+                        />
+                    )}
 
                     <ConfirmationDialog
                         isOpen={confirmDialog.isOpen}

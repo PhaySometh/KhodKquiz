@@ -19,40 +19,39 @@
  */
 
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/db/sequelize.js';
 
 /**
  * Question Model Definition
  * 
  * Represents a question that is part of a quiz.
  */
-const Question = sequelize.define('Question', {
-    /**
-     * Quiz ID - Foreign key referencing the parent quiz.
-     */
-    quizId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'quizzes',
-            key: 'id',
+export default (sequelize) => {
+    return sequelize.define('Question', {
+        /**
+         * Quiz ID - Foreign key referencing the parent quiz.
+         */
+        quizId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'quizzes',
+                key: 'id',
+            },
+            onDelete: 'CASCADE',  // Remove question if associated quiz is deleted
+            comment: 'ID of the quiz this question belongs to'
         },
-        onDelete: 'CASCADE',  // Remove question if associated quiz is deleted
-        comment: 'ID of the quiz this question belongs to'
-    },
 
-    /**
-     * Question Text - The actual question content.
-     */
-    question: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-        comment: 'The text content of the question'
-    },
-}, {
-    tableName: 'questions',
-    timestamps: false,
-    comment: 'Stores individual questions associated with quizzes'
-});
-
-export default Question;
+        /**
+         * Question Text - The actual question content.
+         */
+        question: {
+            type: DataTypes.TEXT,
+            allowNull: false,
+            comment: 'The text content of the question'
+        },
+    }, {
+        tableName: 'questions',
+        timestamps: false,
+        comment: 'Stores individual questions associated with quizzes'
+    });
+}

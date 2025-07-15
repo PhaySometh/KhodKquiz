@@ -28,117 +28,117 @@ import { DataTypes } from "sequelize";
  * 
  * Represents the metadata and structure of a system-generated quiz.
  */
-const SystemQuiz = sequelize.define('SystemQuiz', {
-    /**
-     * Title - The name or title of the quiz.
-     */
-    title: {
-        type: DataTypes.STRING(150),
-        allowNull: false,
-        comment: 'Title of the system quiz'
-    },
-
-    /**
-     * Description - Additional details about the quiz.
-     */
-    description: {
-        type: DataTypes.TEXT,
-        comment: 'Detailed description of what the quiz is about'
-    },
-
-    /**
-     * Category - Classification or grouping of the quiz.
-     */
-    category: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'systemCategories',
-            key: 'id',
-            onDelete: 'NULL'
+export default (sequelize) => {
+    return sequelize.define('SystemQuiz', {
+        /**
+         * Title - The name or title of the quiz.
+         */
+        title: {
+            type: DataTypes.STRING(150),
+            allowNull: false,
+            comment: 'Title of the system quiz'
         },
-        comment: 'Category to which this quiz belongs'
-    },
 
-    /**
-     * Created By - ID of the admin who created the quiz.
-     */
-    createdBy: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'admins',
-            key: 'id',
-            onDelete: 'NULL'
+        /**
+         * Description - Additional details about the quiz.
+         */
+        description: {
+            type: DataTypes.TEXT,
+            comment: 'Detailed description of what the quiz is about'
         },
-        comment: 'ID of the admin who created this system quiz'
-    },
 
-    /**
-     * Status - Indicates whether the quiz is published, archived, or still in draft.
-     */
-    status: {
-        type: DataTypes.ENUM('Published', 'Archived', 'Draft'),
-        defaultValue: 'Published',
-        comment: 'Current status of the quiz (e.g., Draft, Published, Archived)'
-    },
+        /**
+         * Category - Classification or grouping of the quiz.
+         */
+        category: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'systemCategories',
+                key: 'id',
+                onDelete: 'NULL'
+            },
+            comment: 'Category to which this quiz belongs'
+        },
 
-    /**
-     * Time - Duration in minutes allowed to complete the quiz.
-     */
-    time: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        comment: 'Time limit (in minutes) for completing the quiz'
-    },
+        /**
+         * Created By - ID of the admin who created the quiz.
+         */
+        createdBy: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'admins',
+                key: 'id',
+                onDelete: 'NULL'
+            },
+            comment: 'ID of the admin who created this system quiz'
+        },
 
-    /**
-     * Attempts - Number of times the quiz has been attempted by students.
-     */
-    attempts: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-        comment: 'Number of times the quiz has been attempted by students'
-    },
+        /**
+         * Status - Indicates whether the quiz is published, archived, or still in draft.
+         */
+        status: {
+            type: DataTypes.ENUM('Published', 'Archived', 'Draft'),
+            defaultValue: 'Published',
+            comment: 'Current status of the quiz (e.g., Draft, Published, Archived)'
+        },
 
-    /**
-     * Average Score - Average score achieved by students on this quiz.
-     */
-    averageAccuracy: {
-        type: DataTypes.DECIMAL(3, 2),
-        defaultValue: 0,
-        comment: 'Average score achieved by students on this quiz'
-    },
+        /**
+         * Time - Duration in minutes allowed to complete the quiz.
+         */
+        time: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+            comment: 'Time limit (in minutes) for completing the quiz'
+        },
 
-    /**
-     * Difficulty - Level of difficulty of the quiz.
-     */
-    difficulty: {
-        type: DataTypes.ENUM('Easy', 'Medium', 'Hard'),
-        allowNull: false,
-        comment: 'Difficulty level of the quiz (Easy, Medium, Hard)'
-    },
+        /**
+         * Attempts - Number of times the quiz has been attempted by students.
+         */
+        attempts: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            comment: 'Number of times the quiz has been attempted by students'
+        },
 
-    /**
-     * Questions Count - Number of questions in the quiz.
-     */
-    questionsCount: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-        comment: 'Number of questions in the quiz'
-    },
+        /**
+         * Average Score - Average score achieved by students on this quiz.
+         */
+        averageAccuracy: {
+            type: DataTypes.DECIMAL(3, 2),
+            defaultValue: 0,
+            comment: 'Average score achieved by students on this quiz'
+        },
 
-    /**
-     * Created At - Timestamp when the quiz was created.
-     */
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        allowNull: false,
-        comment: 'Date/time when the quiz was created'
-    }
-}, {
-    tableName: 'systemQuizzes',
-    timestamps: false,
-    comment: 'Contains metadata for quizzes created and managed by the system'
-});
+        /**
+         * Difficulty - Level of difficulty of the quiz.
+         */
+        difficulty: {
+            type: DataTypes.ENUM('Easy', 'Medium', 'Hard'),
+            allowNull: false,
+            comment: 'Difficulty level of the quiz (Easy, Medium, Hard)'
+        },
 
-export default SystemQuiz;
+        /**
+         * Questions Count - Number of questions in the quiz.
+         */
+        questionsCount: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            comment: 'Number of questions in the quiz'
+        },
+
+        /**
+         * Created At - Timestamp when the quiz was created.
+         */
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+            allowNull: false,
+            comment: 'Date/time when the quiz was created'
+        }
+    }, {
+        tableName: 'systemQuizzes',
+        timestamps: false,
+        comment: 'Contains metadata for quizzes created and managed by the system'
+    });
+}

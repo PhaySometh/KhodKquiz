@@ -13,10 +13,12 @@ import {
     validateLogin, 
     validateProfileUpdate 
 } from '../middleware/validation.middleware.js';
+import { dbConnectionMiddleware } from '../middleware/dbConnection.middleware.js';
 
 const router = express.Router();
 
 // Public routes
+router.use(dbConnectionMiddleware);
 router.post('/auth/google-login', verifyUser);
 
 // Teacher Routes

@@ -5,6 +5,7 @@ import hourPNG from '../../assets/image/hour.png';
 import toast from 'react-hot-toast';
 import ConfirmationDialog from '../ConfirmationDialog';
 import LoadingSpinner from '../LoadingSpinner';
+import axios from '../../utils/axiosConfig';
 
 export default function AdminProfile() {
     const navigate = useNavigate();
@@ -19,9 +20,10 @@ export default function AdminProfile() {
         setIsLoggingOut(true);
 
         try {
-            // Add a brief delay for better UX
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-
+            // // Add a brief delay for better UX
+            // await new Promise((resolve) => setTimeout(resolve, 1500));
+            // Set headers to null
+            axios.defaults.headers.common['Authorization'] = null;
             logout();
             navigate('/');
         } catch (error) {

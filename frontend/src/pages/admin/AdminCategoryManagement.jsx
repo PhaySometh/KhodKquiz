@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import AdminSidebar from '../../components/admin/AdminSidebar.jsx';
 import AdminNavbar from '../../components/admin/AdminNavbar.jsx';
 import Footer from '../../components/common/Footer.jsx';
-import axios from 'axios';
+import axios from '../../utils/axiosConfig';
 
 const BASE_URL = 'http://localhost:3000';
 

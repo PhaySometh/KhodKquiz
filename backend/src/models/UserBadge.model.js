@@ -19,7 +19,6 @@
  * @author KhodKquiz Team
  */
 
-import sequelize from "../config/db/sequelize.js";
 import { DataTypes } from "sequelize";
 
 /**
@@ -27,55 +26,55 @@ import { DataTypes } from "sequelize";
  * 
  * Represents the association of badges earned by users.
  */
-const UserBadge = sequelize.define('UserBadge', {
-    /**
-     * User ID - Foreign key referencing the user who earned the badge.
-     */
-    userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id'
+export default (sequelize) => {
+    return sequelize.define('UserBadge', {
+        /**
+         * User ID - Foreign key referencing the user who earned the badge.
+         */
+        userId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'users',
+                key: 'id'
+            },
+            onDelete: 'CASCADE',  // Remove badge assignments if user is deleted
+            comment: 'ID of the user who earned the badge'
         },
-        onDelete: 'CASCADE',  // Remove badge assignments if user is deleted
-        comment: 'ID of the user who earned the badge'
-    },
 
-    /**
-     * Badge ID - Foreign key referencing the badge earned.
-     */
-    badgeId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'badges',
-            key: 'id'
+        /**
+         * Badge ID - Foreign key referencing the badge earned.
+         */
+        badgeId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'badges',
+                key: 'id'
+            },
+            onDelete: 'CASCADE',  // Remove badge assignments if badge is deleted
+            comment: 'ID of the badge earned by the user'
         },
-        onDelete: 'CASCADE',  // Remove badge assignments if badge is deleted
-        comment: 'ID of the badge earned by the user'
-    },
 
-    /**
-     * Created At - Timestamp when the badge was awarded.
-     */
-    createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-        comment: 'Date/time when the badge was awarded to the user'
-    }
-}, {
-    timestamps: false,
-    tableName: 'userBadges',
-    indexes: [
-        {
-            unique: true,
-            fields: ['userId', 'badgeId'],
-            name: 'unique_user_badge_assignment'
+        /**
+         * Created At - Timestamp when the badge was awarded.
+         */
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            comment: 'Date/time when the badge was awarded to the user'
         }
-    ],
-    comment: 'Associates users with badges they have earned, preventing duplicates'
-});
-
-export default UserBadge;
+    }, {
+        timestamps: false,
+        tableName: 'userBadges',
+        indexes: [
+            {
+                unique: true,
+                fields: ['userId', 'badgeId'],
+                name: 'unique_user_badge_assignment'
+            }
+        ],
+        comment: 'Associates users with badges they have earned, preventing duplicates'
+    });
+}

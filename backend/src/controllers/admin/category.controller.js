@@ -1,9 +1,10 @@
-import model from '../../models/index.js';
+import setUpModels from '../../models/index.js';
 
 export const getSystemCategories = async (req, res) => {
     try {
+        const model =  setUpModels(req.db);
         const categories = await model.SystemCategory.findAll({
-            order: ['name', 'ASC']
+            order: [['name', 'ASC']]
         });
         if (!categories) {
             return res.status(404).json({ success: false, message: 'No categories found' });
@@ -19,6 +20,7 @@ export const getSystemCategories = async (req, res) => {
 export const getSystemCategoryById = async (req, res) => {
     const { id } = req.params;
     try {
+        const model =  setUpModels(req.db);
         const category = await model.SystemCategory.findOne({
             where: { id }
         });
@@ -35,6 +37,7 @@ export const getSystemCategoryById = async (req, res) => {
 
 export const createCategory = async (req, res) => {
     try {
+        const model =  setUpModels(req.db);
         const { name, description } = req.body;
 
         if (!name) {
@@ -64,6 +67,7 @@ export const createCategory = async (req, res) => {
 
 export const updateCategory = async (req, res) => {
     try {
+        const model =  setUpModels(req.db);
         const { id } = req.params;
         const { name, description } = req.body;
 
@@ -97,6 +101,7 @@ export const updateCategory = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
     try {
+        const model =  setUpModels(req.db);
         const { id } = req.params;
 
         const deletedRowsCount = await model.SystemCategory.destroy({

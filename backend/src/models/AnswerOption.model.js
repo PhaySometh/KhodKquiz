@@ -20,49 +20,48 @@
  */
 
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/db/sequelize.js';
 
 /**
  * AnswerOption Model Definition
  * 
  * Stores answer options for multiple-choice questions.
  */
-const AnswerOption = sequelize.define('AnswerOption', {
-    /**
-     * Question ID - Foreign key linking to the question.
-     */
-    questionId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'questions',
-            key: 'id',
-            onDelete: 'CASCADE',   // Delete options if question deleted
+export default (sequelize) => {
+    return sequelize.define('AnswerOption', {
+        /**
+         * Question ID - Foreign key linking to the question.
+         */
+        questionId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'questions',
+                key: 'id',
+                onDelete: 'CASCADE',   // Delete options if question deleted
+            },
+            comment: 'ID of the question this answer option belongs to'
         },
-        comment: 'ID of the question this answer option belongs to'
-    },
 
-    /**
-     * Text - The answer option text.
-     */
-    text: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-        comment: 'Text content of the answer option'
-    },
+        /**
+         * Text - The answer option text.
+         */
+        text: {
+            type: DataTypes.TEXT,
+            allowNull: false,
+            comment: 'Text content of the answer option'
+        },
 
-    /**
-     * Is Correct - Marks if this option is the correct answer.
-     */
-    isCorrect: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        comment: 'Whether this option is the correct answer'
-    },
-}, {
-    tableName: 'answerOptions',
-    timestamps: false,
-    comment: 'Multiple-choice answer options for questions',
-});
-
-export default AnswerOption;
+        /**
+         * Is Correct - Marks if this option is the correct answer.
+         */
+        isCorrect: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            comment: 'Whether this option is the correct answer'
+        },
+    }, {
+        tableName: 'answerOptions',
+        timestamps: false,
+        comment: 'Multiple-choice answer options for questions',
+    });
+}
