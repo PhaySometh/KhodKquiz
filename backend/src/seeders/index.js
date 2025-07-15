@@ -1,11 +1,13 @@
-import seedUsers from './seedUsers.js';
 import seedCategories from './seedCategories.js';
 import seedQuizzes from './seedQuizzes.js';
 import seedAdmins from './seedAdmins.js';
 
+import sequelize from '../config/db/sequelize.js';
+
 async function seed() {
     try {
-        await seedUsers();
+        await sequelize.sync({ force: true });
+        
         await seedCategories();
         await seedQuizzes();
         await seedAdmins();
