@@ -61,6 +61,11 @@ export default (sequelize) => {
     }, {
         modelName: 'systemAnswerOptions',
         timestamps: false,
-        comment: 'Stores possible answer options for system-generated questions'
+        comment: 'Stores possible answer options for system-generated questions',
+        indexes: [
+            {
+                fields: ['systemQuestionId']
+            }
+        ]
     });
 }

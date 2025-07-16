@@ -18,7 +18,7 @@ async function seed() {
         await seedAdmins();
         await seedCategories();
         await seedQuizzes();
-        // await seedOneMilUsers();
+        await seedOneMilUsers();
         console.log('✅ Seeding completed!');
     } catch (error) {
         console.error('Error in seeding:', error);

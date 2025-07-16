@@ -27,19 +27,30 @@ const createSequelizeInstance = (role) => {
             break;
     }
 
+    // return new Sequelize(
+    //     process.env.PGDATABASE,  // Database name
+    //     username,                // Role-specific username
+    //     password,                // Role-specific password
+    //     {
+    //         host: process.env.PGHOST,
+    //         dialect: 'postgres',
+    //         dialectOptions: {
+    //             ssl: {
+    //                 require: true,
+    //                 rejectUnauthorized: false,
+    //             },
+    //         },
+    //         logging: false, // Set to true if you want to debug SQL
+    //     }
+    // );
     return new Sequelize(
-        process.env.PGDATABASE,  // Database name
-        username,                // Role-specific username
-        password,                // Role-specific password
+        'codequiz',  // Database name
+        'root',                // Role-specific username
+        'rootAdmin123',                // Role-specific password
         {
-            host: process.env.PGHOST,
-            dialect: 'postgres',
-            dialectOptions: {
-                ssl: {
-                    require: true,
-                    rejectUnauthorized: false,
-                },
-            },
+            host: 'localhost',
+            port: 3306,
+            dialect: 'mysql',
             logging: false, // Set to true if you want to debug SQL
         }
     );

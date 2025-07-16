@@ -89,7 +89,7 @@ export default (sequelize) => {
          * Google ID - External Google authentication ID.
          */
         googleId: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(191),
             comment: 'Google ID for users authenticated via Google'
         },
 
@@ -112,7 +112,7 @@ export default (sequelize) => {
                 fields: ['email']
             },
             {
-                fields: ['googleId']
+                fields: ['googleId'],
             }
         ]
     });

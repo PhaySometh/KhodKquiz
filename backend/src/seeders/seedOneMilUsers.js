@@ -8,7 +8,7 @@ const seedOneMilUsers = async () => {
         const model =  setUpModels(sequelize);
         
         const batchSize = 1000;
-        const totalUsers = 1000000;
+        const totalUsers = 1800000;
 
         for (let i = 0; i < totalUsers; i += batchSize) {
             const usersBatch = [];
