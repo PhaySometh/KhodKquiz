@@ -1,12 +1,17 @@
-import model from '../models/index.js';
+import setUpModels from "../models/index.js";
+import createSequelizeInstance from "../config/db/sequelize.js";
 
 const seedQuizzes = async () => {
     try {
+        const sequelize = createSequelizeInstance('admin');
+        const model =  setUpModels(sequelize);
+
         const quizzesData = [
             {
                 title: "Math Basics",
                 time: 20,
                 description: "A basic quiz on arithmetic and logic.",
+                difficulty: "Easy",
                 category: 1,
                 createdBy: 1,
                 questions: [
@@ -94,7 +99,8 @@ const seedQuizzes = async () => {
                 title: "Geography Fun",
                 time: 15,
                 description: "Test your knowledge of countries and capitals.",
-                category: 4,
+                difficulty: "Easy",
+                category: 2,
                 createdBy: 1,
                 questions: [
                     {
@@ -151,6 +157,7 @@ const seedQuizzes = async () => {
                 title: "Science Trivia",
                 time: 25,
                 description: "General science questions for high school level.",
+                difficulty: "Easy",
                 category: 2,
                 createdBy: 1,
                 questions: [
@@ -224,7 +231,8 @@ const seedQuizzes = async () => {
                 title: "General Knowledge",
                 time: 25,
                 description: "A quiz on general knowledge and trivia.",
-                category: 5,
+                difficulty: "Easy",
+                category: 2,
                 createdBy: 1,
                 questions: [
                     {
@@ -301,7 +309,8 @@ const seedQuizzes = async () => {
                 title: "History Quiz",
                 time: 25,
                 description: "A quiz on history and culture.",
-                category: 3,
+                difficulty: "Easy",
+                category: 1,
                 createdBy: 1,
                 questions: [
                     {
@@ -412,6 +421,8 @@ const seedQuizzes = async () => {
             const quiz = await model.SystemQuiz.create({
                 title: quizData.title,
                 time: quizData.time,
+                difficulty: quizData.difficulty,
+                questionsCount: quizData.questions.length,
                 description: quizData.description,
                 category: quizData.category,
                 createdBy: quizData.createdBy

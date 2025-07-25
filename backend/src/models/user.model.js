@@ -105,6 +105,15 @@ export default (sequelize) => {
     }, {
         tableName: 'users',
         timestamps: false,
-        comment: 'Stores user accounts, roles, and authentication details'
+        comment: 'Stores user accounts, roles, and authentication details',
+        indexes: [
+            {
+                unique: true,
+                fields: ['email']
+            },
+            {
+                fields: ['googleId']
+            }
+        ]
     });
 }

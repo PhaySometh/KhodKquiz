@@ -99,6 +99,11 @@ export default (sequelize) => {
     }, {
         tableName: 'quizzes',
         timestamps: false,
-        comment: 'Stores metadata and ownership of quizzes created by teachers'
+        comment: 'Stores metadata and ownership of quizzes created by teachers',
+        indexes: [
+            {
+                fields: ['createdBy', 'createdAt']
+            },
+        ]
     });
 }

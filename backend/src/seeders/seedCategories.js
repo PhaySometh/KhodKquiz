@@ -1,7 +1,11 @@
-import model from '../models/index.js';
+import setUpModels from "../models/index.js";
+import createSequelizeInstance from "../config/db/sequelize.js";
 
 const seedCategories = async () => {
     try {
+        const sequelize = createSequelizeInstance('admin');
+        const model =  setUpModels(sequelize);
+        
         const categoriesData = [
             {
                 name: "Math",

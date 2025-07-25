@@ -1,8 +1,11 @@
-import model from '../../../models/index.js';
+import setUpModels from '../../../models/index.js';
 
 export const getClasses = async (req, res) => {
+    const { id } = req.body;
     try {
+        const model =  setUpModels(req.db);
         const classes = await model.Class.findAll({
+            where: { teacherId: id },
             order: [['createdAt', 'ASC']]
         });
         if (!classes) {
@@ -19,6 +22,7 @@ export const getClasses = async (req, res) => {
 export const getClassById = async (req, res) => {
     const { id } = req.params;
     try {
+        const model =  setUpModels(req.db);
         const classObj = await model.Class.findOne({
             where: { id }
         });
@@ -36,6 +40,7 @@ export const getClassById = async (req, res) => {
 export const createClass = async (req, res) => {
     const { name, subject, description, status, teacherId } = req.body;
     try {
+        const model =  setUpModels(req.db);
         const newClass = await model.Class.create({
             name,
             subject,
@@ -59,6 +64,7 @@ export const updateClass = async (req, res) => {
     const { id } = req.params;
     const { name, subject, description, status } = req.body;
     try {
+        const model =  setUpModels(req.db);
         const [updatedRowsCount] = await model.Class.update(
             { name, subject, description, status },
             {
@@ -81,6 +87,7 @@ export const updateClass = async (req, res) => {
 export const deleteClass = async (req, res) => {
     const { id } = req.params;
     try {
+        const model =  setUpModels(req.db);
         const deletedRowsCount = await model.Class.destroy({
             where: { id }
         });
