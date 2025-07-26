@@ -69,7 +69,7 @@ const TeacherRegistrationForm = () => {
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="max-w-4xl mx-auto p-6">
       {/* Card */}
       <div className="bg-white rounded-lg shadow-xl overflow-hidden">
-        <div className="text-center bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-t-lg p-6">
+        <div className="text-center bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-t-lg p-6 mt-15">
           <motion.div variants={itemVariants} className="flex justify-center mb-4">
             <div className="bg-white/10 p-4 rounded-full"><User className="w-8 h-8" /></div>
           </motion.div>
@@ -222,7 +222,10 @@ const TeacherRegistrationForm = () => {
                     Processing Registration...
                   </div>
                 ) : (
-                  <><Users className="w-5 h-5 mr-2" /> Submit Teacher Registration</>
+                  <div className='flex items-center gap-2 justify-center'>
+                    <Users className="w-5 h-5 mr-2" />
+                    <div>Submit Teacher Registration</div>
+                  </div>
                 )}
               </button>
             </motion.div>
