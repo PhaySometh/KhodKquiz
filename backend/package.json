@@ -1,31 +1,31 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "main": "server.js",
-  "type": "module",
-  "scripts": {
-    "dev": "nodemon src/server.js",
-    "seed": "node src/seeders/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@faker-js/faker": "^9.9.0",
-    "bcrypt": "^6.0.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "google-auth-library": "^10.1.0",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0",
-    "pg": "^8.16.2",
-    "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.7"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
-  }
+    "name": "backend",
+    "version": "1.0.0",
+    "main": "server.js",
+    "type": "module",
+    "scripts": {
+        "dev": "nodemon src/server.js",
+        "seed": "node src/seeders/index.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@faker-js/faker": "^9.9.0",
+        "bcrypt": "^6.0.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.5.0",
+        "express": "^5.1.0",
+        "google-auth-library": "^10.1.0",
+        "helmet": "^8.1.0",
+        "jsonwebtoken": "^9.0.2",
+        "morgan": "^1.10.0",
+        "pg": "^8.16.2",
+        "pg-hstore": "^2.3.4",
+        "sequelize": "^6.37.7"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.10"
+    }
 }

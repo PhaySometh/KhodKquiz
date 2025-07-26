@@ -1,38 +1,38 @@
-import setUpModels from "../models/index.js";
-import createSequelizeInstance from "../config/db/sequelize.js";
+import setUpModels from '../models/index.js';
+import createSequelizeInstance from '../config/db/sequelize.js';
 
 const seedCategories = async () => {
     try {
-        const sequelize = createSequelizeInstance('admin');
-        const model =  setUpModels(sequelize);
-        
+        const sequelize = createSequelizeInstance();
+        const model = setUpModels(sequelize);
+
         const categoriesData = [
             {
-                name: "Math",
-                description: "A basic quiz on arithmetic and logic.",
+                name: 'Math',
+                description: 'A basic quiz on arithmetic and logic.',
             },
             {
-                name: "Science",
-                description: "A basic quiz on science and nature.",
+                name: 'Science',
+                description: 'A basic quiz on science and nature.',
             },
             {
-                name: "History",
-                description: "A basic quiz on history and culture.",
+                name: 'History',
+                description: 'A basic quiz on history and culture.',
             },
             {
-                name: "Geography",
-                description: "A basic quiz on geography and places.",
+                name: 'Geography',
+                description: 'A basic quiz on geography and places.',
             },
             {
-                name: "General Knowledge",
-                description: "A basic quiz on general knowledge and trivia.",
-            }
+                name: 'General Knowledge',
+                description: 'A basic quiz on general knowledge and trivia.',
+            },
         ];
 
         for (const categoryData of categoriesData) {
             await model.SystemCategory.create({
                 name: categoryData.name,
-                description: categoryData.description
+                description: categoryData.description,
             });
         }
 

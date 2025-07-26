@@ -9,7 +9,11 @@ import CreateClass from '../pages/client/teacher/CreateClass.jsx';
 function TeacherRoutes() {
     return (
         <Routes>
-            <Route element={<ProtectedRoute />}>
+            <Route
+                element={
+                    <ProtectedRoute requiredRoles={['teacher', 'admin']} />
+                }
+            >
                 <Route path="" element={<TeacherDashboard />} />
                 <Route path="classes" element={<TeacherClassManagement />} />
                 <Route path="quizzes" element={<TeacherQuizManagement />} />

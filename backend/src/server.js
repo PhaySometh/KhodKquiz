@@ -10,6 +10,7 @@ import userRoutes from './routes/user.routes.js';
 import teacherRoutes from './routes/teacher.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import studentRoutes from './routes/student.routes.js';
+import teacherApplicationRoutes from './routes/teacherApplication.routes.js';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/student', studentRoutes);
+app.use('/api/teacher-application', teacherApplicationRoutes);
 
 try {
     app.listen(PORT, () => {
