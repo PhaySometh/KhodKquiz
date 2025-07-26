@@ -225,7 +225,7 @@ export default function Home() {
                 </div>
 
                 {/* Why KhodKquiz? Section */}
-                <div className="bg-gray-50 py-20">
+                <div className="bg-gray-50 py-10">
                     <div className="container mx-auto px-6">
                         <h2 className="text-3xl font-bold text-center text-blue-950 mb-12">
                             Why KhodKquiz?
