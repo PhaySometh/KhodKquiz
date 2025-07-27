@@ -7,9 +7,15 @@ import Quiz from '../pages/client/student/Quiz.jsx';
 function StudentRoutes() {
     return (
         <Routes>
-            <Route element={<ProtectedRoute />}>
+            <Route
+                element={
+                    <ProtectedRoute
+                        requiredRoles={['student', 'teacher', 'admin']}
+                    />
+                }
+            >
                 <Route path="" element={<StudentDashBoard />} />
-                <Route path='category/:id' element={<StudentQuizzes />} />
+                <Route path="category/:id" element={<StudentQuizzes />} />
                 <Route path="quiz/:id" element={<Quiz />} />
             </Route>
         </Routes>

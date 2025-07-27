@@ -12,7 +12,6 @@ import {
     BarChart3,
 } from 'lucide-react';
 import UserManagementModal from '../../components/admin/UserManagementModal';
-import RolePrivilegesEditor from '../../components/admin/RoleManagementModal.jsx';
 import AdminStatsDashboard from '../../components/admin/AdminStatsDashboard';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import AdminNavbar from '../../components/admin/AdminNavbar';
@@ -654,13 +653,7 @@ export default function AdminGrantAccess() {
                         roles={roles}
                     />
 
-                    {showViewRole && (
-                        <RolePrivilegesEditor
-                            isOpen={showViewRole}
-                            onClose={() => setShowViewRole(false)}
-                            roleName={viewRole.name}
-                        />
-                    )}
+                    {/* Role privileges editor removed - RBAC is now handled at application level */}
 
                     <ConfirmationDialog
                         isOpen={confirmDialog.isOpen}

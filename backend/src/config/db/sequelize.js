@@ -4,33 +4,22 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 /**
- * Creates a new Sequelize instance based on the user role.
- * @param {'admin' | 'teacher' | 'student'} role
+ * Creates a Sequelize instance using the main database owner credentials.
+ * RBAC is handled at the application level through middleware, not database level.
+ * This ensures all operations have proper database permissions.
+ *
  * @returns {Sequelize} A configured Sequelize instance
  */
-const createSequelizeInstance = (role) => {
-    let username, password;
-
-    switch (role) {
-        case 'student':
-            username = process.env.PG_STUDENT_USER;
-            password = process.env.PG_STUDENT_PASSWORD;
-            break;
-        case 'teacher':
-            username = process.env.PG_TEACHER_USER;
-            password = process.env.PG_TEACHER_PASSWORD;
-            break;
-        case 'admin':
-        default:
-            username = process.env.PGUSER;
-            password = process.env.PGPASSWORD;
-            break;
-    }
+const createSequelizeInstance = () => {
+    // Always use the database owner credentials to avoid permission issues
+    // RBAC is enforced at the application level through authentication middleware
+    const username = process.env.PGUSER;
+    const password = process.env.PGPASSWORD;
 
     return new Sequelize(
-        process.env.PGDATABASE,  // Database name
-        username,                // Role-specific username
-        password,                // Role-specific password
+        process.env.PGDATABASE, // Database name
+        username, // Database owner username
+        password, // Database owner password
         {
             host: process.env.PGHOST,
             dialect: 'postgres',
@@ -41,6 +30,12 @@ const createSequelizeInstance = (role) => {
                 },
             },
             logging: false, // Set to true if you want to debug SQL
+            pool: {
+                max: 5,
+                min: 0,
+                acquire: 30000,
+                idle: 10000,
+            },
         }
     );
 };

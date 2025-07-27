@@ -1,12 +1,12 @@
 import { faker } from '@faker-js/faker';
-import setUpModels from "../models/index.js";
-import createSequelizeInstance from "../config/db/sequelize.js";
+import setUpModels from '../models/index.js';
+import createSequelizeInstance from '../config/db/sequelize.js';
 
 const seedOneMilUsers = async () => {
     try {
-        const sequelize = createSequelizeInstance('admin');
-        const model =  setUpModels(sequelize);
-        
+        const sequelize = createSequelizeInstance();
+        const model = setUpModels(sequelize);
+
         const batchSize = 1000;
         const totalUsers = 1000000;
 
@@ -18,12 +18,12 @@ const seedOneMilUsers = async () => {
                     name: faker.person.fullName(),
                     email: faker.internet.email(),
                     password: '1234',
-                    provider: 'local'
+                    provider: 'local',
                 });
             }
 
             await model.User.bulkCreate(usersBatch, {
-                ignoreDuplicates: true // Skip duplicates like email
+                ignoreDuplicates: true, // Skip duplicates like email
             });
 
             console.log(`Inserted batch ${i + batchSize} of ${totalUsers}`);

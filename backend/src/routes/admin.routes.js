@@ -1,43 +1,44 @@
+/**
+ * Admin Routes
+ *
+ * Routes for admin-only functionality including quiz and category management.
+ * All routes require authentication and admin role.
+ *
+ * Note: Admin authentication is now handled through the unified User model
+ * with admin role, not the separate Admin model.
+ */
+
 import express from 'express';
 import {
-    adminLogin,
-    adminRegister
-} from '../controllers/admin/admin.controller.js';
-
-import { 
     createQuiz,
-    getQuizzes
+    getQuizzes,
 } from '../controllers/admin/quiz.controller.js';
 
-import { 
+import {
     createCategory,
     getSystemCategories,
     updateCategory,
-    deleteCategory
+    deleteCategory,
 } from '../controllers/admin/category.controller.js';
 
-import { getRolePrivileges, updateRolePrivileges } from '../controllers/admin/rolePrivileges.controller.js';
-
-import { authenticate } from '../middleware/auth.middleware.js';
+import { authenticate, isAdmin } from '../middleware/auth.middleware.js';
 import { dbConnectionMiddleware } from '../middleware/dbConnection.middleware.js';
 
 const router = express.Router();
 
-router.post('/register', adminRegister);
-router.post('/login', dbConnectionMiddleware, adminLogin);
-
+// All admin routes require authentication and admin role
 router.use(authenticate);
+router.use(isAdmin);
 router.use(dbConnectionMiddleware);
 
+// Quiz management routes
 router.post('/quiz', createQuiz);
 router.get('/quiz', getQuizzes);
 
+// Category management routes
 router.post('/category', createCategory);
-router.get('/category', dbConnectionMiddleware, getSystemCategories);
+router.get('/category', getSystemCategories);
 router.put('/category/:id', updateCategory);
 router.delete('/category/:id', deleteCategory);
-
-router.get('/role-privileges', getRolePrivileges);
-router.post('/update-role-privileges', updateRolePrivileges);
 
 export default router;

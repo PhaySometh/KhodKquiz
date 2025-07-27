@@ -17,16 +17,16 @@ const Footer = () => {
               Test your knowledge, compete with others, and level up your programming expertise.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-orange-400 transition-colors">
+              <a href="https://github.com/ShurikenBy6YoungTechStudents" target="_blank" className="text-gray-400 hover:text-orange-400 transition-colors">
                 <Github size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-orange-400 transition-colors">
+              <a href="https://x.com/PhaySometh168" target='_blank' className="text-gray-400 hover:text-orange-400 transition-colors">
                 <Twitter size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-orange-400 transition-colors">
+              <a href="https://www.linkedin.com/in/phay-someth/" target='_blank' className="text-gray-400 hover:text-orange-400 transition-colors">
                 <Linkedin size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-orange-400 transition-colors">
+              <a href="mailto:phay.someth70@gmail.com" className="text-gray-400 hover:text-orange-400 transition-colors">
                 <Mail size={20} />
               </a>
             </div>
@@ -49,7 +49,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-orange-400 transition-colors flex items-center">
+                <a href="/leaderboard" className="text-gray-300 hover:text-orange-400 transition-colors flex items-center">
                   <Trophy size={16} className="mr-2" />
                   Leaderboard
                 </a>

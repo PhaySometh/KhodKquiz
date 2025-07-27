@@ -3,10 +3,9 @@ import Home from '../pages/Home.jsx';
 import QuizCategory from '../pages/QuizCategory.jsx';
 import SignUp from '../pages/SignUp.jsx';
 import Login from '../pages/Login.jsx';
-import AdminLogin from '../pages/admin/AdminLogin.jsx';
-import TeacherRegistrationForm from '../pages/TeacherRegistrationForm.jsx';
 import Leaderboard from '../pages/Leaderboard.jsx';
 import Profile from '../pages/User.jsx';
+import Unauthorized from '../pages/Unauthorized.jsx';
 
 function PublicRoutes() {
     return (
@@ -19,12 +18,8 @@ function PublicRoutes() {
             <Route path="leaderboard" element={<Leaderboard />} />
             <Route path="profile" element={<Profile />} />
 
-            {/* Teacher */}
-            <Route path="teacher-registration" element={<TeacherRegistrationForm />} />
-
-            {/* Admin */}
-            <Route path="admin/login" element={<AdminLogin />} />
-
+            {/* Error Pages */}
+            <Route path="unauthorized" element={<Unauthorized />} />
         </Routes>
     );
 }

@@ -14,10 +14,10 @@ export default function AdminStatsDashboard() {
         },
         {
             title: 'Total Roles',
-            value: 4,
+            value: 3,
             icon: Shield,
             color: 'bg-purple-500',
-            change: '+2%',
+            change: 'Stable',
             changeType: 'positive',
         },
         {
@@ -54,14 +54,8 @@ export default function AdminStatsDashboard() {
         },
         {
             id: 3,
-            name: 'moderator',
-            count: 5,
-            color: 'bg-purple-500',
-        },
-        {
-            id: 4,
             name: 'admin',
-            count: 2,
+            count: 7,
             color: 'bg-red-500',
         },
     ];
