@@ -64,17 +64,49 @@ export const validateLogin = (req, res, next) => {
 
 /**
  * Middleware for validating profile update input
+ * Validates optional fields (name, picture) when provided
  */
 export const validateProfileUpdate = (req, res, next) => {
-    const { name } = req.body;
-    
-    if (!name || name.trim() === '') {
-        return res.status(400).json({ error: 'Name is required' });
+    const { name, picture } = req.body;
+
+    // Validate name if provided
+    if (name !== undefined) {
+        if (name === null || name === '' || name.trim() === '') {
+            return res.status(400).json({ error: 'Name cannot be empty' });
+        }
+
+        if (name.trim().length > 100) {
+            return res
+                .status(400)
+                .json({ error: 'Name must be less than 100 characters' });
+        }
     }
-    
-    if (name.trim().length > 100) {
-        return res.status(400).json({ error: 'Name must be less than 100 characters' });
+
+    // Validate picture if provided
+    if (picture !== undefined && picture !== null && picture !== '') {
+        if (!picture.startsWith('data:image/')) {
+            return res.status(400).json({ error: 'Invalid image format' });
+        }
+
+        // Check image size (base64 is ~33% larger than original)
+        const imageSizeBytes = (picture.length * 3) / 4;
+        const maxSizeBytes = 5 * 1024 * 1024; // 5MB
+
+        if (imageSizeBytes > maxSizeBytes) {
+            return res
+                .status(400)
+                .json({ error: 'Image size must be less than 5MB' });
+        }
     }
-    
+
+    // Check if at least one field is provided for update
+    if (name === undefined && picture === undefined) {
+        return res
+            .status(400)
+            .json({
+                error: 'At least one field (name or picture) must be provided',
+            });
+    }
+
     next();
 };

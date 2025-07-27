@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User as UserIcon, Mail, Edit3, Save, X, Camera } from 'lucide-react';
+import { User as UserIcon, Mail, Edit3, Save, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../components/common/Navbar';
+import ProfilePictureUpload from '../components/ProfilePictureUpload';
 import toast from 'react-hot-toast';
 
 const User = () => {
@@ -10,6 +11,7 @@ const User = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedName, setEditedName] = useState('');
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isUploadingPicture, setIsUploadingPicture] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -40,6 +42,34 @@ const User = () => {
     const handleCancelEdit = () => {
         setEditedName(user.name || '');
         setIsEditing(false);
+    };
+
+    const handleProfilePictureUpload = async (imageData) => {
+        setIsUploadingPicture(true);
+        try {
+            const success = await updateProfile({ picture: imageData });
+            if (success) {
+                toast.success('Profile picture updated successfully!');
+            } else {
+                throw new Error('Update failed');
+            }
+        } catch (error) {
+            console.error('Profile picture upload error:', error);
+
+            // Let the ProfilePictureUpload component handle specific errors
+            // This is a fallback for any unhandled errors
+            if (
+                !error.message.includes('PayloadTooLargeError') &&
+                !error.message.includes('request entity too large')
+            ) {
+                toast.error('Failed to update profile picture');
+            }
+
+            // Re-throw the error so ProfilePictureUpload can handle it
+            throw error;
+        } finally {
+            setIsUploadingPicture(false);
+        }
     };
 
     if (loading) {
@@ -105,18 +135,13 @@ const User = () => {
                         className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
                     >
                         {/* Profile Header */}
-                        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 text-white">
+                        <div className="bg-blue-950 px-6 py-8 text-white">
                             <div className="flex flex-col sm:flex-row items-center gap-6">
-                                <div className="relative">
-                                    <img
-                                        src={user.picture}
-                                        alt={user.name}
-                                        className="w-24 h-24 rounded-full border-4 border-white shadow-lg"
-                                    />
-                                    <button className="absolute bottom-0 right-0 bg-white text-gray-600 p-2 rounded-full shadow-lg hover:bg-gray-50 transition-colors">
-                                        <Camera size={16} />
-                                    </button>
-                                </div>
+                                <ProfilePictureUpload
+                                    user={user}
+                                    onUpload={handleProfilePictureUpload}
+                                    isUploading={isUploadingPicture}
+                                />
                                 <div className="text-center sm:text-left">
                                     <h2 className="text-2xl font-bold mb-1">
                                         {user.name}
@@ -134,7 +159,7 @@ const User = () => {
                             <div className="space-y-6">
                                 {/* Name Field */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-bold text-orange-400 mb-2">
                                         Full Name
                                     </label>
                                     {isEditing ? (
@@ -170,7 +195,7 @@ const User = () => {
                                             </button>
                                         </div>
                                     ) : (
-                                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div className="flex items-center justify-between p-4 bg-gray-200 rounded-lg">
                                             <span className="text-gray-900">
                                                 {user.name}
                                             </span>
@@ -178,7 +203,7 @@ const User = () => {
                                                 onClick={() =>
                                                     setIsEditing(true)
                                                 }
-                                                className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+                                                className="text-blue-950 hover:text-blue-700 hover:cursor-pointer flex items-center gap-2"
                                             >
                                                 <Edit3 size={16} />
                                                 Edit
@@ -189,27 +214,28 @@ const User = () => {
 
                                 {/* Email Field (Read-only) */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-bold text-orange-400 mb-2">
                                         Email Address
                                     </label>
-                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                    <div className="p-4 bg-gray-200 rounded-lg">
                                         <span className="text-gray-900">
                                             {user.email}
                                         </span>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            Email cannot be changed as it's
-                                            linked to your Google account
+                                            {user.provider === 'google'
+                                                ? "Email cannot be changed as it's linked to your Google account"
+                                                : 'Email cannot be changed for security reasons'}
                                         </p>
                                     </div>
                                 </div>
 
                                 {/* Account Info */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-bold text-orange-400 mb-2">
                                         Account Information
                                     </label>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                        <div className="p-4 bg-gray-200 rounded-lg">
                                             <p className="text-sm text-gray-500">
                                                 Account ID
                                             </p>
@@ -217,12 +243,14 @@ const User = () => {
                                                 #{user.id}
                                             </p>
                                         </div>
-                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                        <div className="p-4 bg-gray-200 rounded-lg">
                                             <p className="text-sm text-gray-500">
                                                 Login Provider
                                             </p>
-                                            <p className="font-medium text-gray-900">
-                                                Google
+                                            <p className="font-medium text-gray-900 capitalize">
+                                                {user.provider === 'google'
+                                                    ? 'Google'
+                                                    : 'Email/Password'}
                                             </p>
                                         </div>
                                     </div>
