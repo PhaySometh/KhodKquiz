@@ -18,7 +18,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json());
+// Increase payload limit for profile picture uploads (base64 images can be large)
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(helmet());
 app.use(morgan('dev'));
 

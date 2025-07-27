@@ -302,16 +302,10 @@ export default function Home() {
                             </p>
                             <div className="flex justify-center gap-4">
                                 <Button
-                                    to="quiz/progress"
-                                    label="View Progress"
-                                    bgColor="bg-orange-400"
-                                    textColor="text-white"
-                                />
-                                <Button
                                     to="quiz/category"
                                     label="Take Quiz"
-                                    bgColor="bg-white"
-                                    textColor="text-blue-950"
+                                    bgColor="bg-orange-400"
+                                    textColor="text-white"
                                 />
                             </div>
                         </div>

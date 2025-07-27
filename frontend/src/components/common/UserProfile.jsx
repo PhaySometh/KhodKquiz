@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import { LogOut, Settings, UserPen, LogIn } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import hourPNG from '../../assets/image/hour.png';
+import DefaultProfilePicture from '../DefaultProfilePicture';
 import toast from 'react-hot-toast';
 import ConfirmationDialog from '../ConfirmationDialog';
 import LoadingSpinner from '../LoadingSpinner';
@@ -88,11 +88,19 @@ export default function UserProfile() {
                     className="btn btn-ghost btn-circle avatar"
                 >
                     <div className="w-10 rounded-full">
-                        <img
-                            alt="User Avatar"
-                            src={user?.picture || hourPNG}
-                            className="rounded-full"
-                        />
+                        {user?.picture && user.picture.trim() !== '' ? (
+                            <img
+                                alt="User Avatar"
+                                src={user.picture}
+                                className="rounded-full object-cover w-full h-full border-2 "
+                            />
+                        ) : (
+                            <DefaultProfilePicture
+                                className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center"
+                                size={16}
+                                name={user?.name}
+                            />
+                        )}
                     </div>
                 </div>
                 <ul
@@ -103,12 +111,6 @@ export default function UserProfile() {
                         <span className="text-xs text-gray-500 truncate">
                             {user?.email}
                         </span>
-                    </li>
-                    <li>
-                        <button onClick={handleProfileClick}>
-                            <UserPen size={16} />
-                            Dashboard
-                        </button>
                     </li>
                     <li>
                         <button onClick={handleUserProfileClick}>

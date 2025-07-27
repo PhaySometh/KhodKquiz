@@ -243,6 +243,10 @@ export const AuthProvider = ({ children }) => {
 
             if (response.data) {
                 setUser(response.data);
+
+                // Update localStorage with new user data
+                localStorage.setItem('user', JSON.stringify(response.data));
+
                 toast.success('Profile updated successfully!', {
                     icon: '✅',
                 });

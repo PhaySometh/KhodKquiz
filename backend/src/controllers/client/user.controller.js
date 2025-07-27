@@ -14,7 +14,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
  */
 export const getUsers = async (req, res) => {
     try {
-        const model =  setUpModels(req.db);
+        const model = setUpModels(req.db);
         // Add pagination
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -63,7 +63,7 @@ export const verifyUser = async (req, res) => {
         const picture = payload.picture.split('=')[0];
 
         // Look for the user in the database
-        const model =  setUpModels(req.db);
+        const model = setUpModels(req.db);
         let user = await model.User.findOne({
             where: {
                 googleId: googleId,
@@ -72,7 +72,7 @@ export const verifyUser = async (req, res) => {
 
         if (!user) {
             // If user does not exist, create a new user
-            const model =  setUpModels(req.db);
+            const model = setUpModels(req.db);
             user = await model.User.create({
                 provider: 'google',
                 googleId: googleId,
@@ -104,7 +104,7 @@ export const registerUser = async (req, res) => {
 
     try {
         // Validate input
-        const model =  setUpModels(req.db);
+        const model = setUpModels(req.db);
         if (!name || !email || !password) {
             return res.status(400).json({ error: 'All fields are required' });
         }
@@ -155,7 +155,7 @@ export const loginUser = async (req, res) => {
 
     try {
         // Validate input
-        const model =  setUpModels(req.db);
+        const model = setUpModels(req.db);
         if (!email || !password) {
             return res
                 .status(400)
@@ -202,7 +202,7 @@ export const loginUser = async (req, res) => {
  */
 export const getUser = async (req, res) => {
     try {
-        const model =  setUpModels(req.db);
+        const model = setUpModels(req.db);
         const user = await model.User.findOne({
             where: { id: req.user.id },
             attributes: ['id', 'name', 'email', 'picture', 'role', 'provider'],
@@ -224,28 +224,29 @@ export const getUser = async (req, res) => {
  */
 export const updateUserProfile = async (req, res) => {
     try {
-        const model =  setUpModels(req.db);
-        const { name } = req.body;
+        const model = setUpModels(req.db);
+        const { name, picture } = req.body;
 
-        // Validate input
-        if (!name || name.trim().length === 0) {
-            return res.status(400).json({ error: 'Name is required' });
+        // Build update object (validation is handled by middleware)
+        const updateData = {};
+
+        // Add name if provided
+        if (name !== undefined) {
+            updateData.name = name.trim();
         }
 
-        if (name.trim().length > 100) {
-            return res
-                .status(400)
-                .json({ error: 'Name must be less than 100 characters' });
+        // Add picture if provided
+        if (picture !== undefined) {
+            // Allow null/empty to remove profile picture
+            updateData.picture =
+                picture === null || picture === '' ? null : picture;
         }
 
         // Update user
-        const [updatedRowsCount] = await model.User.update(
-            { name: name.trim() },
-            {
-                where: { id: req.user.id },
-                returning: true,
-            }
-        );
+        const [updatedRowsCount] = await model.User.update(updateData, {
+            where: { id: req.user.id },
+            returning: true,
+        });
 
         if (updatedRowsCount === 0) {
             return res.status(404).json({ error: 'User not found' });
