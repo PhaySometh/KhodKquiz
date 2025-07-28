@@ -4,15 +4,28 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx';
 import ClassList from '../../../components/ClassList.jsx';
-import { DeleteClassModal, StudentManagementModal, EditClassModal } from '../../../components/ClassActionModals.jsx';
+import {
+    DeleteClassModal,
+    StudentManagementModal,
+    EditClassModal,
+} from '../../../components/ClassActionModals.jsx';
 import UserNavbar from '../../../components/common/UserNavbar.jsx';
 import Footer from '../../../components/common/Footer.jsx';
 
 const ClassManagement = () => {
     // Modal states
-    const [deleteModal, setDeleteModal] = useState({ isOpen: false, classItem: null });
-    const [studentModal, setStudentModal] = useState({ isOpen: false, classItem: null });
-    const [editModal, setEditModal] = useState({ isOpen: false, classItem: null });
+    const [deleteModal, setDeleteModal] = useState({
+        isOpen: false,
+        classItem: null,
+    });
+    const [studentModal, setStudentModal] = useState({
+        isOpen: false,
+        classItem: null,
+    });
+    const [editModal, setEditModal] = useState({
+        isOpen: false,
+        classItem: null,
+    });
     const navigate = useNavigate();
 
     // Class action handlers
@@ -39,13 +52,13 @@ const ClassManagement = () => {
     const handleConfirmDelete = (classItem) => {
         // Implement actual delete logic here
         toast.success(`Class "${classItem.name}" has been deleted`);
-        console.log('Deleting class:', classItem);
+        // Delete logic implementation would go here
     };
 
     const handleDuplicateClass = (classItem) => {
         // Implement duplicate logic here
         toast.success(`Class "${classItem.name}" has been duplicated`);
-        console.log('Duplicating class:', classItem);
+        // Duplicate logic implementation would go here
     };
 
     const handleManageStudents = (classItem) => {
@@ -56,8 +69,12 @@ const ClassManagement = () => {
         // Implement actual student management logic here
         const { classItem, action, students } = updateData;
         const actionText = action === 'enroll' ? 'enrolled in' : 'removed from';
-        toast.success(`${students.length} student${students.length !== 1 ? 's' : ''} ${actionText} "${classItem.name}"`);
-        console.log('Updating students:', updateData);
+        toast.success(
+            `${students.length} student${
+                students.length !== 1 ? 's' : ''
+            } ${actionText} "${classItem.name}"`
+        );
+        // Student update logic implementation would go here
     };
 
     const handleViewAnalytics = (classItem) => {
@@ -69,20 +86,20 @@ const ClassManagement = () => {
     const handleSaveClass = (updatedClass) => {
         // Implement actual save logic here
         toast.success(`Class "${updatedClass.name}" has been updated`);
-        console.log('Saving class:', updatedClass);
+        // Class save logic implementation would go here
     };
 
     return (
         <>
-            <div className='flex h-screen bg-gray-50 overflow-hidden'>
+            <div className="flex h-screen bg-gray-50 overflow-hidden">
                 <Sidebar />
-                <div className='w-full overflow-y-auto'>
+                <div className="w-full overflow-y-auto">
                     <UserNavbar />
 
                     {/* Main Content */}
-                    <div className='p-6 h-full w-full'>
+                    <div className="p-6 h-full w-full">
                         {/* Welcome Section - Class management focused */}
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5 }}
@@ -92,7 +109,8 @@ const ClassManagement = () => {
                                 Manage Your Classes
                             </h3>
                             <p className="text-gray-600 text-center max-w-2xl">
-                                Create and organize your classes, manage student enrollments, and track class performance.
+                                Create and organize your classes, manage student
+                                enrollments, and track class performance.
                             </p>
                         </motion.div>
 
@@ -112,21 +130,27 @@ const ClassManagement = () => {
                 {/* Modals */}
                 <DeleteClassModal
                     isOpen={deleteModal.isOpen}
-                    onClose={() => setDeleteModal({ isOpen: false, classItem: null })}
+                    onClose={() =>
+                        setDeleteModal({ isOpen: false, classItem: null })
+                    }
                     classItem={deleteModal.classItem}
                     onConfirm={handleConfirmDelete}
                 />
 
                 <StudentManagementModal
                     isOpen={studentModal.isOpen}
-                    onClose={() => setStudentModal({ isOpen: false, classItem: null })}
+                    onClose={() =>
+                        setStudentModal({ isOpen: false, classItem: null })
+                    }
                     classItem={studentModal.classItem}
                     onUpdateStudents={handleUpdateStudents}
                 />
 
                 <EditClassModal
                     isOpen={editModal.isOpen}
-                    onClose={() => setEditModal({ isOpen: false, classItem: null })}
+                    onClose={() =>
+                        setEditModal({ isOpen: false, classItem: null })
+                    }
                     classItem={editModal.classItem}
                     onSave={handleSaveClass}
                 />

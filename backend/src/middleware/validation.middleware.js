@@ -101,11 +101,9 @@ export const validateProfileUpdate = (req, res, next) => {
 
     // Check if at least one field is provided for update
     if (name === undefined && picture === undefined) {
-        return res
-            .status(400)
-            .json({
-                error: 'At least one field (name or picture) must be provided',
-            });
+        return res.status(400).json({
+            error: 'At least one field (name or picture) must be provided',
+        });
     }
 
     next();

@@ -4,16 +4,16 @@ import AdminSidebar from '../../components/admin/AdminSidebar.jsx';
 import AdminNavbar from '../../components/admin/AdminNavbar.jsx';
 import { PlusCircle, Trash2, MoveUp, MoveDown, Copy } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
+import apiClient from '../../utils/axiosConfig';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-
-const BASE_URL = 'http://localhost:3000';
 
 export default function AdminCreateQuiz() {
     const [questions, setQuestions] = useState([createEmptyQuestion()]);
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
+    const [categoriesLoading, setCategoriesLoading] = useState(true);
+    const [categoriesError, setCategoriesError] = useState(null);
 
     // Create a new blank question
     function createEmptyQuestion() {
@@ -29,6 +29,18 @@ export default function AdminCreateQuiz() {
     function handleChange(index, key, value) {
         const updated = [...questions];
         updated[index][key] = value;
+
+        // If changing question type, reset options and correct answer
+        if (key === 'type') {
+            if (value === 'true-false') {
+                updated[index].options = ['True', 'False'];
+                updated[index].correctAnswer = null;
+            } else if (value === 'multiple-choice') {
+                updated[index].options = ['', '', '', ''];
+                updated[index].correctAnswer = null;
+            }
+        }
+
         setQuestions(updated);
     }
 
@@ -87,16 +99,17 @@ export default function AdminCreateQuiz() {
         };
 
         try {
-            const response = await axios.post(
-                `${BASE_URL}/api/admin/quiz`,
-                payload
-            );
+            const response = await apiClient.post('/api/admin/quiz', payload);
             if (response.data.success) {
                 toast.success('Quiz created successfully');
                 navigate('/admin');
             }
         } catch (error) {
-            console.log('Failed to create quiz', error);
+            console.error('Quiz creation error:', error);
+            const errorMessage =
+                error.response?.data?.message ||
+                'Failed to create quiz. Please try again.';
+            toast.error(errorMessage);
         }
     }
 
@@ -114,12 +127,30 @@ export default function AdminCreateQuiz() {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get(
-                    `${BASE_URL}/api/student/categories`
-                );
-                setCategories(response.data.data);
+                setCategoriesLoading(true);
+                setCategoriesError(null);
+
+                // Use apiClient which automatically handles authentication
+                const response = await apiClient.get('/api/admin/category');
+
+                const categoriesData = response.data.data || [];
+                setCategories(categoriesData);
+
+                if (categoriesData.length === 0) {
+                    toast.info(
+                        'No categories found. Create categories first in Category Management.'
+                    );
+                }
             } catch (error) {
                 console.error('Error fetching categories:', error);
+                const errorMessage =
+                    error.response?.data?.message ||
+                    'Failed to load categories';
+                setCategoriesError(errorMessage);
+                toast.error(errorMessage);
+                setCategories([]);
+            } finally {
+                setCategoriesLoading(false);
             }
         };
 
@@ -197,19 +228,33 @@ export default function AdminCreateQuiz() {
                                         id="category-input"
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
                                         required
+                                        disabled={categoriesLoading}
                                     >
                                         <option value="">
-                                            Select a category
+                                            {categoriesLoading
+                                                ? 'Loading categories...'
+                                                : categoriesError
+                                                ? 'Error loading categories'
+                                                : categories.length === 0
+                                                ? 'No categories available'
+                                                : 'Select a category'}
                                         </option>
-                                        {categories.map((category) => (
-                                            <option
-                                                key={category.id}
-                                                value={category.id}
-                                            >
-                                                {category.name}
-                                            </option>
-                                        ))}
+                                        {!categoriesLoading &&
+                                            !categoriesError &&
+                                            categories.map((category) => (
+                                                <option
+                                                    key={category.id}
+                                                    value={category.id}
+                                                >
+                                                    {category.name}
+                                                </option>
+                                            ))}
                                     </select>
+                                    {categoriesError && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {categoriesError}
+                                        </p>
+                                    )}
                                 </div>
                                 <div className="w-full">
                                     <label
@@ -379,17 +424,19 @@ export default function AdminCreateQuiz() {
                                                     type="radio"
                                                     name={`correct-${index}`}
                                                     checked={
-                                                        q.correctAnswer === val
+                                                        q.correctAnswer === i
                                                     }
                                                     onChange={() =>
                                                         handleChange(
                                                             index,
                                                             'correctAnswer',
-                                                            val
+                                                            i
                                                         )
                                                     }
                                                 />
-                                                <label>{val}</label>
+                                                <label className="px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-700 flex-1">
+                                                    {val}
+                                                </label>
                                             </div>
                                         ))}
                                     </div>

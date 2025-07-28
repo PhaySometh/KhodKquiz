@@ -422,7 +422,6 @@ const ProfilePictureUpload = ({ user, onUpload, isUploading = false }) => {
                                     >
                                         <ZoomIn size={16} />
                                     </button>
-
                                 </div>
 
                                 <p className="text-xs text-gray-500 text-center">

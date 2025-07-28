@@ -1,15 +1,16 @@
-import { useState } from 'react';
-import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx'
+import { useState, useEffect } from 'react';
+import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx';
 import { PlusCircle, Trash2, MoveUp, MoveDown, Copy } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
+import apiClient from '../../../utils/axiosConfig';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
-const BASE_URL = 'http://localhost:3000';
-
 export default function CreateQuizForm() {
     const [questions, setQuestions] = useState([createEmptyQuestion()]);
+    const [categories, setCategories] = useState([]);
+    const [categoriesLoading, setCategoriesLoading] = useState(true);
+    const [categoriesError, setCategoriesError] = useState(null);
     const navigate = useNavigate();
 
     // Create a new blank question
@@ -46,10 +47,46 @@ export default function CreateQuizForm() {
 
     function duplicateQuestion(index) {
         const duplicated = { ...questions[index] };
-        setQuestions([...questions.slice(0, index + 1), 
-        duplicated, 
-        ...questions.slice(index + 1)]);
+        setQuestions([
+            ...questions.slice(0, index + 1),
+            duplicated,
+            ...questions.slice(index + 1),
+        ]);
     }
+
+    // Fetch categories on component mount
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                setCategoriesLoading(true);
+                setCategoriesError(null);
+
+                // Use apiClient for consistent HTTP handling
+                const response = await apiClient.get('/api/public/categories');
+
+                const categoriesData = response.data.data || [];
+                setCategories(categoriesData);
+
+                if (categoriesData.length === 0) {
+                    toast.info(
+                        'No categories found. Contact admin to create categories.'
+                    );
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                const errorMessage =
+                    error.response?.data?.message ||
+                    'Failed to load categories';
+                setCategoriesError(errorMessage);
+                toast.error(errorMessage);
+                setCategories([]);
+            } finally {
+                setCategoriesLoading(false);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     async function handleSubmit() {
         const userToken = localStorage.getItem('userToken');
@@ -60,32 +97,36 @@ export default function CreateQuizForm() {
             description: document.getElementById('description-input').value,
             category: document.getElementById('category-input').value,
             createdBy: teacherId,
-            questions: questions.map(q => {
-                const options = q.type === 'multiple-choice'
-                    ? q.options.map((opt, i) => ({
-                        text: opt,
-                        isCorrect: q.correctAnswer === i
-                    }))
-                    : ['True', 'False'].map((val, i) => ({
-                        text: val,
-                        isCorrect: q.correctAnswer === val
-                    }));
+            questions: questions.map((q) => {
+                const options =
+                    q.type === 'multiple-choice'
+                        ? q.options.map((opt, i) => ({
+                              text: opt,
+                              isCorrect: q.correctAnswer === i,
+                          }))
+                        : ['True', 'False'].map((val, i) => ({
+                              text: val,
+                              isCorrect: q.correctAnswer === val,
+                          }));
                 return {
                     question: q.question,
                     type: q.type,
-                    options
+                    options,
                 };
-            })
+            }),
         };
 
         try {
-            const response = await axios.post(`${BASE_URL}/api/teacher/class`, payload);
+            const response = await axios.post(
+                `${BASE_URL}/api/teacher/class`,
+                payload
+            );
             if (response.data.success) {
                 toast.success('Quiz created successfully');
                 navigate('/teacher');
             }
         } catch (error) {
-            console.log('Failed to create quiz', error);
+            toast.error('Failed to create quiz. Please try again.');
         }
     }
 
@@ -93,41 +134,114 @@ export default function CreateQuizForm() {
         const updated = [...questions];
         const targetIndex = direction === 'up' ? index - 1 : index + 1;
         if (targetIndex < 0 || targetIndex >= updated.length) return;
-        [updated[index], updated[targetIndex]] = [updated[targetIndex], updated[index]];
+        [updated[index], updated[targetIndex]] = [
+            updated[targetIndex],
+            updated[index],
+        ];
         setQuestions(updated);
     }
 
     return (
-        <div className='flex h-screen bg-gray-50 overflow-hidden'>
+        <div className="flex h-screen bg-gray-50 overflow-hidden">
             <Sidebar />
-            <div className='w-full overflow-y-auto'>
+            <div className="w-full overflow-y-auto">
                 {/* Header */}
                 <div className="relative z-10 px-6 flex justify-between items-center w-full h-20 bg-white border-b border-gray-200">
-                    <h1 className="text-xl font-bold">📝 Create <span className='text-orange-400'>Quiz</span></h1>
+                    <h1 className="text-xl font-bold">
+                        📝 Create <span className="text-orange-400">Quiz</span>
+                    </h1>
                 </div>
                 {/* quiz detail */}
-                <div className='p-6 max-w-5xl mx-auto'>
-                    <div className='w-full border border-gray-300 p-6 rounded-lg shadow bg-white flex flex-col justify-center items-center gap-5'>
-                        <div className='flex justify-center items-center w-full gap-5'>
+                <div className="p-6 max-w-5xl mx-auto">
+                    <div className="w-full border border-gray-300 p-6 rounded-lg shadow bg-white flex flex-col justify-center items-center gap-5">
+                        <div className="flex justify-center items-center w-full gap-5">
                             <div class="w-full">
-                                <label for="text-input" class="text-sm font-medium text-gray-900 dark:text-white">Quiz Name</label>
-                                <input type="text" id="text-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="Enter your quiz name" required />
+                                <label
+                                    for="text-input"
+                                    class="text-sm font-medium text-gray-900 dark:text-white"
+                                >
+                                    Quiz Name
+                                </label>
+                                <input
+                                    type="text"
+                                    id="text-input"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+                                    placeholder="Enter your quiz name"
+                                    required
+                                />
                             </div>
                             <div class="w-full">
-                                <label for="number-input" class="text-sm font-medium text-gray-900 dark:text-white">Time Per Question</label>
-                                <input type="number" id="number-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="15s" required />
+                                <label
+                                    for="number-input"
+                                    class="text-sm font-medium text-gray-900 dark:text-white"
+                                >
+                                    Time Per Question
+                                </label>
+                                <input
+                                    type="number"
+                                    id="number-input"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+                                    placeholder="15s"
+                                    required
+                                />
                             </div>
                         </div>
-                        <div className='w-full'>
+                        <div className="w-full">
                             <div>
-                                <label for="category-input" class="text-sm font-medium text-gray-900 dark:text-white">Category</label>
-                                <input type="text" id="category-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="Quiz category" required />
+                                <label
+                                    htmlFor="category-input"
+                                    className="text-sm font-medium text-gray-900 dark:text-white"
+                                >
+                                    Category
+                                </label>
+                                <select
+                                    id="category-input"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+                                    required
+                                    disabled={categoriesLoading}
+                                >
+                                    <option value="">
+                                        {categoriesLoading
+                                            ? 'Loading categories...'
+                                            : categoriesError
+                                            ? 'Error loading categories'
+                                            : categories.length === 0
+                                            ? 'No categories available'
+                                            : 'Select a category'}
+                                    </option>
+                                    {!categoriesLoading &&
+                                        !categoriesError &&
+                                        categories.map((category) => (
+                                            <option
+                                                key={category.id}
+                                                value={category.id}
+                                            >
+                                                {category.name}
+                                            </option>
+                                        ))}
+                                </select>
+                                {categoriesError && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {categoriesError}
+                                    </p>
+                                )}
                             </div>
                         </div>
-                        <div className='w-full'>
+                        <div className="w-full">
                             <div>
-                                <label for="description-input" class="text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                                <textarea type="text" id="description-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="Description or Instruction" required />
+                                <label
+                                    for="description-input"
+                                    class="text-sm font-medium text-gray-900 dark:text-white"
+                                >
+                                    Description
+                                </label>
+                                <textarea
+                                    type="text"
+                                    id="description-input"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+                                    placeholder="Description or Instruction"
+                                    required
+                                />
                             </div>
                         </div>
                     </div>
@@ -139,69 +253,131 @@ export default function CreateQuizForm() {
                             key={index}
                             className="border border-gray-300 p-6 rounded-lg shadow bg-white space-y-4 relative"
                         >
-                        <div className="absolute right-4 top-4 flex items-center gap-2">
-                            <button onClick={() => moveQuestion(index, 'up')} title="Move Up" className='hover:scale-110'><MoveUp size={18} /></button>
-                            <button onClick={() => moveQuestion(index, 'down')} title="Move Down" className='hover:scale-110'><MoveDown size={18} /></button>
-                            <button onClick={() => duplicateQuestion(index)} title="Duplicate" className='hover:scale-110'><Copy size={18} /></button>
-                            <button onClick={() => removeQuestion(index)} title="Delete" className="text-red-500 hover:scale-110"><Trash2 size={18} /></button>
-                        </div>
+                            <div className="absolute right-4 top-4 flex items-center gap-2">
+                                <button
+                                    onClick={() => moveQuestion(index, 'up')}
+                                    title="Move Up"
+                                    className="hover:scale-110"
+                                >
+                                    <MoveUp size={18} />
+                                </button>
+                                <button
+                                    onClick={() => moveQuestion(index, 'down')}
+                                    title="Move Down"
+                                    className="hover:scale-110"
+                                >
+                                    <MoveDown size={18} />
+                                </button>
+                                <button
+                                    onClick={() => duplicateQuestion(index)}
+                                    title="Duplicate"
+                                    className="hover:scale-110"
+                                >
+                                    <Copy size={18} />
+                                </button>
+                                <button
+                                    onClick={() => removeQuestion(index)}
+                                    title="Delete"
+                                    className="text-red-500 hover:scale-110"
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            </div>
 
-                        <div className="text-sm text-gray-500 font-bold">Question {index + 1}</div>
+                            <div className="text-sm text-gray-500 font-bold">
+                                Question {index + 1}
+                            </div>
 
-                        <input
-                            type="text"
-                            className="w-full p-3 border rounded border-gray-300"
-                            placeholder="Enter your question"
-                            value={q.question}
-                            onChange={(e) => handleChange(index, 'question', e.target.value)}
-                        />
+                            <input
+                                type="text"
+                                className="w-full p-3 border rounded border-gray-300"
+                                placeholder="Enter your question"
+                                value={q.question}
+                                onChange={(e) =>
+                                    handleChange(
+                                        index,
+                                        'question',
+                                        e.target.value
+                                    )
+                                }
+                            />
 
-                        <select
-                            className="w-full p-3 border rounded border-gray-300 bg-gray-50"
-                            value={q.type}
-                            onChange={(e) => handleChange(index, 'type', e.target.value)}
+                            <select
+                                className="w-full p-3 border rounded border-gray-300 bg-gray-50"
+                                value={q.type}
+                                onChange={(e) =>
+                                    handleChange(index, 'type', e.target.value)
+                                }
                             >
-                            <option value="multiple-choice">Multiple Choice</option>
-                            <option value="true-false">True / False</option>
-                        </select>
+                                <option value="multiple-choice">
+                                    Multiple Choice
+                                </option>
+                                <option value="true-false">True / False</option>
+                            </select>
 
-                        {q.type === 'multiple-choice' && (
-                            <div className="grid grid-cols-2 gap-5">
-                                {q.options.map((opt, i) => (
-                                    <div key={i} className="flex items-center gap-3">
-                                        <input
-                                            type="radio"
-                                            name={`correct-${index}`}
-                                            checked={q.correctAnswer === i}
-                                            onChange={() => handleChange(index, 'correctAnswer', i)}
+                            {q.type === 'multiple-choice' && (
+                                <div className="grid grid-cols-2 gap-5">
+                                    {q.options.map((opt, i) => (
+                                        <div
+                                            key={i}
+                                            className="flex items-center gap-3"
+                                        >
+                                            <input
+                                                type="radio"
+                                                name={`correct-${index}`}
+                                                checked={q.correctAnswer === i}
+                                                onChange={() =>
+                                                    handleChange(
+                                                        index,
+                                                        'correctAnswer',
+                                                        i
+                                                    )
+                                                }
                                             />
-                                        <input
-                                            type="text"
-                                            placeholder={`Option ${i + 1}`}
-                                            className="flex-1 p-2 border rounded border-gray-300"
-                                            value={opt}
-                                            onChange={(e) => handleOptionChange(index, i, e.target.value)}
+                                            <input
+                                                type="text"
+                                                placeholder={`Option ${i + 1}`}
+                                                className="flex-1 p-2 border rounded border-gray-300"
+                                                value={opt}
+                                                onChange={(e) =>
+                                                    handleOptionChange(
+                                                        index,
+                                                        i,
+                                                        e.target.value
+                                                    )
+                                                }
                                             />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {q.type === 'true-false' && (
-                            <div className="space-y-2">
-                            {['True', 'False'].map((val, i) => (
-                                <div key={i} className="flex items-center gap-3">
-                                <input
-                                    type="radio"
-                                    name={`correct-${index}`}
-                                    checked={q.correctAnswer === val}
-                                    onChange={() => handleChange(index, 'correctAnswer', val)}
-                                />
-                                <label>{val}</label>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                            </div>
-                        )}
+                            )}
+
+                            {q.type === 'true-false' && (
+                                <div className="space-y-2">
+                                    {['True', 'False'].map((val, i) => (
+                                        <div
+                                            key={i}
+                                            className="flex items-center gap-3"
+                                        >
+                                            <input
+                                                type="radio"
+                                                name={`correct-${index}`}
+                                                checked={
+                                                    q.correctAnswer === val
+                                                }
+                                                onChange={() =>
+                                                    handleChange(
+                                                        index,
+                                                        'correctAnswer',
+                                                        val
+                                                    )
+                                                }
+                                            />
+                                            <label>{val}</label>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     ))}
                     <div className="flex flex-row-reverse justify-between items-center">
@@ -214,10 +390,12 @@ export default function CreateQuizForm() {
                         <button
                             onClick={handleSubmit}
                             className="flex items-center gap-2 bg-orange-400 text-white px-4 py-2 rounded hover:scale-110"
-                        >Finish</button>
+                        >
+                            Finish
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     );
-};
+}

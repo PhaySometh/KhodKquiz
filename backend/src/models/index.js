@@ -13,6 +13,7 @@ import defineStudentAnswer from './StudentAnswer.model.js';
 import defineSystemAnswerOption from './SystemAnswerOption.model.js';
 import defineSystemQuestion from './SystemQuestion.model.js';
 import defineSystemQuizResult from './SystemQuizResult.model.js';
+import defineSystemStudentAnswer from './SystemStudentAnswer.model.js';
 import defineSystemQuiz from './SystemQuiz.model.js';
 import defineSystemCategory from './SystemCategory.model.js';
 
@@ -32,6 +33,7 @@ const setUpModels = (sequelize) => {
     const SystemAnswerOption = defineSystemAnswerOption(sequelize);
     const SystemQuestion = defineSystemQuestion(sequelize);
     const SystemQuizResult = defineSystemQuizResult(sequelize);
+    const SystemStudentAnswer = defineSystemStudentAnswer(sequelize);
     const SystemQuiz = defineSystemQuiz(sequelize);
     const SystemCategory = defineSystemCategory(sequelize);
 
@@ -130,6 +132,32 @@ const setUpModels = (sequelize) => {
     SystemQuiz.hasMany(SystemQuizResult, { foreignKey: 'systemQuizId' });
     SystemQuizResult.belongsTo(SystemQuiz, { foreignKey: 'systemQuizId' });
 
+    // System quiz result to individual answers relationship
+    SystemQuizResult.hasMany(SystemStudentAnswer, {
+        foreignKey: 'systemQuizResultId',
+    });
+    SystemStudentAnswer.belongsTo(SystemQuizResult, {
+        foreignKey: 'systemQuizResultId',
+    });
+
+    // System student answer relationships
+    User.hasMany(SystemStudentAnswer, { foreignKey: 'studentId' });
+    SystemStudentAnswer.belongsTo(User, { foreignKey: 'studentId' });
+
+    SystemQuestion.hasMany(SystemStudentAnswer, {
+        foreignKey: 'systemQuestionId',
+    });
+    SystemStudentAnswer.belongsTo(SystemQuestion, {
+        foreignKey: 'systemQuestionId',
+    });
+
+    SystemAnswerOption.hasMany(SystemStudentAnswer, {
+        foreignKey: 'selectedSystemAnswerOptionId',
+    });
+    SystemStudentAnswer.belongsTo(SystemAnswerOption, {
+        foreignKey: 'selectedSystemAnswerOptionId',
+    });
+
     SystemCategory.hasMany(SystemQuiz, { foreignKey: 'category' });
     SystemQuiz.belongsTo(SystemCategory, { foreignKey: 'category' });
 
@@ -168,8 +196,11 @@ const setUpModels = (sequelize) => {
         SystemAnswerOption,
         SystemQuestion,
         SystemQuizResult,
+        SystemStudentAnswer,
         SystemQuiz,
         SystemCategory,
+        Sequelize: sequelize.Sequelize, // Export Sequelize class for operators
+        sequelize, // Export sequelize instance
     };
 };
 

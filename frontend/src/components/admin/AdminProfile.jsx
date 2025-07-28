@@ -6,46 +6,38 @@ import toast from 'react-hot-toast';
 import ConfirmationDialog from '../ConfirmationDialog';
 import LoadingSpinner from '../LoadingSpinner';
 import axios from '../../utils/axiosConfig';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function AdminProfile() {
     const navigate = useNavigate();
+    const { logout: authLogout, logoutLoading } = useAuth();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     const handleLogoutClick = () => {
         setShowLogoutConfirm(true);
     };
 
     const handleLogoutConfirm = async () => {
-        setIsLoggingOut(true);
-
         try {
-            // // Add a brief delay for better UX
-            // await new Promise((resolve) => setTimeout(resolve, 1500));
-            // Set headers to null
+            // Clear axios headers
             axios.defaults.headers.common['Authorization'] = null;
-            logout();
+
+            // Use AuthContext logout which handles all authentication state
+            await authLogout();
+
+            // Navigate to home page after successful logout
             navigate('/');
         } catch (error) {
             toast.error('Error logging out. Please try again.');
         } finally {
-            setIsLoggingOut(false);
             setShowLogoutConfirm(false);
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem('adminToken');
-        toast.success('Logged out successfully', {
-            icon: '👋',
-        });
-    }
-
     return (
         <>
             <div className="hidden lg:block text-sm text-blue-950 font-medium">
-                Welcome, User!
-                {/* Welcome, {user?.name?.split(' ')[0] || 'User'}! */}
+                Welcome, Admin!
             </div>
 
             {/* Avatar Dropdown */}
@@ -86,11 +78,11 @@ export default function AdminProfile() {
                 confirmText="Logout"
                 cancelText="Cancel"
                 variant="warning"
-                isLoading={isLoggingOut}
+                isLoading={logoutLoading}
             />
 
             {/* Full Screen Loading for Logout */}
-            {isLoggingOut && (
+            {logoutLoading && (
                 <LoadingSpinner
                     fullScreen={true}
                     text="Logging out..."

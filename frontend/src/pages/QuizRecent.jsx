@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
     BookOpen,
@@ -12,76 +12,70 @@ import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../components/common/Navbar';
 import QuizHero, { QuizTabs } from '../components/QuizHero';
 import AuthPrompt from '../components/AuthPrompt';
-
-const recentActivities = [
-    {
-        id: 1,
-        category: 'JavaScript',
-        score: 85,
-        date: '2 hours ago',
-        status: 'completed',
-        questions: 20,
-        timeSpent: '12 min',
-        difficulty: 'Medium',
-    },
-    {
-        id: 2,
-        category: 'Python',
-        score: 72,
-        date: '1 day ago',
-        status: 'completed',
-        questions: 15,
-        timeSpent: '8 min',
-        difficulty: 'Easy',
-    },
-    {
-        id: 3,
-        category: 'Web Development',
-        score: 91,
-        date: '3 days ago',
-        status: 'completed',
-        questions: 25,
-        timeSpent: '18 min',
-        difficulty: 'Hard',
-    },
-    {
-        id: 4,
-        category: 'Data Science',
-        score: null,
-        date: 'In progress',
-        status: 'active',
-        questions: 20,
-        timeSpent: '5 min',
-        difficulty: 'Medium',
-    },
-    {
-        id: 5,
-        category: 'C++',
-        score: 67,
-        date: '1 week ago',
-        status: 'completed',
-        questions: 18,
-        timeSpent: '15 min',
-        difficulty: 'Hard',
-    },
-    {
-        id: 6,
-        category: 'General Knowledge',
-        score: 94,
-        date: '1 week ago',
-        status: 'completed',
-        questions: 30,
-        timeSpent: '22 min',
-        difficulty: 'Easy',
-    },
-];
+import apiClient from '../utils/axiosConfig';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const QuizRecent = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('activity');
     const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+    const [recentActivities, setRecentActivities] = useState([]);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
+
+    // Fetch recent activities
+    useEffect(() => {
+        const fetchRecentActivities = async () => {
+            if (!isAuthenticated) {
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const response = await apiClient.get('/api/student/progress');
+                const progressData = response.data.data;
+
+                // Format the data for display
+                const formattedActivities = progressData.recentResults.map(
+                    (result) => ({
+                        id: result.id,
+                        quizTitle: result.quizTitle,
+                        category: result.category,
+                        score: result.score,
+                        questions: result.questionsCount,
+                        date: formatDate(result.takenAt),
+                        status: 'completed',
+                        accuracy: result.accuracy,
+                        timeSpent: 'N/A', // Time spent not stored yet
+                        difficulty: 'Medium', // Default difficulty
+                    })
+                );
+
+                setRecentActivities(formattedActivities);
+            } catch (error) {
+                console.error('Error fetching recent activities:', error);
+                setRecentActivities([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRecentActivities();
+    }, [isAuthenticated]);
+
+    // Helper function to format date
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffTime = Math.abs(now - date);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) return '1 day ago';
+        if (diffDays < 7) return `${diffDays} days ago`;
+        if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+        return `${Math.ceil(diffDays / 30)} months ago`;
+    };
 
     const handleTabClick = (tab) => {
         if ((tab === 'progress' || tab === 'activity') && !isAuthenticated) {
@@ -212,74 +206,102 @@ const QuizRecent = () => {
                         </div>
 
                         <div className="divide-y divide-gray-200">
-                            {recentActivities.map((activity, index) => (
-                                <motion.div
-                                    key={activity.id}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                    className="p-6 hover:bg-gray-50 transition-colors"
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="bg-blue-100 text-blue-600 p-3 rounded-lg">
-                                                <BookOpen size={20} />
+                            {loading ? (
+                                <div className="flex justify-center items-center py-12">
+                                    <LoadingSpinner size="large" />
+                                </div>
+                            ) : !isAuthenticated ? (
+                                <div className="p-6 text-center">
+                                    <p className="text-gray-500 mb-4">
+                                        Please log in to view your quiz history
+                                    </p>
+                                    <button
+                                        onClick={() => setShowAuthPrompt(true)}
+                                        className="bg-blue-950 text-white px-4 py-2 rounded-lg hover:bg-orange-400 transition-colors"
+                                    >
+                                        Sign In
+                                    </button>
+                                </div>
+                            ) : recentActivities.length === 0 ? (
+                                <div className="p-6 text-center">
+                                    <p className="text-gray-500">
+                                        No quiz history found. Take some quizzes
+                                        to see your progress!
+                                    </p>
+                                </div>
+                            ) : (
+                                recentActivities.map((activity, index) => (
+                                    <motion.div
+                                        key={activity.id}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: index * 0.05 }}
+                                        className="p-6 hover:bg-gray-50 transition-colors"
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center space-x-4">
+                                                <div className="bg-blue-100 text-blue-600 p-3 rounded-lg">
+                                                    <BookOpen size={20} />
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-medium text-gray-900 mb-1">
+                                                        {activity.category}
+                                                    </h3>
+                                                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                                        <span>
+                                                            {activity.questions}{' '}
+                                                            questions
+                                                        </span>
+                                                        <span>•</span>
+                                                        <span>
+                                                            {activity.timeSpent}
+                                                        </span>
+                                                        <span>•</span>
+                                                        <span
+                                                            className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
+                                                                activity.difficulty
+                                                            )}`}
+                                                        >
+                                                            {
+                                                                activity.difficulty
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h3 className="font-medium text-gray-900 mb-1">
-                                                    {activity.category}
-                                                </h3>
-                                                <div className="flex items-center space-x-4 text-sm text-gray-500">
-                                                    <span>
-                                                        {activity.questions}{' '}
-                                                        questions
-                                                    </span>
-                                                    <span>•</span>
-                                                    <span>
-                                                        {activity.timeSpent}
-                                                    </span>
-                                                    <span>•</span>
-                                                    <span
-                                                        className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
-                                                            activity.difficulty
-                                                        )}`}
-                                                    >
-                                                        {activity.difficulty}
-                                                    </span>
+
+                                            <div className="flex items-center space-x-4">
+                                                <div className="text-right">
+                                                    <p className="text-sm text-gray-500 mb-1">
+                                                        {activity.date}
+                                                    </p>
+                                                    {activity.status ===
+                                                    'completed' ? (
+                                                        <div
+                                                            className={`px-3 py-1 rounded-full text-sm font-medium ${getScoreColor(
+                                                                activity.score
+                                                            )}`}
+                                                        >
+                                                            Score:{' '}
+                                                            {activity.score}%
+                                                        </div>
+                                                    ) : (
+                                                        <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                                                            In Progress
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center">
+                                                    {getStatusIcon(
+                                                        activity.status,
+                                                        activity.score
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div className="flex items-center space-x-4">
-                                            <div className="text-right">
-                                                <p className="text-sm text-gray-500 mb-1">
-                                                    {activity.date}
-                                                </p>
-                                                {activity.status ===
-                                                'completed' ? (
-                                                    <div
-                                                        className={`px-3 py-1 rounded-full text-sm font-medium ${getScoreColor(
-                                                            activity.score
-                                                        )}`}
-                                                    >
-                                                        Score: {activity.score}%
-                                                    </div>
-                                                ) : (
-                                                    <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
-                                                        In Progress
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="flex items-center">
-                                                {getStatusIcon(
-                                                    activity.status,
-                                                    activity.score
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))}
+                                    </motion.div>
+                                ))
+                            )}
                         </div>
                     </motion.div>
                 </div>

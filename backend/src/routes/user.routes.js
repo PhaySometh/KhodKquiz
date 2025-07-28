@@ -5,13 +5,13 @@ import {
     getUser,
     updateUserProfile,
     registerUser,
-    loginUser
+    loginUser,
 } from '../controllers/client/user.controller.js';
 import { authenticate, isAdmin } from '../middleware/auth.middleware.js';
-import { 
-    validateRegistration, 
-    validateLogin, 
-    validateProfileUpdate 
+import {
+    validateRegistration,
+    validateLogin,
+    validateProfileUpdate,
 } from '../middleware/validation.middleware.js';
 import { dbConnectionMiddleware } from '../middleware/dbConnection.middleware.js';
 

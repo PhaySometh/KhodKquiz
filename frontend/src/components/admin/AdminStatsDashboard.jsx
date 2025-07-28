@@ -1,66 +1,128 @@
-import React from 'react';
-import { Users, Shield, BookOpen, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Users, Shield, BookOpen, TrendingUp, Loader2 } from 'lucide-react';
+import axios from '../../utils/axiosConfig';
+import toast from 'react-hot-toast';
+
+const BASE_URL = 'http://localhost:3000';
 
 export default function AdminStatsDashboard() {
-    // Static data for demonstration
+    const [dashboardData, setDashboardData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch dashboard statistics
+    const fetchDashboardStats = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `${BASE_URL}/api/admin/analytics/dashboard`
+            );
+
+            if (response.data.success) {
+                setDashboardData(response.data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching dashboard stats:', error);
+            toast.error('Failed to fetch dashboard statistics');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchDashboardStats();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="flex items-center gap-2 text-blue-950">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <span>Loading dashboard statistics...</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (!dashboardData) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                    <p className="text-gray-500">
+                        Failed to load dashboard data
+                    </p>
+                    <button
+                        onClick={fetchDashboardStats}
+                        className="mt-2 px-4 py-2 bg-blue-950 text-white rounded-lg hover:bg-blue-900"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    const { overview, userDistribution, teacherApplications, trends } =
+        dashboardData;
+
     const stats = [
         {
             title: 'Total Users',
-            value: 182,
+            value: overview.totalUsers,
             icon: Users,
             color: 'bg-blue-500',
-            change: '+12%',
-            changeType: 'positive',
+            change: `+${trends.userGrowth.growthRate}%`,
+            changeType:
+                trends.userGrowth.growthRate >= 0 ? 'positive' : 'negative',
         },
         {
-            title: 'Total Roles',
-            value: 3,
+            title: 'Teacher Applications',
+            value: teacherApplications.total,
             icon: Shield,
             color: 'bg-purple-500',
-            change: 'Stable',
-            changeType: 'positive',
+            change: `${teacherApplications.pending} pending`,
+            changeType: 'neutral',
         },
         {
             title: 'Active Quizzes',
-            value: 45,
+            value: overview.totalQuizzes,
             icon: BookOpen,
             color: 'bg-green-500',
-            change: '+8%',
-            changeType: 'positive',
+            change: `+${trends.quizActivity.growthRate}%`,
+            changeType:
+                trends.quizActivity.growthRate >= 0 ? 'positive' : 'negative',
         },
         {
-            title: 'Monthly Growth',
-            value: '23%',
+            title: 'Quiz Attempts',
+            value: overview.totalQuizAttempts,
             icon: TrendingUp,
             color: 'bg-orange-500',
-            change: '+5%',
+            change: `${overview.quizAttemptsThisMonth} this month`,
             changeType: 'positive',
         },
     ];
 
-    // Static users by role data
     const usersByRole = [
         {
             id: 1,
             name: 'student',
-            count: 150,
+            count: userDistribution.student,
             color: 'bg-green-500',
         },
         {
             id: 2,
             name: 'teacher',
-            count: 25,
+            count: userDistribution.teacher,
             color: 'bg-blue-500',
         },
         {
             id: 3,
             name: 'admin',
-            count: 7,
+            count: userDistribution.admin,
             color: 'bg-red-500',
         },
     ];
 
-    const totalUsers = 182;
+    const totalUsers = overview.totalUsers;
 
     return (
         <div className="space-y-6">
@@ -84,13 +146,17 @@ export default function AdminStatsDashboard() {
                                         className={`text-sm font-medium ${
                                             stat.changeType === 'positive'
                                                 ? 'text-green-600'
-                                                : 'text-red-600'
+                                                : stat.changeType === 'negative'
+                                                ? 'text-red-600'
+                                                : 'text-blue-600'
                                         }`}
                                     >
                                         {stat.change}
                                     </span>
                                     <span className="text-sm text-gray-500 ml-1">
-                                        vs last month
+                                        {stat.changeType === 'neutral'
+                                            ? ''
+                                            : 'vs last month'}
                                     </span>
                                 </div>
                             </div>

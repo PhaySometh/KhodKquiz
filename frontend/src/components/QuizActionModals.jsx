@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, AlertTriangle, Users, Calendar, Clock, Hash, Check } from 'lucide-react';
+import {
+    X,
+    AlertTriangle,
+    Users,
+    Calendar,
+    Clock,
+    Hash,
+    Check,
+} from 'lucide-react';
 
 // Delete Confirmation Modal
 export const DeleteQuizModal = ({ isOpen, onClose, quiz, onConfirm }) => {
@@ -12,7 +20,7 @@ export const DeleteQuizModal = ({ isOpen, onClose, quiz, onConfirm }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4"
                 onClick={onClose}
             >
                 <motion.div
@@ -27,7 +35,9 @@ export const DeleteQuizModal = ({ isOpen, onClose, quiz, onConfirm }) => {
                             <div className="p-2 bg-red-100 rounded-full">
                                 <AlertTriangle className="h-5 w-5 text-red-600" />
                             </div>
-                            <h3 className="text-lg font-semibold text-gray-900">Delete Quiz</h3>
+                            <h3 className="text-lg font-semibold text-gray-900">
+                                Delete Quiz
+                            </h3>
                         </div>
                         <button
                             onClick={onClose}
@@ -39,12 +49,14 @@ export const DeleteQuizModal = ({ isOpen, onClose, quiz, onConfirm }) => {
 
                     <div className="mb-6">
                         <p className="text-gray-600 mb-3">
-                            Are you sure you want to delete <strong>"{quiz?.title}"</strong>? 
-                            This action cannot be undone.
+                            Are you sure you want to delete{' '}
+                            <strong>"{quiz?.title}"</strong>? This action cannot
+                            be undone.
                         </p>
                         <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                             <p className="text-sm text-red-700">
-                                <strong>Warning:</strong> This will permanently delete the quiz and all associated data, 
+                                <strong>Warning:</strong> This will permanently
+                                delete the quiz and all associated data,
                                 including student responses and results.
                             </p>
                         </div>
@@ -80,7 +92,7 @@ export const AssignToClassModal = ({ isOpen, onClose, quiz, onAssign }) => {
         dueDate: '',
         timeLimit: '',
         attemptLimit: 1,
-        instructions: ''
+        instructions: '',
     });
 
     // Mock classes data - replace with actual API call
@@ -88,34 +100,34 @@ export const AssignToClassModal = ({ isOpen, onClose, quiz, onAssign }) => {
         { id: 1, name: 'Computer Science 101', students: 25 },
         { id: 2, name: 'Web Development Bootcamp', students: 18 },
         { id: 3, name: 'Advanced JavaScript', students: 12 },
-        { id: 4, name: 'Python for Beginners', students: 30 }
+        { id: 4, name: 'Python for Beginners', students: 30 },
     ];
 
     const handleClassToggle = (classId) => {
-        setSelectedClasses(prev => 
-            prev.includes(classId) 
-                ? prev.filter(id => id !== classId)
+        setSelectedClasses((prev) =>
+            prev.includes(classId)
+                ? prev.filter((id) => id !== classId)
                 : [...prev, classId]
         );
     };
 
     const handleAssign = () => {
         if (selectedClasses.length === 0) return;
-        
+
         onAssign({
             quiz,
             classes: selectedClasses,
-            settings: assignmentSettings
+            settings: assignmentSettings,
         });
         onClose();
-        
+
         // Reset form
         setSelectedClasses([]);
         setAssignmentSettings({
             dueDate: '',
             timeLimit: '',
             attemptLimit: 1,
-            instructions: ''
+            instructions: '',
         });
     };
 
@@ -127,7 +139,7 @@ export const AssignToClassModal = ({ isOpen, onClose, quiz, onAssign }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4"
                 onClick={onClose}
             >
                 <motion.div
@@ -144,8 +156,12 @@ export const AssignToClassModal = ({ isOpen, onClose, quiz, onAssign }) => {
                                 <Users className="h-5 w-5 text-orange-600" />
                             </div>
                             <div>
-                                <h3 className="text-lg font-semibold text-gray-900">Assign to Classes</h3>
-                                <p className="text-sm text-gray-500">"{quiz?.title}"</p>
+                                <h3 className="text-lg font-semibold text-gray-900">
+                                    Assign to Classes
+                                </h3>
+                                <p className="text-sm text-gray-500">
+                                    "{quiz?.title}"
+                                </p>
                             </div>
                         </div>
                         <button
@@ -159,24 +175,37 @@ export const AssignToClassModal = ({ isOpen, onClose, quiz, onAssign }) => {
                     <div className="p-6 space-y-6">
                         {/* Class Selection */}
                         <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-3">Select Classes</h4>
+                            <h4 className="text-sm font-medium text-gray-900 mb-3">
+                                Select Classes
+                            </h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {availableClasses.map((classItem) => (
                                     <div
                                         key={classItem.id}
                                         className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                                            selectedClasses.includes(classItem.id)
+                                            selectedClasses.includes(
+                                                classItem.id
+                                            )
                                                 ? 'border-blue-500 bg-blue-50'
                                                 : 'border-gray-200 hover:border-gray-300'
                                         }`}
-                                        onClick={() => handleClassToggle(classItem.id)}
+                                        onClick={() =>
+                                            handleClassToggle(classItem.id)
+                                        }
                                     >
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <h5 className="font-medium text-gray-900">{classItem.name}</h5>
-                                                <p className="text-sm text-gray-500">{classItem.students} students</p>
+                                                <h5 className="font-medium text-gray-900">
+                                                    {classItem.name}
+                                                </h5>
+                                                <p className="text-sm text-gray-500">
+                                                    {classItem.students}{' '}
+                                                    students
+                                                </p>
                                             </div>
-                                            {selectedClasses.includes(classItem.id) && (
+                                            {selectedClasses.includes(
+                                                classItem.id
+                                            ) && (
                                                 <Check className="h-5 w-5 text-blue-600" />
                                             )}
                                         </div>
@@ -187,22 +216,29 @@ export const AssignToClassModal = ({ isOpen, onClose, quiz, onAssign }) => {
 
                         {/* Assignment Settings */}
                         <div className="space-y-4">
-                            <h4 className="text-sm font-medium text-gray-900">Assignment Settings</h4>
-                            
+                            <h4 className="text-sm font-medium text-gray-900">
+                                Assignment Settings
+                            </h4>
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {/* Due Date */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        <Calendar size={14} className="inline mr-1" />
+                                        <Calendar
+                                            size={14}
+                                            className="inline mr-1"
+                                        />
                                         Due Date (Optional)
                                     </label>
                                     <input
                                         type="datetime-local"
                                         value={assignmentSettings.dueDate}
-                                        onChange={(e) => setAssignmentSettings(prev => ({
-                                            ...prev,
-                                            dueDate: e.target.value
-                                        }))}
+                                        onChange={(e) =>
+                                            setAssignmentSettings((prev) => ({
+                                                ...prev,
+                                                dueDate: e.target.value,
+                                            }))
+                                        }
                                         className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
@@ -210,17 +246,24 @@ export const AssignToClassModal = ({ isOpen, onClose, quiz, onAssign }) => {
                                 {/* Time Limit */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        <Clock size={14} className="inline mr-1" />
+                                        <Clock
+                                            size={14}
+                                            className="inline mr-1"
+                                        />
                                         Time Limit (minutes)
                                     </label>
                                     <input
                                         type="number"
-                                        placeholder={`Default: ${quiz?.time || 30} min`}
+                                        placeholder={`Default: ${
+                                            quiz?.time || 30
+                                        } min`}
                                         value={assignmentSettings.timeLimit}
-                                        onChange={(e) => setAssignmentSettings(prev => ({
-                                            ...prev,
-                                            timeLimit: e.target.value
-                                        }))}
+                                        onChange={(e) =>
+                                            setAssignmentSettings((prev) => ({
+                                                ...prev,
+                                                timeLimit: e.target.value,
+                                            }))
+                                        }
                                         className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
@@ -234,16 +277,22 @@ export const AssignToClassModal = ({ isOpen, onClose, quiz, onAssign }) => {
                                 </label>
                                 <select
                                     value={assignmentSettings.attemptLimit}
-                                    onChange={(e) => setAssignmentSettings(prev => ({
-                                        ...prev,
-                                        attemptLimit: parseInt(e.target.value)
-                                    }))}
+                                    onChange={(e) =>
+                                        setAssignmentSettings((prev) => ({
+                                            ...prev,
+                                            attemptLimit: parseInt(
+                                                e.target.value
+                                            ),
+                                        }))
+                                    }
                                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
                                     <option value={1}>1 attempt</option>
                                     <option value={2}>2 attempts</option>
                                     <option value={3}>3 attempts</option>
-                                    <option value={-1}>Unlimited attempts</option>
+                                    <option value={-1}>
+                                        Unlimited attempts
+                                    </option>
                                 </select>
                             </div>
 
@@ -256,10 +305,12 @@ export const AssignToClassModal = ({ isOpen, onClose, quiz, onAssign }) => {
                                     rows={3}
                                     placeholder="Add any special instructions for students..."
                                     value={assignmentSettings.instructions}
-                                    onChange={(e) => setAssignmentSettings(prev => ({
-                                        ...prev,
-                                        instructions: e.target.value
-                                    }))}
+                                    onChange={(e) =>
+                                        setAssignmentSettings((prev) => ({
+                                            ...prev,
+                                            instructions: e.target.value,
+                                        }))
+                                    }
                                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
@@ -269,7 +320,8 @@ export const AssignToClassModal = ({ isOpen, onClose, quiz, onAssign }) => {
                     {/* Footer */}
                     <div className="flex items-center justify-between p-6 border-t border-gray-200">
                         <p className="text-sm text-gray-500">
-                            {selectedClasses.length} class{selectedClasses.length !== 1 ? 'es' : ''} selected
+                            {selectedClasses.length} class
+                            {selectedClasses.length !== 1 ? 'es' : ''} selected
                         </p>
                         <div className="flex gap-3">
                             <button
@@ -303,7 +355,7 @@ export const ArchiveQuizModal = ({ isOpen, onClose, quiz, onConfirm }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4"
                 onClick={onClose}
             >
                 <motion.div
@@ -318,7 +370,9 @@ export const ArchiveQuizModal = ({ isOpen, onClose, quiz, onConfirm }) => {
                             <div className="p-2 bg-gray-100 rounded-full">
                                 <Users className="h-5 w-5 text-gray-600" />
                             </div>
-                            <h3 className="text-lg font-semibold text-gray-900">Archive Quiz</h3>
+                            <h3 className="text-lg font-semibold text-gray-900">
+                                Archive Quiz
+                            </h3>
                         </div>
                         <button
                             onClick={onClose}
@@ -330,12 +384,14 @@ export const ArchiveQuizModal = ({ isOpen, onClose, quiz, onConfirm }) => {
 
                     <div className="mb-6">
                         <p className="text-gray-600 mb-3">
-                            Are you sure you want to archive <strong>"{quiz?.title}"</strong>?
+                            Are you sure you want to archive{' '}
+                            <strong>"{quiz?.title}"</strong>?
                         </p>
                         <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                             <p className="text-sm text-gray-700">
-                                Archived quizzes will be hidden from the main view but can be restored later. 
-                                Students will no longer be able to access this quiz.
+                                Archived quizzes will be hidden from the main
+                                view but can be restored later. Students will no
+                                longer be able to access this quiz.
                             </p>
                         </div>
                     </div>

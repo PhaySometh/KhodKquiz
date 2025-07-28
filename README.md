@@ -1,232 +1,335 @@
-# Welcome to KhodKquiz 🧑‍💻
+# 🎓 KhodKquiz - Enhanced Interactive Quiz Platform
 
-KhodKquiz is a full-stack real-time quiz web application where users can participate in coding language quizzes, compete on leaderboards, and unlock badges based on their performance. Designed for both educational and competitive use, it includes user authentication, admin controls, and powerful database management features.
+**Academic Project - Full-Stack Web Development**
+_Cambodia Academy of Digital Technology_
 
----
-## 🌐 Live Demo (Coming Soon)
+A comprehensive, enterprise-grade quiz application demonstrating modern web development practices, advanced database design, and professional software architecture. Built with React 19, Node.js, and PostgreSQL, featuring complete role-based access control, real-time analytics, and advanced admin management capabilities.
 
-> 🚧 Hosted frontend on **Vercel** and backend on **Render/Railway**
+## 📋 Table of Contents
 
----
-## 📌 Features at a Glance
+-   [Project Overview](#-project-overview)
+-   [Features & Capabilities](#-features--capabilities)
+-   [Technology Stack](#-technology-stack)
+-   [Architecture & Design](#-architecture--design)
+-   [Installation & Setup](#-installation--setup)
+-   [Database Schema](#-database-schema)
+-   [API Documentation](#-api-documentation)
+-   [Security Implementation](#-security-implementation)
+-   [Performance Optimization](#-performance-optimization)
+-   [Academic Learning Outcomes](#-academic-learning-outcomes)
 
-- ✅ **User Authentication (Email & Google)**
-- ✅ **Category-based Quizzes (C, C++, JS...)**
-- ✅ **Real-Time Countdown & Leaderboard**
-- ✅ **Point System + Badge Unlocks**
-- ✅ **Admin Dashboard (CRUD + Analytics)**
-- ✅ **API-based Prebuilt Questions**
-- ✅ **Database Security, Indexing, & Backup Plan**
-- ✅ **Mobile Responsive Design**
-- ✅ **Scalable & Modular Codebase**
+## 🎯 Project Overview
 
----
+KhodKquiz represents a complete learning management system focused on interactive quiz-based education. The platform demonstrates advanced full-stack development concepts including:
 
-## 🛠 Tech Stack Overview
+-   **Enterprise-level Architecture**: Scalable, maintainable codebase with proper separation of concerns
+-   **Advanced Database Design**: Normalized schema with optimized queries and proper indexing
+-   **Security Best Practices**: JWT authentication, RBAC, input validation, and XSS protection
+-   **Modern UI/UX**: Responsive design with smooth animations and accessibility features
+-   **Real-time Features**: Live leaderboards, instant feedback, and dynamic content updates
 
-| Layer            | Technology                                                                 |
-|------------------|----------------------------------------------------------------------------|
-| Frontend         | React + TailwindCSS + DaisyUI + React Router                               |
-| Backend (API)    | Node.js + Express.js + Sequelize/Prisma ORM                                |
-| Database         | PostgreSQL (Structured) + Redis (Real-Time Leaderboard & Caching)          |
-| Authentication   | Firebase Auth or Auth0 (Email + Google Login)                              |
-| Hosting          | Vercel (frontend), Render or Railway (backend/database)                    |
-| Real-Time        | Socket.IO (quiz sync + leaderboard)                                        |
-| Admin Panel      | Role-based UI with Recharts (Analytics)                                    |
-| Email/Notify     | EmailJS / SendGrid (for notifications, password reset, etc.)               |
+### 🎓 Academic Context
 
----
-## 🚀 How to Run Locally
+This project serves as a capstone demonstration of:
 
-### 1. Clone the Repository
+-   Full-stack web development proficiency
+-   Database design and optimization
+-   Security implementation and best practices
+-   Modern JavaScript frameworks and libraries
+-   RESTful API design and implementation
+-   User experience design and accessibility
 
-```bash
-git clone https://github.com/PhaySometh/KhodKquiz.git
-cd KhodKquiz
+## 🚀 Features & Capabilities
+
+### 👨‍🎓 Student Experience
+
+-   **Interactive Quiz Interface**: Timed quizzes with real-time feedback and scoring
+-   **Progress Tracking**: Comprehensive analytics across categories and difficulty levels
+-   **Leaderboard Competition**: Global and category-specific rankings with performance metrics
+-   **Profile Management**: Custom profile pictures, statistics, and achievement tracking
+-   **Teacher Application System**: Structured application process for role elevation
+
+### 👨‍🏫 Teacher Capabilities
+
+-   **Advanced Quiz Creation**: Multi-question types with rich content support
+-   **Class Management**: Student organization and assignment distribution
+-   **Performance Analytics**: Detailed insights into student progress and quiz effectiveness
+-   **Content Library**: Reusable question banks and template management
+-   **Bulk Operations**: Efficient management of large datasets
+
+### 👨‍💼 Administrative Control
+
+-   **User Management**: Complete CRUD operations with advanced filtering and search
+-   **System Analytics**: Real-time dashboard with comprehensive metrics
+-   **Teacher Application Review**: Structured approval workflow with commenting system
+-   **Quiz Template System**: Pre-built content for rapid deployment
+-   **Import/Export Functionality**: Data portability and backup capabilities
+-   **Bulk Operations**: Efficient batch processing for system maintenance
+
+## 🛠️ Technology Stack
+
+### Frontend Architecture
+
+```
+React 19.1.0          # Modern UI library with concurrent features
+├── React Router 7.6.2    # Advanced routing with data loading
+├── Tailwind CSS 4.1.8    # Utility-first styling framework
+├── Framer Motion 12.19.1 # Professional animations and transitions
+├── Axios 1.9.0           # HTTP client with interceptors
+├── React Hot Toast 2.5.2 # Notification system
+└── Lucide React 0.511.0  # Modern icon library
 ```
 
-### 2. Run Frontend
+### Backend Infrastructure
 
-```bash
-cd frontend
-npm install
-npm run dev
+```
+Node.js 18+           # JavaScript runtime environment
+├── Express.js 4.x        # Web application framework
+├── PostgreSQL 13+        # Advanced relational database
+├── Sequelize 6.x         # Object-Relational Mapping
+├── JWT                   # Stateless authentication
+├── bcrypt               # Password hashing
+├── Helmet               # Security middleware
+└── Morgan               # HTTP request logging
 ```
 
-### 3. Run Backend
+### Development Environment
 
-```bash
-cd backend
-npm install
-npm run dev
 ```
-💡 Don't forget to set up your .env files for backend (DB_URL, JWT_SECRET, etc.) and frontend (Firebase config)
+Vite 6.3.5            # Next-generation build tool
+├── ESLint 9.25.0         # Code quality and consistency
+├── Prettier             # Code formatting
+├── PostCSS 8.5.4        # CSS processing
+└── Git                  # Version control system
+```
 
-### ✅ Key Features
+## 🏗️ Architecture & Design
 
--   **User Authentication**
-    -   Sign Up: Create new acc, Edit, and delete
-    -   Login: With existing sign up acc and Google
--   **Create quiz**
-    -   CRUD quiz
-    -   Share link and code for realtime use
--   **Quiz feature**
-    -   User can do Coding Language base quiz(C program, C++, JS, ...) which is API call for Pre-built Multiple Choice Question.
-    -   For Quizzes choice is like C program I, C program II, C program III, or C program Beginner, C program OOP...
-    -   Real Timed Countdown (Kahoot inspire...)
--   **Score given**
-    -   High score base on answer speed and corrected answer
-    -   Gain point to his account for each quiz
-    -   Bonus feature: Badge (example, wording and score can be changed)
-        -   100 in each language = noob in C
-        -   300 in each language = rising star in C
-        -   500 in each language = pro in C
-        -   1000 in each language = Hacker in C
--   **Leaderboard** (real time update leaderboard)
-    -   Top scorers (for each quiz (individual quiz leaderboard) / Top quiz participant (the more he do the more he easily getting top) / All-Time)
-    -   Each language (pro in C...)
--   **Admin Panel**
-    **_ NEED HELP !!! _**
-    -   CRUD for quizzes, questions, and categories
-    -   View reports (average score, attempts)
+### Project Structure
 
-## 🔐 User Features
-- Sign up with email/password or Google
+```
+KhodKquiz/
+├── frontend/                    # React application
+│   ├── src/
+│   │   ├── components/          # Reusable UI components
+│   │   │   ├── admin/          # Admin-specific components
+│   │   │   ├── common/         # Shared components
+│   │   │   └── modals/         # Modal dialogs
+│   │   ├── pages/              # Route components
+│   │   │   ├── admin/          # Admin dashboard pages
+│   │   │   ├── client/         # User-facing pages
+│   │   │   └── auth/           # Authentication pages
+│   │   ├── contexts/           # React context providers
+│   │   ├── utils/              # Utility functions
+│   │   ├── assets/             # Static resources
+│   │   └── routes/             # Route configuration
+│   └── public/                 # Static files
+├── backend/                    # Node.js application
+│   ├── src/
+│   │   ├── controllers/        # Business logic handlers
+│   │   │   ├── admin/          # Admin operations
+│   │   │   ├── client/         # Client operations
+│   │   │   └── auth/           # Authentication logic
+│   │   ├── models/             # Database models
+│   │   ├── routes/             # API route definitions
+│   │   ├── middleware/         # Custom middleware
+│   │   ├── config/             # Configuration files
+│   │   └── seeders/            # Database initialization
+│   └── migrations/             # Database migrations
+└── docs/                       # Documentation files
+```
 
-- View and edit profile
+### Design Patterns Implemented
 
-- Attempt real-time quizzes
+-   **MVC Architecture**: Clear separation of Model, View, and Controller layers
+-   **Repository Pattern**: Abstracted data access layer
+-   **Middleware Pattern**: Composable request processing pipeline
+-   **Observer Pattern**: Event-driven updates and notifications
+-   **Factory Pattern**: Dynamic component and model creation
+-   **Singleton Pattern**: Database connection and configuration management
 
-- See quiz history and badges
+## 🚀 Installation & Setup
 
-- Real-time leaderboard competition
+### Prerequisites
 
-### Features:
+-   **Node.js**: Version 18.0 or higher
+-   **PostgreSQL**: Version 13.0 or higher
+-   **npm**: Version 8.0 or higher
+-   **Git**: For version control
 
-- SignUp with normal text/ Login with google/ and more
-- Google Auth integration
+### Step-by-Step Installation
 
-- Edit profile
+1. **Repository Setup**
 
-- Delete account
+    ```bash
+    git clone <repository-url>
+    cd KhodKquiz
+    ```
 
-## 🧠 2. Quiz System
-- Categorized by language and difficulty
+2. **Backend Configuration**
 
-- One-question-at-a-time or full-page layout
+    ```bash
+    cd backend
+    npm install
 
-- Score based on:
+    # Create environment file
+    cp .env.example .env
+    # Edit .env with your database credentials
+    ```
 
-    - Correct answers
+3. **Database Initialization**
 
-    - Time remaining
+    ```bash
+    # Create PostgreSQL database
+    createdb khodkquiz_dev
 
-- Track total score & badge milestones:
+    # Run database setup
+    npm run seed
+    ```
 
-    - 🎖 100 pts = Noob
+4. **Frontend Setup**
 
-    - 🏅 300 pts = Rising Star
+    ```bash
+    cd ../frontend
+    npm install
+    ```
 
-    - 🥇 500 pts = Pro
+5. **Environment Variables**
 
-    - 🧠 1000 pts = Hacker
-## 🧾 Admin Panel
+    ```env
+    # Backend (.env)
+    PORT=3000
+    NODE_ENV=development
+    DB_HOST=localhost
+    DB_PORT=5432
+    DB_NAME=khodkquiz_dev
+    DB_USER=your_username
+    DB_PASSWORD=your_password
+    JWT_USER_SECRET=your_secure_jwt_secret_here
+    ```
 
-Only accessible by admin users:
+6. **Application Launch**
 
-### ✅ CRUD Features:
-- Create, Edit, Delete:
-  - Categories
-  - Questions
-  - Quizzes
+    ```bash
+    # Terminal 1: Backend server
+    cd backend && npm run dev
 
-### 📊 View & Analytics:
-- Total quiz attempts
-- Average scores per quiz
-- Most popular quizzes
-- Analytics dashboard with **Recharts**
-- Manage user roles and permissions
+    # Terminal 2: Frontend development server
+    cd frontend && npm run dev
+    ```
+
+7. **Access Points**
+    - **Frontend**: http://localhost:5173
+    - **Backend API**: http://localhost:3000
+    - **Admin Panel**: http://localhost:5173/admin
+
+### Default Credentials
+
+```
+Admin Account:
+Email: admin@khodkquiz.com
+Password: admin123
+```
+
+⚠️ **Security Note**: Change default credentials immediately in production.
+
+## 📊 Database Schema
+
+### Entity Relationship Design
+
+The database implements a normalized schema with proper relationships and constraints:
+
+#### Core Entities
+
+```sql
+-- User Management
+Users (id, name, email, password, role, provider, picture, createdAt)
+TeacherApplications (id, userId, status, applicationData, reviewedBy, reviewedAt)
+
+-- Quiz System
+SystemCategories (id, name, description, createdAt)
+SystemQuizzes (id, title, description, category, difficulty, time, questionsCount)
+SystemQuestions (id, systemQuizId, text, type)
+SystemAnswerOptions (id, systemQuestionId, text, isCorrect)
+
+-- Results & Analytics
+SystemQuizResults (id, studentId, systemQuizId, score, accuracy, attemptNumber)
+SystemStudentAnswers (id, systemQuizResultId, systemQuestionId, selectedOptionId)
+```
+
+#### Key Relationships
+
+-   **Users → TeacherApplications**: One-to-Many (applicant relationship)
+-   **Users → SystemQuizzes**: One-to-Many (creator relationship)
+-   **SystemCategories → SystemQuizzes**: One-to-Many
+-   **SystemQuizzes → SystemQuestions**: One-to-Many
+-   **SystemQuestions → SystemAnswerOptions**: One-to-Many
+-   **Users → SystemQuizResults**: One-to-Many
+-   **SystemQuizResults → SystemStudentAnswers**: One-to-Many
+
+#### Database Optimization
+
+-   **Indexes**: Strategic indexing on frequently queried columns
+-   **Foreign Keys**: Referential integrity enforcement
+-   **Constraints**: Data validation at database level
+-   **Normalization**: Third normal form compliance
+-   **Performance**: Optimized queries with proper joins
+
+## 🔌 API Documentation
+
+### Authentication Endpoints
+
+```http
+POST   /api/user/register          # User registration
+POST   /api/user/login             # User authentication
+GET    /api/user                   # Current user profile
+PUT    /api/user/profile           # Profile updates
+POST   /api/user/logout            # Session termination
+```
+
+### Student Endpoints
+
+```http
+GET    /api/public/categories      # Browse quiz categories
+GET    /api/student/quiz/:id       # Get quiz questions
+POST   /api/student/quiz/:id/submit # Submit quiz answers
+GET    /api/student/progress       # Learning progress
+GET    /api/student/results/:id    # Detailed quiz results
+GET    /api/student/leaderboard    # Competition rankings
+```
+
+### Teacher Endpoints
+
+```http
+POST   /api/teacher/quiz           # Create new quiz
+GET    /api/teacher/quizzes        # Manage created quizzes
+PUT    /api/teacher/quiz/:id       # Update quiz content
+DELETE /api/teacher/quiz/:id       # Remove quiz
+GET    /api/teacher/analytics      # Performance insights
+```
+
+### Admin Endpoints
+
+```http
+GET    /api/admin/users            # User management
+POST   /api/admin/users            # Create user accounts
+PUT    /api/admin/users/:id        # Update user details
+DELETE /api/admin/users/:id        # Remove user accounts
+GET    /api/admin/analytics        # System-wide statistics
+GET    /api/admin/quiz/templates   # Quiz templates
+POST   /api/admin/quiz/import      # Bulk quiz import
+```
+
+### Teacher Application System
+
+```http
+POST   /api/teacher-application/apply     # Submit application
+GET    /api/teacher-application/status    # Check application status
+GET    /api/admin/teacher-applications    # Review applications (Admin)
+PUT    /api/admin/teacher-applications/:id # Approve/Reject (Admin)
+```
 
 ---
 
-## 📡 Real-Time Features (Socket.IO + Redis)
-
-- Each quiz session is a live **Socket.IO room**
-- Host controls countdown and quiz progress
-- Leaderboard updates in real time
-- **Redis** stores live score state per session
-
----
-
-## 🧰 Developer Tools
-
-| Feature               | Tool                    |
-|-----------------------|-------------------------|
-| Form Validation       | React Hook Form + Zod   |
-| Charts in Admin       | Recharts.js             |
-| Authentication        | Firebase / Auth0        |
-| ORM                   | Prisma / Sequelize      |
-| Deployment            | Vercel + Render/Railway |
-| Email Service         | EmailJS / SendGrid      |
-| Testing (Backend)     | Postman + Jest          |
-| Code Formatting       | Prettier + ESLint       |
-| Live Dev Reload       | Nodemon                 |
-
----
-
-## 📂 Database Architecture
-
-### 🧱 Core Tables
-
-| Table         | Key Columns                                      |
-|---------------|--------------------------------------------------|
-| `users`       | id, email, name, role, total_score               |
-| `categories`  | id, name                                         |
-| `questions`   | id, question, category_id, correct_answer, choices |
-| `quizzes`     | id, user_id, quiz_code, score, timestamps        |
-| `quiz_answers`| id, quiz_id, user_id, question_id, is_correct    |
-| `badges`      | id, user_id, badge_name, category                |
-
----
-
-### 📌 DB Concepts Used
-
-- ✅ ERD & Relational Schema  
-- ✅ Indexing (on `user_id`, `quiz_id`)  
-- ✅ Views (e.g., Top 10 Scorers This Month)  
-- ✅ Stored Procedures (for scoring logic)  
-- ✅ Triggers (e.g., on quiz submission)  
-- ✅ Backup & Recovery Strategy  
-- ✅ Normalization up to **3NF**
-
----
-
-## 🧑‍🏫 For Course Submission
-
-| Requirement                     | Backend Dev ✅ | DB Admin ✅ |
-|----------------------------------|----------------|-------------|
-| User Auth (JWT/Firebase)        | ✅             | —           |
-| Real-time Features (Socket.IO)  | ✅             | —           |
-| Score Logic & Leaderboard       | ✅             | ✅          |
-| CRUD APIs for Quizzes           | ✅             | ✅          |
-| ERD + Normalized DB             | —              | ✅          |
-| Indexes, Triggers, Backup       | —              | ✅          |
-| Admin Role + Permissions        | ✅             | ✅          |
-| Fake Data Insertion (1M+ rows)  | ✅             | ✅          |
-
----
-
-## ⚙️ Future Ideas (Optional)
-
-- 🎮 Gamification (level system, badges, XP)
-- 🧾 Certificate generation after quiz
-- 📧 Email performance summary to users
-- 🔄 Quiz review + retry feature
-- 🧑‍🏫 Admin CMS for new categories
-- 📡 Offline mode with local caching
-
----
-
-## 📄 License
-
-**MIT License** — Free to use, modify, and contribute.
+**© 2025 KhodKquiz Development Team - Academic Project**
+_This project demonstrates enterprise-level full-stack development capabilities and serves as a comprehensive learning portfolio for modern web development practices._

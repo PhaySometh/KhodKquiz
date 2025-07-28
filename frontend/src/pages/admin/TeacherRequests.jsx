@@ -12,7 +12,13 @@ import {
 } from 'lucide-react';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import AdminNavbar from '../../components/admin/AdminNavbar';
+import StatsCard, {
+    StatsGrid,
+    STAT_CONFIGS,
+} from '../../components/common/StatsCard';
+import { TextareaField } from '../../components/common/FormField';
 import apiClient from '../../utils/axiosConfig';
+import { handleApiError, withErrorHandling } from '../../utils/apiErrorHandler';
 import toast from 'react-hot-toast';
 
 export default function TeacherRequests() {
@@ -41,20 +47,21 @@ export default function TeacherRequests() {
     }, [statusFilter]);
 
     const fetchApplications = async () => {
+        setLoading(true);
         try {
-            setLoading(true);
             const params = new URLSearchParams();
             if (statusFilter !== 'all') {
                 params.append('status', statusFilter);
             }
 
-            const response = await apiClient.get(
-                `/api/teacher-application/all?${params}`
+            const response = await withErrorHandling(
+                () => apiClient.get(`/api/teacher-application/all?${params}`),
+                'fetch teacher applications'
             );
-            setApplications(response.data.applications);
+            setApplications(response.applications || []);
         } catch (error) {
-            console.error('Error fetching applications:', error);
-            toast.error('Failed to fetch teacher applications');
+            // Error already handled by withErrorHandling
+            setApplications([]);
         } finally {
             setLoading(false);
         }
@@ -62,12 +69,22 @@ export default function TeacherRequests() {
 
     const fetchStats = async () => {
         try {
-            const response = await apiClient.get(
-                '/api/teacher-application/stats'
+            const response = await withErrorHandling(
+                () => apiClient.get('/api/teacher-application/stats'),
+                'fetch application statistics',
+                { showErrorToast: false } // Don't show toast for stats errors
             );
-            setStats(response.data.stats);
+            setStats(
+                response.stats || {
+                    pending: 0,
+                    approved: 0,
+                    rejected: 0,
+                    total: 0,
+                }
+            );
         } catch (error) {
-            console.error('Error fetching stats:', error);
+            // Error already handled, set default stats
+            setStats({ pending: 0, approved: 0, rejected: 0, total: 0 });
         }
     };
 
@@ -129,68 +146,41 @@ export default function TeacherRequests() {
                     </div>
 
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                        <div className="bg-white p-6 rounded-lg shadow">
-                            <div className="flex items-center">
-                                <div className="p-2 bg-blue-100 rounded-lg">
-                                    <FileText className="w-6 h-6 text-blue-600" />
-                                </div>
-                                <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-600">
-                                        Total
-                                    </p>
-                                    <p className="text-2xl font-semibold text-gray-900">
-                                        {stats.total}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-white p-6 rounded-lg shadow">
-                            <div className="flex items-center">
-                                <div className="p-2 bg-yellow-100 rounded-lg">
-                                    <Clock className="w-6 h-6 text-yellow-600" />
-                                </div>
-                                <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-600">
-                                        Pending
-                                    </p>
-                                    <p className="text-2xl font-semibold text-gray-900">
-                                        {stats.pending}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-white p-6 rounded-lg shadow">
-                            <div className="flex items-center">
-                                <div className="p-2 bg-green-100 rounded-lg">
-                                    <CheckCircle className="w-6 h-6 text-green-600" />
-                                </div>
-                                <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-600">
-                                        Approved
-                                    </p>
-                                    <p className="text-2xl font-semibold text-gray-900">
-                                        {stats.approved}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-white p-6 rounded-lg shadow">
-                            <div className="flex items-center">
-                                <div className="p-2 bg-red-100 rounded-lg">
-                                    <XCircle className="w-6 h-6 text-red-600" />
-                                </div>
-                                <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-600">
-                                        Rejected
-                                    </p>
-                                    <p className="text-2xl font-semibold text-gray-900">
-                                        {stats.rejected}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <StatsGrid
+                        stats={[
+                            {
+                                id: 'total',
+                                icon: <FileText className="w-6 h-6" />,
+                                label: 'Total',
+                                value: stats.total,
+                                ...STAT_CONFIGS.TOTAL,
+                            },
+                            {
+                                id: 'pending',
+                                icon: <Clock className="w-6 h-6" />,
+                                label: 'Pending',
+                                value: stats.pending,
+                                ...STAT_CONFIGS.PENDING,
+                            },
+                            {
+                                id: 'approved',
+                                icon: <CheckCircle className="w-6 h-6" />,
+                                label: 'Approved',
+                                value: stats.approved,
+                                ...STAT_CONFIGS.APPROVED,
+                            },
+                            {
+                                id: 'rejected',
+                                icon: <XCircle className="w-6 h-6" />,
+                                label: 'Rejected',
+                                value: stats.rejected,
+                                ...STAT_CONFIGS.REJECTED,
+                            },
+                        ]}
+                        columns={4}
+                        animated={true}
+                        className="mb-8"
+                    />
 
                     {/* Filters and Search */}
                     <div className="mb-6 flex flex-col sm:flex-row gap-4">
@@ -431,7 +421,7 @@ export default function TeacherRequests() {
 
                     {/* Application Details Modal */}
                     {selectedApplication && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center p-4 z-50">
                             <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                                 <div className="p-6">
                                     <div className="flex justify-between items-start mb-6">
@@ -618,7 +608,7 @@ export default function TeacherRequests() {
 
                     {/* Review Modal */}
                     {reviewModal.isOpen && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center p-4 z-50">
                             <div className="bg-white rounded-lg max-w-md w-full">
                                 <div className="p-6">
                                     <div className="flex justify-between items-start mb-6">

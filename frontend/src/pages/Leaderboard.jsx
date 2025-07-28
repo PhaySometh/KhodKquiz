@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/common/Navbar';
 import ProfilePicture from '../components/ProfilePicture';
 import LoadingSpinner from '../components/LoadingSpinner';
-import axios from 'axios';
+import apiClient from '../utils/axiosConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Trophy,
@@ -33,110 +33,14 @@ export default function Leaderboard() {
         try {
             // Add a minimum loading time for better UX
             const [response] = await Promise.all([
-                axios.get('https://localhost:3000/leaderboard'),
+                apiClient.get('/api/public/leaderboard'),
                 new Promise((resolve) => setTimeout(resolve, 1000)), // Minimum 1 second loading
             ]);
-            setLeaderboard(response.data);
+            setLeaderboard(response.data.data || []);
         } catch (error) {
             console.error('Error Fetching leaderboard: ', error);
-            // Enhanced mock data
-            const mockData = [
-                {
-                    id: 1,
-                    username: 'Phay Someth',
-                    score: 2850,
-                    quizzesTaken: 12,
-                    accuracy: 92,
-                    provider: 'google',
-                    picture:
-                        'https://lh3.googleusercontent.com/a/ACg8ocKxVRtpyKOQ8-sample-google-photo',
-                },
-                {
-                    id: 2,
-                    username: 'Sea Huyty',
-                    score: 2450,
-                    quizzesTaken: 10,
-                    accuracy: 88,
-                    provider: 'local',
-                    picture: null,
-                },
-                {
-                    id: 3,
-                    username: 'Khun Sophavisnuka',
-                    score: 2200,
-                    quizzesTaken: 9,
-                    accuracy: 85,
-                    provider: 'google',
-                    picture:
-                        'https://lh3.googleusercontent.com/a/ACg8ocLxVRtpyKOQ8-sample-google-photo2',
-                },
-                {
-                    id: 4,
-                    username: 'SyntaxSamurai',
-                    score: 1950,
-                    quizzesTaken: 8,
-                    accuracy: 82,
-                    provider: 'local',
-                    picture: null,
-                },
-                {
-                    id: 5,
-                    username: 'PixelPusher',
-                    score: 1750,
-                    quizzesTaken: 7,
-                    accuracy: 79,
-                    provider: 'local',
-                    picture: null,
-                },
-                {
-                    id: 6,
-                    username: 'CodeJedi',
-                    score: 1550,
-                    quizzesTaken: 6,
-                    accuracy: 76,
-                    provider: 'google',
-                    picture:
-                        'https://lh3.googleusercontent.com/a/ACg8ocMxVRtpyKOQ8-sample-google-photo3',
-                },
-                {
-                    id: 7,
-                    username: 'BinaryBard',
-                    score: 1350,
-                    quizzesTaken: 5,
-                    accuracy: 74,
-                    provider: 'local',
-                    picture: null,
-                },
-                {
-                    id: 8,
-                    username: 'AlgorithmAce',
-                    score: 1150,
-                    quizzesTaken: 5,
-                    accuracy: 72,
-                    provider: 'local',
-                    picture: null,
-                },
-                {
-                    id: 9,
-                    username: 'CSSChampion',
-                    score: 950,
-                    quizzesTaken: 4,
-                    accuracy: 68,
-                    provider: 'local',
-                    picture: null,
-                },
-                {
-                    id: 10,
-                    username: 'ReactRanger',
-                    score: 750,
-                    quizzesTaken: 3,
-                    accuracy: 65,
-                    provider: 'google',
-                    picture:
-                        'https://lh3.googleusercontent.com/a/ACg8ocNxVRtpyKOQ8-sample-google-photo4',
-                },
-            ];
-            setLeaderboard(mockData);
+            setLeaderboard([]);
+        } finally {
             setLoading(false);
         }
     };

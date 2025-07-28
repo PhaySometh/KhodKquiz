@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, AlertTriangle, Users, Mail, UserPlus, UserMinus, Check } from 'lucide-react';
+import {
+    X,
+    AlertTriangle,
+    Users,
+    Mail,
+    UserPlus,
+    UserMinus,
+    Check,
+} from 'lucide-react';
 
 // Delete Class Confirmation Modal
 export const DeleteClassModal = ({ isOpen, onClose, classItem, onConfirm }) => {
@@ -12,7 +20,7 @@ export const DeleteClassModal = ({ isOpen, onClose, classItem, onConfirm }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4"
                 onClick={onClose}
             >
                 <motion.div
@@ -27,7 +35,9 @@ export const DeleteClassModal = ({ isOpen, onClose, classItem, onConfirm }) => {
                             <div className="p-2 bg-red-100 rounded-full">
                                 <AlertTriangle className="h-5 w-5 text-red-600" />
                             </div>
-                            <h3 className="text-lg font-semibold text-gray-900">Delete Class</h3>
+                            <h3 className="text-lg font-semibold text-gray-900">
+                                Delete Class
+                            </h3>
                         </div>
                         <button
                             onClick={onClose}
@@ -39,14 +49,17 @@ export const DeleteClassModal = ({ isOpen, onClose, classItem, onConfirm }) => {
 
                     <div className="mb-6">
                         <p className="text-gray-600 mb-3">
-                            Are you sure you want to delete <strong>"{classItem?.name}"</strong>? 
-                            This action cannot be undone.
+                            Are you sure you want to delete{' '}
+                            <strong>"{classItem?.name}"</strong>? This action
+                            cannot be undone.
                         </p>
                         <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                             <p className="text-sm text-red-700">
-                                <strong>Warning:</strong> This will permanently delete the class and remove all 
-                                {classItem?.studentCount || 0} enrolled students. All associated quiz assignments 
-                                and student progress will be lost.
+                                <strong>Warning:</strong> This will permanently
+                                delete the class and remove all
+                                {classItem?.studentCount || 0} enrolled
+                                students. All associated quiz assignments and
+                                student progress will be lost.
                             </p>
                         </div>
                     </div>
@@ -75,85 +88,99 @@ export const DeleteClassModal = ({ isOpen, onClose, classItem, onConfirm }) => {
 };
 
 // Student Management Modal
-export const StudentManagementModal = ({ isOpen, onClose, classItem, onUpdateStudents }) => {
+export const StudentManagementModal = ({
+    isOpen,
+    onClose,
+    classItem,
+    onUpdateStudents,
+}) => {
     const [enrolledStudents, setEnrolledStudents] = useState([]);
     const [availableStudents, setAvailableStudents] = useState([]);
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('enrolled');
 
-    // Mock data - replace with actual API calls
+    /**
+     * Fetch enrolled and available students for class management
+     * This would typically make API calls to get real student data
+     */
     React.useEffect(() => {
-        if (isOpen) {
-            // Mock enrolled students
-            setEnrolledStudents([
-                { id: 1, name: 'John Doe', email: 'john@example.com', enrolledAt: '2024-01-15' },
-                { id: 2, name: 'Jane Smith', email: 'jane@example.com', enrolledAt: '2024-01-16' },
-                { id: 3, name: 'Mike Johnson', email: 'mike@example.com', enrolledAt: '2024-01-17' }
-            ]);
+        if (isOpen && classItem) {
+            // TODO: Replace with actual API calls when student management is implemented
+            // For now, initialize with empty arrays to prevent errors
+            setEnrolledStudents([]);
+            setAvailableStudents([]);
 
-            // Mock available students
-            setAvailableStudents([
-                { id: 4, name: 'Sarah Wilson', email: 'sarah@example.com' },
-                { id: 5, name: 'David Brown', email: 'david@example.com' },
-                { id: 6, name: 'Lisa Davis', email: 'lisa@example.com' }
-            ]);
+            // Future implementation:
+            // fetchEnrolledStudents(classItem.id);
+            // fetchAvailableStudents();
         }
-    }, [isOpen]);
+    }, [isOpen, classItem]);
 
     const handleStudentToggle = (studentId) => {
-        setSelectedStudents(prev => 
-            prev.includes(studentId) 
-                ? prev.filter(id => id !== studentId)
+        setSelectedStudents((prev) =>
+            prev.includes(studentId)
+                ? prev.filter((id) => id !== studentId)
                 : [...prev, studentId]
         );
     };
 
     const handleEnrollStudents = () => {
         if (selectedStudents.length === 0) return;
-        
-        const studentsToEnroll = availableStudents.filter(student => 
+
+        const studentsToEnroll = availableStudents.filter((student) =>
             selectedStudents.includes(student.id)
         );
-        
+
         onUpdateStudents({
             classItem,
             action: 'enroll',
-            students: studentsToEnroll
+            students: studentsToEnroll,
         });
-        
+
         setSelectedStudents([]);
         onClose();
     };
 
     const handleRemoveStudents = () => {
         if (selectedStudents.length === 0) return;
-        
-        const studentsToRemove = enrolledStudents.filter(student => 
+
+        const studentsToRemove = enrolledStudents.filter((student) =>
             selectedStudents.includes(student.id)
         );
-        
+
         onUpdateStudents({
             classItem,
             action: 'remove',
-            students: studentsToRemove
+            students: studentsToRemove,
         });
-        
+
         setSelectedStudents([]);
         onClose();
     };
 
     if (!isOpen) return null;
 
-    const filteredStudents = activeTab === 'enrolled' 
-        ? enrolledStudents.filter(student => 
-            student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            student.email.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : availableStudents.filter(student => 
-            student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            student.email.toLowerCase().includes(searchQuery.toLowerCase())
-          );
+    const filteredStudents =
+        activeTab === 'enrolled'
+            ? enrolledStudents.filter(
+                  (student) =>
+                      student.name
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase()) ||
+                      student.email
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
+              )
+            : availableStudents.filter(
+                  (student) =>
+                      student.name
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase()) ||
+                      student.email
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
+              );
 
     return (
         <AnimatePresence>
@@ -161,7 +188,7 @@ export const StudentManagementModal = ({ isOpen, onClose, classItem, onUpdateStu
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4"
                 onClick={onClose}
             >
                 <motion.div
@@ -178,8 +205,12 @@ export const StudentManagementModal = ({ isOpen, onClose, classItem, onUpdateStu
                                 <Users className="h-5 w-5 text-orange-600" />
                             </div>
                             <div>
-                                <h3 className="text-lg font-semibold text-gray-900">Manage Students</h3>
-                                <p className="text-sm text-gray-500">"{classItem?.name}"</p>
+                                <h3 className="text-lg font-semibold text-gray-900">
+                                    Manage Students
+                                </h3>
+                                <p className="text-sm text-gray-500">
+                                    "{classItem?.name}"
+                                </p>
                             </div>
                         </div>
                         <button
@@ -244,7 +275,9 @@ export const StudentManagementModal = ({ isOpen, onClose, classItem, onUpdateStu
                                             ? 'border-blue-500 bg-blue-50'
                                             : 'border-gray-200 hover:border-gray-300'
                                     }`}
-                                    onClick={() => handleStudentToggle(student.id)}
+                                    onClick={() =>
+                                        handleStudentToggle(student.id)
+                                    }
                                 >
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
@@ -254,16 +287,25 @@ export const StudentManagementModal = ({ isOpen, onClose, classItem, onUpdateStu
                                                 </span>
                                             </div>
                                             <div>
-                                                <h4 className="font-medium text-gray-900">{student.name}</h4>
-                                                <p className="text-sm text-gray-500">{student.email}</p>
+                                                <h4 className="font-medium text-gray-900">
+                                                    {student.name}
+                                                </h4>
+                                                <p className="text-sm text-gray-500">
+                                                    {student.email}
+                                                </p>
                                                 {student.enrolledAt && (
                                                     <p className="text-xs text-gray-400">
-                                                        Enrolled: {new Date(student.enrolledAt).toLocaleDateString()}
+                                                        Enrolled:{' '}
+                                                        {new Date(
+                                                            student.enrolledAt
+                                                        ).toLocaleDateString()}
                                                     </p>
                                                 )}
                                             </div>
                                         </div>
-                                        {selectedStudents.includes(student.id) && (
+                                        {selectedStudents.includes(
+                                            student.id
+                                        ) && (
                                             <Check className="h-5 w-5 text-blue-600" />
                                         )}
                                     </div>
@@ -281,7 +323,8 @@ export const StudentManagementModal = ({ isOpen, onClose, classItem, onUpdateStu
                     {/* Footer */}
                     <div className="flex items-center justify-between p-6 border-t border-gray-200">
                         <p className="text-sm text-gray-500">
-                            {selectedStudents.length} student{selectedStudents.length !== 1 ? 's' : ''} selected
+                            {selectedStudents.length} student
+                            {selectedStudents.length !== 1 ? 's' : ''} selected
                         </p>
                         <div className="flex gap-3">
                             <button
@@ -323,7 +366,7 @@ export const EditClassModal = ({ isOpen, onClose, classItem, onSave }) => {
         name: '',
         description: '',
         subject: '',
-        isActive: true
+        isActive: true,
     });
 
     React.useEffect(() => {
@@ -332,7 +375,10 @@ export const EditClassModal = ({ isOpen, onClose, classItem, onSave }) => {
                 name: classItem.name || '',
                 description: classItem.description || '',
                 subject: classItem.subject || '',
-                isActive: classItem.isActive !== undefined ? classItem.isActive : true
+                isActive:
+                    classItem.isActive !== undefined
+                        ? classItem.isActive
+                        : true,
             });
         }
     }, [isOpen, classItem]);
@@ -340,7 +386,7 @@ export const EditClassModal = ({ isOpen, onClose, classItem, onSave }) => {
     const handleSave = () => {
         onSave({
             ...classItem,
-            ...formData
+            ...formData,
         });
         onClose();
     };
@@ -353,7 +399,7 @@ export const EditClassModal = ({ isOpen, onClose, classItem, onSave }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4"
                 onClick={onClose}
             >
                 <motion.div
@@ -364,7 +410,9 @@ export const EditClassModal = ({ isOpen, onClose, classItem, onSave }) => {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">Edit Class</h3>
+                        <h3 className="text-lg font-semibold text-gray-900">
+                            Edit Class
+                        </h3>
                         <button
                             onClick={onClose}
                             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -381,7 +429,12 @@ export const EditClassModal = ({ isOpen, onClose, classItem, onSave }) => {
                             <input
                                 type="text"
                                 value={formData.name}
-                                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                                onChange={(e) =>
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        name: e.target.value,
+                                    }))
+                                }
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Enter class name"
                             />
@@ -394,7 +447,12 @@ export const EditClassModal = ({ isOpen, onClose, classItem, onSave }) => {
                             <input
                                 type="text"
                                 value={formData.subject}
-                                onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                                onChange={(e) =>
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        subject: e.target.value,
+                                    }))
+                                }
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Enter subject"
                             />
@@ -407,7 +465,12 @@ export const EditClassModal = ({ isOpen, onClose, classItem, onSave }) => {
                             <textarea
                                 rows={3}
                                 value={formData.description}
-                                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                                onChange={(e) =>
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        description: e.target.value,
+                                    }))
+                                }
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Enter class description"
                             />
@@ -418,10 +481,18 @@ export const EditClassModal = ({ isOpen, onClose, classItem, onSave }) => {
                                 type="checkbox"
                                 id="isActive"
                                 checked={formData.isActive}
-                                onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+                                onChange={(e) =>
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        isActive: e.target.checked,
+                                    }))
+                                }
                                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
-                            <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
+                            <label
+                                htmlFor="isActive"
+                                className="text-sm font-medium text-gray-700"
+                            >
                                 Active Class
                             </label>
                         </div>
