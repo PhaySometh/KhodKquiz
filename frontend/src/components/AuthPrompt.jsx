@@ -14,8 +14,14 @@ const AuthPrompt = ({
     message = 'Please sign in to continue',
 }) => {
     const navigate = useNavigate();
-    const { login, loginWithEmail, registerWithEmail, loginLoading } =
-        useAuth();
+    const {
+        login,
+        loginWithEmail,
+        registerWithEmail,
+        loginLoading,
+        getRoleBasedRedirectPath,
+        user,
+    } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [mode, setMode] = useState('options'); // 'options', 'login', 'signup'
     const [formData, setFormData] = useState({

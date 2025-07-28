@@ -1,19 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Grid, List, Plus, ChevronDown } from 'lucide-react';
+import {
+    Search,
+    Filter,
+    Grid,
+    List,
+    Plus,
+    ChevronDown,
+    RefreshCw,
+} from 'lucide-react';
 import QuizCard from './QuizCard';
 import axios from '../utils/axiosConfig.js';
+import { useAuth } from '../contexts/AuthContext.jsx';
 
-const BASE_URL='http://localhost:3000';
+const BASE_URL = 'http://localhost:3000';
 
-const QuizList = ({ 
+const QuizList = ({
     onCreateQuiz,
     onEditQuiz,
     onDeleteQuiz,
     onDuplicateQuiz,
     onAssignToClass,
-    onArchiveQuiz
+    onArchiveQuiz,
+    externalQuizzes = null,
+    externalLoading = false,
+    externalRefreshing = false,
+    onRefresh = null,
 }) => {
+    const { user } = useAuth();
     const [quizzes, setQuizzes] = useState([]);
     const [filteredQuizzes, setFilteredQuizzes] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -23,22 +37,52 @@ const QuizList = ({
     const [showFilters, setShowFilters] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    // Fetch quizzes based on admin token
+    // Use external data if provided, otherwise fetch internally
     useEffect(() => {
-        setTimeout(async () => {
-            const adminToken = localStorage.getItem('adminToken');
-            let quizzes;
-            if (adminToken) {
-                quizzes = await axios.get(`${BASE_URL}/api/admin/quiz`);
-            } else {
-                quizzes = await axios.get(`${BASE_URL}/api/teacher`);
-            }
-
-            setQuizzes(quizzes.data.data);
-            setFilteredQuizzes(quizzes.data.data);
+        if (externalQuizzes !== null) {
+            setQuizzes(externalQuizzes);
             setLoading(false);
-        }, 300);
-    }, []);
+            return;
+        }
+
+        const fetchQuizzes = async () => {
+            if (!user) return;
+
+            try {
+                let response;
+                if (user.role === 'admin') {
+                    response = await axios.get('/api/admin/quiz');
+                } else if (user.role === 'teacher') {
+                    response = await axios.get('/api/teacher');
+                } else {
+                    // Students shouldn't access this component, but handle gracefully
+                    setLoading(false);
+                    return;
+                }
+
+                setQuizzes(response.data.data || []);
+                setFilteredQuizzes(response.data.data || []);
+            } catch (error) {
+                console.error('Error fetching quizzes:', error);
+                setQuizzes([]);
+                setFilteredQuizzes([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (externalQuizzes === null) {
+            // Add a small delay for better UX
+            setTimeout(fetchQuizzes, 300);
+        }
+    }, [user, externalQuizzes]);
+
+    // Update loading state when external loading changes
+    useEffect(() => {
+        if (externalQuizzes !== null) {
+            setLoading(externalLoading);
+        }
+    }, [externalLoading, externalQuizzes]);
 
     // Filter and search logic
     useEffect(() => {
@@ -46,32 +90,41 @@ const QuizList = ({
 
         // Apply search filter
         if (searchQuery) {
-            filtered = filtered.filter(quiz =>
-                quiz.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                quiz.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                quiz.category.toLowerCase().includes(searchQuery.toLowerCase())
+            filtered = filtered.filter(
+                (quiz) =>
+                    quiz.title
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase()) ||
+                    quiz.description
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase()) ||
+                    quiz.category
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase())
             );
         }
 
         // Apply status filter
         if (statusFilter !== 'all') {
-            filtered = filtered.filter(quiz => quiz.status === statusFilter);
+            filtered = filtered.filter((quiz) => quiz.status === statusFilter);
         }
 
         // Apply category filter
         if (categoryFilter !== 'all') {
-            filtered = filtered.filter(quiz => quiz.category === categoryFilter);
+            filtered = filtered.filter(
+                (quiz) => quiz.category === categoryFilter
+            );
         }
 
         setFilteredQuizzes(filtered);
     }, [quizzes, searchQuery, statusFilter, categoryFilter]);
 
-    const categories = [...new Set(quizzes.map(quiz => quiz.category))];
+    const categories = [...new Set(quizzes.map((quiz) => quiz.category))];
     const statusOptions = [
         { value: 'all', label: 'All Status' },
         { value: 'draft', label: 'Draft' },
         { value: 'published', label: 'Published' },
-        { value: 'archived', label: 'Archived' }
+        { value: 'archived', label: 'Archived' },
     ];
 
     if (loading) {
@@ -87,16 +140,22 @@ const QuizList = ({
             {/* Header with Search and Filters */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div className="flex items-center gap-4">
-                    <h2 className="text-2xl font-bold text-blue-950">My Quizzes</h2>
+                    <h2 className="text-2xl font-bold text-blue-950">
+                        My Quizzes
+                    </h2>
                     <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                        {filteredQuizzes.length} quiz{filteredQuizzes.length !== 1 ? 'es' : ''}
+                        {filteredQuizzes.length} quiz
+                        {filteredQuizzes.length !== 1 ? 'es' : ''}
                     </span>
                 </div>
 
                 <div className="flex items-center gap-3">
                     {/* Search */}
                     <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                        <Search
+                            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                            size={20}
+                        />
                         <input
                             className="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
                             placeholder="Search quizzes..."
@@ -109,38 +168,76 @@ const QuizList = ({
                     <button
                         onClick={() => setShowFilters(!showFilters)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-                            showFilters ? 'bg-blue-50 border-blue-300 text-blue-700' : 'border-gray-300 hover:bg-gray-50'
+                            showFilters
+                                ? 'bg-blue-50 border-blue-300 text-blue-700'
+                                : 'border-gray-300 hover:bg-gray-50'
                         }`}
                     >
                         <Filter size={16} />
                         Filters
-                        <ChevronDown size={16} className={`transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+                        <ChevronDown
+                            size={16}
+                            className={`transition-transform ${
+                                showFilters ? 'rotate-180' : ''
+                            }`}
+                        />
                     </button>
 
                     {/* View Mode Toggle */}
                     <div className="flex border border-gray-300 rounded-lg overflow-hidden">
                         <button
                             onClick={() => setViewMode('grid')}
-                            className={`p-2 ${viewMode === 'grid' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                            className={`p-2 ${
+                                viewMode === 'grid'
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                            }`}
                         >
                             <Grid size={16} />
                         </button>
                         <button
                             onClick={() => setViewMode('list')}
-                            className={`p-2 ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                            className={`p-2 ${
+                                viewMode === 'list'
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                            }`}
                         >
                             <List size={16} />
                         </button>
                     </div>
 
-                    {/* Create Quiz Button */}
-                    <button
-                        onClick={onCreateQuiz}
-                        className="flex items-center gap-2 bg-blue-950 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors"
-                    >
-                        <Plus size={16} />
-                        Create Quiz
-                    </button>
+                    {/* Action Buttons */}
+                    <div className="flex items-center gap-2">
+                        {/* Refresh Button */}
+                        {onRefresh && (
+                            <button
+                                onClick={onRefresh}
+                                disabled={externalRefreshing}
+                                className="flex items-center gap-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                title="Refresh quiz list"
+                            >
+                                <RefreshCw
+                                    size={16}
+                                    className={
+                                        externalRefreshing ? 'animate-spin' : ''
+                                    }
+                                />
+                                {externalRefreshing
+                                    ? 'Refreshing...'
+                                    : 'Refresh'}
+                            </button>
+                        )}
+
+                        {/* Create Quiz Button */}
+                        <button
+                            onClick={onCreateQuiz}
+                            className="flex items-center gap-2 bg-blue-950 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors"
+                        >
+                            <Plus size={16} />
+                            Create Quiz
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -156,14 +253,21 @@ const QuizList = ({
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {/* Status Filter */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Status
+                                </label>
                                 <select
                                     value={statusFilter}
-                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    onChange={(e) =>
+                                        setStatusFilter(e.target.value)
+                                    }
                                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
-                                    {statusOptions.map(option => (
-                                        <option key={option.value} value={option.value}>
+                                    {statusOptions.map((option) => (
+                                        <option
+                                            key={option.value}
+                                            value={option.value}
+                                        >
                                             {option.label}
                                         </option>
                                     ))}
@@ -172,14 +276,18 @@ const QuizList = ({
 
                             {/* Category Filter */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Category
+                                </label>
                                 <select
                                     value={categoryFilter}
-                                    onChange={(e) => setCategoryFilter(e.target.value)}
+                                    onChange={(e) =>
+                                        setCategoryFilter(e.target.value)
+                                    }
                                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
                                     <option value="all">All Categories</option>
-                                    {categories.map(category => (
+                                    {categories.map((category) => (
                                         <option key={category} value={category}>
                                             {category}
                                         </option>
@@ -216,12 +324,15 @@ const QuizList = ({
                         <div className="text-gray-400 mb-4">
                             <Search size={48} className="mx-auto" />
                         </div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No quizzes found</h3>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                            No quizzes found
+                        </h3>
                         <p className="text-gray-500 mb-4">
-                            {searchQuery || statusFilter !== 'all' || categoryFilter !== 'all'
+                            {searchQuery ||
+                            statusFilter !== 'all' ||
+                            categoryFilter !== 'all'
                                 ? 'Try adjusting your search or filters'
-                                : 'Create your first quiz to get started'
-                            }
+                                : 'Create your first quiz to get started'}
                         </p>
                         <button
                             onClick={onCreateQuiz}
@@ -237,9 +348,10 @@ const QuizList = ({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
-                        className={viewMode === 'grid' 
-                            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-                            : 'space-y-4'
+                        className={
+                            viewMode === 'grid'
+                                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                                : 'space-y-4'
                         }
                     >
                         {filteredQuizzes.map((quiz) => (

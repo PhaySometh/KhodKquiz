@@ -10,7 +10,7 @@ export default function AdminSidebar() {
         const isActive = location.pathname === path;
         return `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
             isActive
-                ? 'bg-blue-900 text-white hover:bg-blue-800 hover:text-white'
+                ? 'bg-orange-400 text-white hover:bg-orange-500 hover:text-white'
                 : 'text-blue-100 hover:bg-blue-800 hover:text-white'
         }`;
     };
@@ -27,13 +27,6 @@ export default function AdminSidebar() {
                     <span>Admin Portal</span>
                 </Link>
                 <Link
-                    to="/admin/quizzes"
-                    className={getNavLinkClass('/admin/quizzes')}
-                >
-                    <BookCheck size={20} />
-                    <span>My Quizzes</span>
-                </Link>
-                <Link
                     to="/admin/teacher-requests"
                     className={getNavLinkClass('/admin/teacher-requests')}
                 >
@@ -41,11 +34,18 @@ export default function AdminSidebar() {
                     <span>Teacher Requests</span>
                 </Link>
                 <Link
+                    to="/admin/quizzes"
+                    className={getNavLinkClass('/admin/quizzes')}
+                >
+                    <BookCheck size={20} />
+                    <span>System Quizzes</span>
+                </Link>
+                <Link
                     to="/admin/category"
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors"
+                    className={getNavLinkClass('/admin/category')}
                 >
                     <ChartBarStacked size={20} />
-                    <span>My Category</span>
+                    <span>System Category</span>
                 </Link>
             </nav>
         </aside>

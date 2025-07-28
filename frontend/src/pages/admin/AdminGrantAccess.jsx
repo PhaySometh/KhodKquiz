@@ -19,74 +19,6 @@ import ConfirmationDialog from '../../components/ConfirmationDialog';
 import axios from '../../utils/axiosConfig';
 import toast from 'react-hot-toast';
 
-// Mock data for demonstration
-const MOCK_USERS = [
-    {
-        id: 1,
-        name: 'John Doe',
-        email: 'john@example.com',
-        role: 'student',
-        status: 'active',
-        createdAt: '2024-01-15',
-        privileges: ['read_quiz', 'take_quiz'],
-    },
-    {
-        id: 2,
-        name: 'Jane Smith',
-        email: 'jane@example.com',
-        role: 'teacher',
-        status: 'active',
-        createdAt: '2024-01-10',
-        privileges: [
-            'read_quiz',
-            'create_quiz',
-            'edit_quiz',
-            'manage_students',
-        ],
-    },
-    {
-        id: 3,
-        name: 'Bob Wilson',
-        email: 'bob@example.com',
-        role: 'student',
-        status: 'inactive',
-        createdAt: '2024-01-20',
-        privileges: ['read_quiz'],
-    },
-    {
-        id: 4,
-        name: 'Alice Johnson',
-        email: 'alice@example.com',
-        role: 'moderator',
-        status: 'active',
-        createdAt: '2024-01-05',
-        privileges: ['read_quiz', 'moderate_content', 'manage_users'],
-    },
-];
-
-const MOCK_ROLES = [
-    {
-        id: 1,
-        name: 'students',
-        description: 'Basic student access to take quizzes',
-        privileges: ['read_quiz', 'take_quiz', 'view_results'],
-        userCount: 150,
-    },
-    {
-        id: 2,
-        name: 'teachers',
-        description: 'Educator with quiz creation and management capabilities',
-        privileges: [
-            'read_quiz',
-            'create_quiz',
-            'edit_quiz',
-            'manage_students',
-            'view_analytics',
-        ],
-        userCount: 25,
-    },
-];
-
 const AVAILABLE_PRIVILEGES = [
     'read_quiz',
     'take_quiz',
@@ -105,8 +37,8 @@ const AVAILABLE_PRIVILEGES = [
 const BASE_URL = 'http://localhost:3000';
 
 export default function AdminGrantAccess() {
-    const [users, setUsers] = useState(MOCK_USERS);
-    const [roles, setRoles] = useState(MOCK_ROLES);
+    const [users, setUsers] = useState([]);
+    const [roles, setRoles] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState('all');
     const [selectedStatus, setSelectedStatus] = useState('all');
@@ -115,6 +47,15 @@ export default function AdminGrantAccess() {
     const [sortOrder, setSortOrder] = useState('asc');
     const [showViewRole, setShowViewRole] = useState(false);
     const [viewRole, setViewRole] = useState(null);
+
+    // Loading and pagination states
+    const [loading, setLoading] = useState(false);
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        totalPages: 1,
+        totalUsers: 0,
+        limit: 10,
+    });
 
     // Modal states
     const [isUserModalOpen, setIsUserModalOpen] = useState(false);
@@ -127,44 +68,96 @@ export default function AdminGrantAccess() {
         target: null,
     });
 
-    // Filter and sort users based on search and filters
-    const filteredUsers = users
-        .filter((user) => {
-            const matchesSearch =
-                user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.email.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesRole =
-                selectedRole === 'all' || user.role === selectedRole;
-            const matchesStatus =
-                selectedStatus === 'all' || user.status === selectedStatus;
+    // Fetch users from API
+    const fetchUsers = async (
+        page = 1,
+        search = '',
+        role = '',
+        sortBy = 'createdAt',
+        sortOrder = 'DESC'
+    ) => {
+        try {
+            setLoading(true);
+            const params = new URLSearchParams({
+                page: page.toString(),
+                limit: pagination.limit.toString(),
+                sortBy,
+                sortOrder,
+            });
 
-            return matchesSearch && matchesRole && matchesStatus;
-        })
-        .sort((a, b) => {
-            let aValue = a[sortBy];
-            let bValue = b[sortBy];
+            if (search) params.append('search', search);
+            if (role && role !== 'all') params.append('role', role);
 
-            if (typeof aValue === 'string') {
-                aValue = aValue.toLowerCase();
-                bValue = bValue.toLowerCase();
+            const response = await axios.get(
+                `${BASE_URL}/api/admin/users?${params}`
+            );
+
+            if (response.data.success) {
+                setUsers(response.data.data.users);
+                setPagination(response.data.data.pagination);
             }
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            toast.error('Failed to fetch users');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-            if (sortOrder === 'asc') {
-                return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+    // Load users on component mount and when filters change
+    useEffect(() => {
+        fetchUsers(
+            pagination.currentPage,
+            searchTerm,
+            selectedRole,
+            sortBy,
+            sortOrder
+        );
+    }, [pagination.currentPage, searchTerm, selectedRole, sortBy, sortOrder]);
+
+    // Debounce search to avoid too many API calls
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if (pagination.currentPage !== 1) {
+                setPagination((prev) => ({ ...prev, currentPage: 1 }));
             } else {
-                return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+                fetchUsers(1, searchTerm, selectedRole, sortBy, sortOrder);
             }
-        });
+        }, 500);
 
-    const handleCreateUser = (userData) => {
-        const newUser = {
-            id: users.length + 1,
-            ...userData,
-            createdAt: new Date().toISOString().split('T')[0],
-            status: 'active',
-        };
-        setUsers([...users, newUser]);
-        setIsUserModalOpen(false);
+        return () => clearTimeout(timeoutId);
+    }, [searchTerm]);
+
+    // Since we're using server-side filtering and sorting, we don't need client-side filtering
+    const filteredUsers = users;
+
+    const handleCreateUser = async (userData) => {
+        try {
+            setLoading(true);
+            const response = await axios.post(
+                `${BASE_URL}/api/admin/users`,
+                userData
+            );
+
+            if (response.data.success) {
+                toast.success('User created successfully');
+                setIsUserModalOpen(false);
+                fetchUsers(
+                    pagination.currentPage,
+                    searchTerm,
+                    selectedRole,
+                    sortBy,
+                    sortOrder
+                );
+            }
+        } catch (error) {
+            console.error('Error creating user:', error);
+            toast.error(
+                error.response?.data?.message || 'Failed to create user'
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleEditUser = (user) => {
@@ -172,12 +165,40 @@ export default function AdminGrantAccess() {
         setIsUserModalOpen(true);
     };
 
+    const handleUpdateUserRole = async (userId, newRole) => {
+        try {
+            setLoading(true);
+            const response = await axios.put(
+                `${BASE_URL}/api/admin/users/${userId}/role`,
+                {
+                    role: newRole,
+                }
+            );
+
+            if (response.data.success) {
+                toast.success(`User role updated to ${newRole} successfully`);
+                fetchUsers(
+                    pagination.currentPage,
+                    searchTerm,
+                    selectedRole,
+                    sortBy,
+                    sortOrder
+                );
+            }
+        } catch (error) {
+            console.error('Error updating user role:', error);
+            toast.error(
+                error.response?.data?.message || 'Failed to update user role'
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleUpdateUser = (userData) => {
-        setUsers(
-            users.map((user) =>
-                user.id === editingUser.id ? { ...user, ...userData } : user
-            )
-        );
+        if (userData.role && userData.role !== editingUser.role) {
+            handleUpdateUserRole(editingUser.id, userData.role);
+        }
         setEditingUser(null);
         setIsUserModalOpen(false);
     };
@@ -191,6 +212,33 @@ export default function AdminGrantAccess() {
             message:
                 'Are you sure you want to delete this user? This action cannot be undone.',
         });
+    };
+
+    const confirmDeleteUser = async (userId) => {
+        try {
+            setLoading(true);
+            const response = await axios.delete(
+                `${BASE_URL}/api/admin/users/${userId}`
+            );
+
+            if (response.data.success) {
+                toast.success('User deleted successfully');
+                fetchUsers(
+                    pagination.currentPage,
+                    searchTerm,
+                    selectedRole,
+                    sortBy,
+                    sortOrder
+                );
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            toast.error(
+                error.response?.data?.message || 'Failed to delete user'
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleCreateRole = (roleData) => {
@@ -236,7 +284,7 @@ export default function AdminGrantAccess() {
 
     const handleConfirmAction = () => {
         if (confirmDialog.action === 'delete-user') {
-            setUsers(users.filter((user) => user.id !== confirmDialog.target));
+            confirmDeleteUser(confirmDialog.target);
         } else if (confirmDialog.action === 'delete-role') {
             setRoles(roles.filter((role) => role.id !== confirmDialog.target));
         }
@@ -245,14 +293,14 @@ export default function AdminGrantAccess() {
 
     const handleExportUsers = () => {
         const csvContent = [
-            ['Name', 'Email', 'Role', 'Created', 'Privileges'].join(','),
+            ['Name', 'Email', 'Role', 'Provider', 'Created'].join(','),
             ...filteredUsers.map((user) =>
                 [
                     user.name,
                     user.email,
                     user.role,
-                    user.createdAt,
-                    user.privileges.join(';'),
+                    user.provider,
+                    new Date(user.createdAt).toLocaleDateString(),
                 ].join(',')
             ),
         ].join('\n');
@@ -269,8 +317,25 @@ export default function AdminGrantAccess() {
     };
 
     const handleRefreshData = () => {
-        // Placeholder for refresh functionality
-        console.log('Refreshing data...');
+        fetchUsers(
+            pagination.currentPage,
+            searchTerm,
+            selectedRole,
+            sortBy,
+            sortOrder
+        );
+        toast.success('Data refreshed');
+    };
+
+    const handlePageChange = (newPage) => {
+        setPagination((prev) => ({ ...prev, currentPage: newPage }));
+    };
+
+    const handleSortChange = (newSortBy) => {
+        const newSortOrder =
+            sortBy === newSortBy && sortOrder === 'ASC' ? 'DESC' : 'ASC';
+        setSortBy(newSortBy);
+        setSortOrder(newSortOrder);
     };
 
     const getRoleColor = (role) => {

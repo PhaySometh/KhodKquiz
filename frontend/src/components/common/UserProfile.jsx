@@ -9,29 +9,40 @@ import ConfirmationDialog from '../ConfirmationDialog';
 import LoadingSpinner from '../LoadingSpinner';
 
 export default function UserProfile() {
-    const { user, isAuthenticated, logout } = useAuth();
+    const {
+        user,
+        isAuthenticated,
+        logout,
+        logoutLoading,
+        switchAccount,
+        loading,
+    } = useAuth();
     const navigate = useNavigate();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     const handleLogoutClick = () => {
         setShowLogoutConfirm(true);
     };
 
     const handleLogoutConfirm = async () => {
-        setIsLoggingOut(true);
-
         try {
-            // Add a brief delay for better UX
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-
-            logout();
+            await logout();
             navigate('/');
         } catch (error) {
             toast.error('Error logging out. Please try again.');
         } finally {
-            setIsLoggingOut(false);
             setShowLogoutConfirm(false);
+        }
+    };
+
+    const handleSwitchToAdmin = async () => {
+        try {
+            const redirectPath = await switchAccount('admin');
+            if (redirectPath) {
+                navigate(redirectPath);
+            }
+        } catch (error) {
+            toast.error('Failed to switch to admin account');
         }
     };
 
@@ -118,6 +129,20 @@ export default function UserProfile() {
                             Profile Settings
                         </button>
                     </li>
+                    {/* Show admin switch option if user has admin access */}
+                    {(user?.role === 'admin' ||
+                        localStorage.getItem('adminToken')) && (
+                        <li>
+                            <button
+                                onClick={handleSwitchToAdmin}
+                                disabled={loading}
+                                className="flex items-center gap-2"
+                            >
+                                <LogIn size={16} />
+                                Switch to Admin
+                            </button>
+                        </li>
+                    )}
                     <li>
                         <button onClick={handleLogoutClick}>
                             <LogOut size={16} />
@@ -137,11 +162,11 @@ export default function UserProfile() {
                 confirmText="Logout"
                 cancelText="Cancel"
                 variant="warning"
-                isLoading={isLoggingOut}
+                isLoading={logoutLoading}
             />
 
             {/* Full Screen Loading for Logout */}
-            {isLoggingOut && (
+            {logoutLoading && (
                 <LoadingSpinner
                     fullScreen={true}
                     text="Logging out..."

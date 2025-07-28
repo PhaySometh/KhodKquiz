@@ -13,7 +13,13 @@ const BASE_URL = 'http://localhost:3000';
 export default function Login() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { login, loginWithEmail, loginLoading } = useAuth();
+    const {
+        login,
+        loginWithEmail,
+        loginLoading,
+        getRoleBasedRedirectPath,
+        user,
+    } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
 
     // Form state for traditional login
@@ -40,8 +46,23 @@ export default function Login() {
             if (response.data.token) {
                 const loginSuccess = await login(response.data.token);
                 if (loginSuccess) {
-                    // Redirect to intended destination or dashboard
-                    navigate(from, { replace: true });
+                    // Get user data from the login response to ensure we have the role
+                    const userResponse = await axios.get(
+                        `${BASE_URL}/api/user`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${response.data.token}`,
+                            },
+                        }
+                    );
+
+                    if (userResponse.data) {
+                        const redirectPath = getRoleBasedRedirectPath(
+                            userResponse.data.role,
+                            from
+                        );
+                        navigate(redirectPath, { replace: true });
+                    }
                 }
             } else {
                 console.error(
@@ -117,7 +138,27 @@ export default function Login() {
         );
 
         if (success) {
-            navigate(from, { replace: true });
+            // Get user data to ensure we have the role for proper redirect
+            try {
+                const token = localStorage.getItem('userToken');
+                const userResponse = await axios.get(`${BASE_URL}/api/user`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (userResponse.data) {
+                    const redirectPath = getRoleBasedRedirectPath(
+                        userResponse.data.role,
+                        from
+                    );
+                    navigate(redirectPath, { replace: true });
+                }
+            } catch (error) {
+                console.error('Error fetching user data for redirect:', error);
+                // Fallback to default redirect
+                navigate('/', { replace: true });
+            }
         }
     };
 

@@ -52,6 +52,44 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     /**
+     * Get the appropriate redirect path based on user role
+     * @param {string} role - User's role (admin, teacher, student)
+     * @param {string} intendedPath - Originally intended path (optional)
+     * @returns {string} - Redirect path
+     */
+    const getRoleBasedRedirectPath = (role, intendedPath = null) => {
+        // If there's an intended path and it's accessible to the user's role, use it
+        if (
+            intendedPath &&
+            intendedPath !== '/login' &&
+            intendedPath !== '/signup'
+        ) {
+            // Check if the intended path matches the user's role
+            if (role === 'admin' && intendedPath.startsWith('/admin')) {
+                return intendedPath;
+            }
+            if (role === 'teacher' && intendedPath.startsWith('/teacher')) {
+                return intendedPath;
+            }
+            if (role === 'student' && intendedPath.startsWith('/student')) {
+                return intendedPath;
+            }
+        }
+
+        // Default role-based redirects
+        switch (role) {
+            case 'admin':
+                return '/admin';
+            case 'teacher':
+                return '/teacher';
+            case 'student':
+                return '/quiz/category'; // Students go to quiz categories
+            default:
+                return '/quiz/category';
+        }
+    };
+
+    /**
      * Verifies if the current user token is valid
      * Called on app load and periodically to refresh authentication
      * Handles token expiration and invalid tokens gracefully
@@ -217,14 +255,82 @@ export const AuthProvider = ({ children }) => {
             // Add a brief delay for better UX
             await new Promise((resolve) => setTimeout(resolve, 800));
 
+            // Clear all authentication tokens
             localStorage.removeItem('userToken');
+            localStorage.removeItem('adminToken');
+
+            // Reset authentication state
             setUser(null);
             setIsAuthenticated(false);
+
             toast.success('Logged out successfully', {
                 icon: '👋',
             });
         } finally {
             setLogoutLoading(false);
+        }
+    };
+
+    /**
+     * Switch between admin and regular user accounts
+     * Allows seamless switching without full logout/login cycle
+     */
+    const switchAccount = async (targetRole) => {
+        setLoading(true);
+        try {
+            if (targetRole === 'admin') {
+                // Switch to admin account
+                const adminToken = localStorage.getItem('adminToken');
+                if (adminToken) {
+                    // Check if admin token is valid
+                    const response = await fetch(`${BASE_URL}/api/user`, {
+                        headers: {
+                            Authorization: `Bearer ${adminToken}`,
+                        },
+                    });
+
+                    if (response.ok) {
+                        const userData = await response.json();
+                        setUser(userData);
+                        setIsAuthenticated(true);
+                        toast.success('Switched to admin account', {
+                            icon: '👑',
+                        });
+                        return '/admin';
+                    }
+                }
+                toast.error('Admin access not available');
+                return null;
+            } else {
+                // Switch to regular user account
+                const userToken = localStorage.getItem('userToken');
+                if (userToken) {
+                    // Check if user token is valid
+                    const response = await fetch(`${BASE_URL}/api/user`, {
+                        headers: {
+                            Authorization: `Bearer ${userToken}`,
+                        },
+                    });
+
+                    if (response.ok) {
+                        const userData = await response.json();
+                        setUser(userData);
+                        setIsAuthenticated(true);
+                        toast.success('Switched to user account', {
+                            icon: '👤',
+                        });
+                        return getRoleBasedRedirectPath(userData.role);
+                    }
+                }
+                toast.error('User access not available');
+                return null;
+            }
+        } catch (error) {
+            console.error('Account switch error:', error);
+            toast.error('Failed to switch accounts');
+            return null;
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -271,8 +377,10 @@ export const AuthProvider = ({ children }) => {
         loginWithEmail,
         registerWithEmail,
         logout,
+        switchAccount,
         updateProfile,
         checkAuthStatus,
+        getRoleBasedRedirectPath,
     };
 
     return (

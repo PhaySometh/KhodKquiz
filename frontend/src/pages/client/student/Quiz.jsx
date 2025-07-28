@@ -11,15 +11,40 @@ import {
     Award,
     Clock,
     BarChart2,
+    ChevronLeft,
 } from 'lucide-react';
 import AuthPrompt from '../../../components/AuthPrompt';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
-import axios from 'axios';
+import apiClient from '../../../utils/axiosConfig';
+import toast from 'react-hot-toast';
+import CodeHighlight, {
+    containsCode,
+    detectLanguage,
+} from '../../../components/CodeHighlight';
 
-const BASE_URL = 'http://localhost:3000';
+/**
+ * Quiz Component - Interactive Quiz Taking Interface
+ *
+ * This component provides a comprehensive quiz-taking experience with:
+ * - Timed questions with visual countdown
+ * - Multiple choice answers with visual feedback
+ * - Score calculation based on correctness and speed
+ * - Progress tracking and result submission
+ * - Authentication integration for progress saving
+ *
+ * @component
+ * @version 2.0.0
+ * @author KhodKquiz Team
+ */
 
-// Button Styles
+// Configuration constants
+const QUESTION_TIME_LIMIT = 25.0; // Time limit per question in seconds
+
+/**
+ * Visual styles for answer buttons
+ * Each answer option gets a unique color and icon for better UX
+ */
 const answerStyles = [
     {
         bg: 'bg-red-500',
@@ -31,10 +56,9 @@ const answerStyles = [
     { bg: 'bg-green-500', hoverBg: 'hover:bg-green-600', icon: <Circle /> },
 ];
 
-const QUESTION_TIME_LIMIT = 25.0;
-
 export default function Quiz() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [gameState, setGameState] = useState('intro'); // intro, playing, feedback, finished
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [score, setScore] = useState(0);
@@ -44,6 +68,11 @@ export default function Quiz() {
     const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
     const [countCorrectAnswer, setCountCorrectAnswer] = useState(0);
     const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+    const [quizStartTime, setQuizStartTime] = useState(null);
+    const [detailedAnswers, setDetailedAnswers] = useState([]);
+    const [questionStartTime, setQuestionStartTime] = useState(null);
+    const [attemptInfo, setAttemptInfo] = useState(null);
+    const [eligibilityChecked, setEligibilityChecked] = useState(false);
     const timerRef = useRef(null);
 
     const { isAuthenticated } = useAuth();
@@ -53,15 +82,26 @@ export default function Quiz() {
     useEffect(() => {
         const fetchQuiz = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/student/quiz/${id}`);
-                setQuizQuestions(response.data.data);
+                // Check eligibility first if authenticated
+                if (isAuthenticated) {
+                    const eligibilityResponse = await apiClient.get(
+                        `/api/student/quiz/${id}/eligibility`
+                    );
+                    setAttemptInfo(eligibilityResponse.data.data);
+                }
+
+                const response = await apiClient.get(`/api/student/quiz/${id}`);
+                setQuizQuestions(response.data.data || []);
+                setEligibilityChecked(true);
             } catch (error) {
                 console.error('Error fetching quiz:', error);
+                toast.error('Failed to load quiz. Please try again.');
+                setEligibilityChecked(true);
             }
         };
 
         fetchQuiz();
-    }, [id]);
+    }, [id, isAuthenticated]);
 
     // Reset timer
     useEffect(() => {
@@ -96,6 +136,7 @@ export default function Quiz() {
                     setCurrentQuestionIndex(nextQuestion);
                     setGameState('playing');
                     setSelectedAnswerIndex(null);
+                    setQuestionStartTime(Date.now()); // Reset question start time
                 } else {
                     setGameState('finished');
                 }
@@ -104,12 +145,83 @@ export default function Quiz() {
         }
     }, [gameState]);
 
+    // State for storing the current attempt result
+    const [currentAttemptResult, setCurrentAttemptResult] = useState(null);
+
+    // Submit quiz results when quiz is finished
+    useEffect(() => {
+        const submitResults = async () => {
+            if (
+                gameState === 'finished' &&
+                isAuthenticated &&
+                quizStartTime &&
+                !currentAttemptResult
+            ) {
+                try {
+                    const timeSpent = Math.round(
+                        (Date.now() - quizStartTime) / 1000
+                    ); // in seconds
+
+                    const response = await apiClient.post(
+                        '/api/student/quiz/submit',
+                        {
+                            quizId: parseInt(id),
+                            score: score,
+                            correctAnswers: countCorrectAnswer,
+                            totalQuestions: quizQuestions.length,
+                            timeTaken: timeSpent,
+                            answers: detailedAnswers,
+                            startedAt: quizStartTime,
+                        }
+                    );
+
+                    // Store the specific attempt result
+                    if (response.data.success) {
+                        setCurrentAttemptResult(response.data.data);
+                        toast.success('Quiz results saved successfully!');
+                    }
+                } catch (error) {
+                    console.error('Error submitting quiz results:', error);
+                    toast.error('Failed to save quiz results');
+                }
+            }
+        };
+
+        submitResults();
+    }, [
+        gameState,
+        isAuthenticated,
+        id,
+        score,
+        countCorrectAnswer,
+        quizQuestions.length,
+        quizStartTime,
+        detailedAnswers,
+        currentAttemptResult,
+    ]);
+
     // Event handlers
     const handleAnswerClick = (answer, index) => {
         if (gameState !== 'playing') return;
 
         setSelectedAnswerIndex(index);
         clearInterval(timerRef.current);
+
+        // Calculate time taken for this question
+        const questionTimeTaken = Math.ceil(
+            (Date.now() - questionStartTime) / 1000
+        );
+
+        // Record detailed answer
+        const currentQuestion = quizQuestions[currentQuestionIndex];
+        const detailedAnswer = {
+            questionId: currentQuestion.id,
+            selectedOptionId: answer.id,
+            isCorrect: answer.isCorrect,
+            timeTaken: questionTimeTaken,
+        };
+
+        setDetailedAnswers((prev) => [...prev, detailedAnswer]);
 
         if (answer.isCorrect) {
             setScore(
@@ -131,6 +243,17 @@ export default function Quiz() {
 
     const handleTimeout = () => {
         if (gameState !== 'playing') return;
+
+        // Record timeout as incorrect answer with no selection
+        const currentQuestion = quizQuestions[currentQuestionIndex];
+        const detailedAnswer = {
+            questionId: currentQuestion.id,
+            selectedOptionId: null, // No answer selected
+            isCorrect: false,
+            timeTaken: QUESTION_TIME_LIMIT,
+        };
+
+        setDetailedAnswers((prev) => [...prev, detailedAnswer]);
         setIsCorrect(false);
         setGameState('feedback');
     };
@@ -141,11 +264,23 @@ export default function Quiz() {
             return;
         }
 
+        // Check attempt limit
+        if (attemptInfo && !attemptInfo.canAttempt) {
+            toast.error(
+                `Maximum attempts (${attemptInfo.maxAttempts}) reached for this quiz`
+            );
+            return;
+        }
+
         setCurrentQuestionIndex(0);
         setScore(0);
+        setCountCorrectAnswer(0);
         setIsCorrect(null);
         setGameState('playing');
         setTimerKey((prev) => prev + 1);
+        setQuizStartTime(Date.now()); // Record start time
+        setQuestionStartTime(Date.now()); // Record first question start time
+        setDetailedAnswers([]); // Reset detailed answers
     };
 
     const restartQuiz = () => {
@@ -222,13 +357,60 @@ export default function Quiz() {
                         </div>
                     </div>
 
+                    {/* Attempt Information */}
+                    {isAuthenticated && attemptInfo && (
+                        <div className="mb-6 p-4 bg-blue-500/20 border border-blue-400/30 rounded-lg">
+                            <div className="flex items-center justify-between text-sm">
+                                <span className="text-blue-200">
+                                    Attempts: {attemptInfo.attemptCount}/
+                                    {attemptInfo.maxAttempts}
+                                </span>
+                                <span className="text-blue-200">
+                                    Remaining: {attemptInfo.remainingAttempts}
+                                </span>
+                            </div>
+                            {!attemptInfo.canAttempt && (
+                                <p className="text-red-300 text-sm mt-2">
+                                    Maximum attempts reached for this quiz
+                                </p>
+                            )}
+                        </div>
+                    )}
+
                     <motion.button
                         onClick={startQuiz}
-                        className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl font-bold text-xl shadow-lg hover:from-green-600 hover:to-emerald-700 transition-all transform hover:scale-105"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        disabled={
+                            isAuthenticated &&
+                            attemptInfo &&
+                            !attemptInfo.canAttempt
+                        }
+                        className={`w-full py-4 rounded-xl font-bold text-xl shadow-lg transition-all transform hover:scale-105 ${
+                            isAuthenticated &&
+                            attemptInfo &&
+                            !attemptInfo.canAttempt
+                                ? 'bg-gray-500 cursor-not-allowed opacity-50'
+                                : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
+                        }`}
+                        whileHover={
+                            isAuthenticated &&
+                            attemptInfo &&
+                            !attemptInfo.canAttempt
+                                ? {}
+                                : { scale: 1.05 }
+                        }
+                        whileTap={
+                            isAuthenticated &&
+                            attemptInfo &&
+                            !attemptInfo.canAttempt
+                                ? {}
+                                : { scale: 0.95 }
+                        }
                     >
-                        Start Quiz
+                        {isAuthenticated &&
+                        attemptInfo &&
+                        !attemptInfo.canAttempt
+                            ? 'Maximum Attempts Reached'
+                            : 'Start Quiz'}
                     </motion.button>
                 </motion.div>
             </motion.div>
@@ -237,6 +419,20 @@ export default function Quiz() {
 
     const renderPlayingScreen = () => {
         const currentQuestion = quizQuestions[currentQuestionIndex];
+
+        // Safety check to prevent crashes
+        if (!currentQuestion) {
+            return (
+                <div className="flex flex-col items-center justify-center h-full bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+                    <div className="text-center">
+                        <h2 className="text-2xl font-bold mb-4">
+                            Loading Question...
+                        </h2>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+                    </div>
+                </div>
+            );
+        }
 
         return (
             <motion.div
@@ -283,16 +479,109 @@ export default function Quiz() {
                     className="h-1.5 bg-gradient-to-r from-green-500 via-yellow-500 to-red-500"
                 />
 
+                {/* Progress Bar */}
+                <div className="bg-gray-700 h-2">
+                    <motion.div
+                        initial={{ width: '0%' }}
+                        animate={{
+                            width: `${
+                                ((currentQuestionIndex + 1) /
+                                    quizQuestions.length) *
+                                100
+                            }%`,
+                        }}
+                        transition={{ duration: 0.5, ease: 'easeOut' }}
+                        className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-r-full"
+                    />
+                </div>
+
                 {/* Question Area */}
                 <div className="flex-grow flex items-center justify-center p-6">
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="bg-gray-800/70 backdrop-blur-sm border border-gray-700 rounded-xl p-6 w-full max-w-2xl shadow-xl"
+                        className="bg-gray-800/70 backdrop-blur-sm border border-gray-700 rounded-xl p-6 w-full max-w-4xl shadow-xl"
                     >
-                        <h2 className="text-2xl md:text-3xl font-bold text-center">
-                            {currentQuestion.question}
-                        </h2>
+                        {containsCode(currentQuestion.question) ? (
+                            <div className="space-y-4">
+                                <h2 className="text-xl md:text-2xl font-bold text-center text-white mb-4">
+                                    Coding Question
+                                </h2>
+                                <div className="text-left">
+                                    {currentQuestion.question
+                                        .split('```')
+                                        .map((part, index) => {
+                                            if (index % 2 === 1) {
+                                                // This is a code block
+                                                const lines = part.split('\n');
+                                                const language = detectLanguage(
+                                                    lines[0] || part
+                                                );
+                                                const code =
+                                                    lines.slice(1).join('\n') ||
+                                                    part;
+                                                return (
+                                                    <div
+                                                        key={index}
+                                                        className="my-4"
+                                                    >
+                                                        <CodeHighlight
+                                                            code={code}
+                                                            language={language}
+                                                        />
+                                                    </div>
+                                                );
+                                            } else {
+                                                // This is regular text
+                                                return (
+                                                    <p
+                                                        key={index}
+                                                        className="text-lg text-gray-200 leading-relaxed"
+                                                    >
+                                                        {part
+                                                            .split('`')
+                                                            .map(
+                                                                (
+                                                                    textPart,
+                                                                    textIndex
+                                                                ) => {
+                                                                    if (
+                                                                        textIndex %
+                                                                            2 ===
+                                                                        1
+                                                                    ) {
+                                                                        // Inline code
+                                                                        return (
+                                                                            <CodeHighlight
+                                                                                key={
+                                                                                    textIndex
+                                                                                }
+                                                                                code={
+                                                                                    textPart
+                                                                                }
+                                                                                language={detectLanguage(
+                                                                                    textPart
+                                                                                )}
+                                                                                inline={
+                                                                                    true
+                                                                                }
+                                                                            />
+                                                                        );
+                                                                    }
+                                                                    return textPart;
+                                                                }
+                                                            )}
+                                                    </p>
+                                                );
+                                            }
+                                        })}
+                                </div>
+                            </div>
+                        ) : (
+                            <h2 className="text-2xl md:text-3xl font-bold text-center text-white">
+                                {currentQuestion.question}
+                            </h2>
+                        )}
                     </motion.div>
                 </div>
 
@@ -312,12 +601,39 @@ export default function Quiz() {
                             onClick={() => handleAnswerClick(answer, index)}
                             className={`flex items-center p-4 rounded-xl text-lg md:text-xl font-bold min-h-[100px] transition-all duration-300 shadow-lg ${answerStyles[index].bg} ${answerStyles[index].hoverBg}`}
                         >
-                            <span className="mr-3 text-white/90">
+                            <span className="mr-3 text-white/90 flex-shrink-0">
                                 {answerStyles[index].icon}
                             </span>
-                            <span className="text-left">
-                                {answer.text}
-                            </span>
+                            <div className="text-left flex-grow">
+                                {containsCode(answer.text) ? (
+                                    <div className="space-y-2">
+                                        {answer.text
+                                            .split('`')
+                                            .map((part, partIndex) => {
+                                                if (partIndex % 2 === 1) {
+                                                    // Inline code
+                                                    return (
+                                                        <CodeHighlight
+                                                            key={partIndex}
+                                                            code={part}
+                                                            language={detectLanguage(
+                                                                part
+                                                            )}
+                                                            inline={true}
+                                                        />
+                                                    );
+                                                }
+                                                return (
+                                                    <span key={partIndex}>
+                                                        {part}
+                                                    </span>
+                                                );
+                                            })}
+                                    </div>
+                                ) : (
+                                    <span>{answer.text}</span>
+                                )}
+                            </div>
                         </motion.button>
                     ))}
                 </div>
@@ -327,6 +643,21 @@ export default function Quiz() {
 
     const renderFeedbackScreen = () => {
         const currentQuestion = quizQuestions[currentQuestionIndex];
+
+        // Safety check to prevent crashes
+        if (!currentQuestion) {
+            return (
+                <div className="flex flex-col items-center justify-center h-full bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+                    <div className="text-center">
+                        <h2 className="text-2xl font-bold mb-4">
+                            Loading Feedback...
+                        </h2>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+                    </div>
+                </div>
+            );
+        }
+
         const correctAnswerIndex = currentQuestion.options.findIndex(
             (opt) => opt.isCorrect
         );
@@ -376,7 +707,9 @@ export default function Quiz() {
                             Correct answer:{' '}
                             <span className="font-bold">
                                 {correctAnswerIndex !== -1
-                                    ? currentQuestion.options[correctAnswerIndex].text
+                                    ? currentQuestion.options[
+                                          correctAnswerIndex
+                                      ].text
                                     : 'No correct answer set'}
                             </span>
                         </p>
@@ -424,6 +757,19 @@ export default function Quiz() {
                     Quiz Completed!
                 </motion.h2>
 
+                {/* Results Saved Confirmation */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5, duration: 0.3 }}
+                    className="flex items-center gap-2 mb-4 text-green-400 justify-center"
+                >
+                    <Check size={20} />
+                    <span className="text-sm font-medium">
+                        Results saved successfully!
+                    </span>
+                </motion.div>
+
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -451,37 +797,76 @@ export default function Quiz() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     <div className="bg-gray-800/50 p-4 rounded-xl">
                         <div className="text-3xl font-bold text-green-400">
-                            {quizQuestions.length}
+                            {currentAttemptResult?.totalQuestions ||
+                                quizQuestions.length}
                         </div>
                         <div className="text-gray-400">Questions</div>
                     </div>
                     <div className="bg-gray-800/50 p-4 rounded-xl">
                         <div className="text-3xl font-bold text-yellow-400">
-                            {score}
+                            {currentAttemptResult?.score || score}
                         </div>
                         <div className="text-gray-400">Points</div>
                     </div>
                     <div className="bg-gray-800/50 p-4 rounded-xl">
                         <div className="text-3xl font-bold text-blue-400">
-                            {Math.round(
-                                (countCorrectAnswer / quizQuestions.length) *
-                                    100
-                            )}
+                            {currentAttemptResult?.accuracy ||
+                                (quizQuestions.length > 0
+                                    ? Math.round(
+                                          (countCorrectAnswer /
+                                              quizQuestions.length) *
+                                              100
+                                      )
+                                    : 0)}
                             %
                         </div>
                         <div className="text-gray-400">Accuracy</div>
                     </div>
                 </div>
 
-                <motion.button
-                    onClick={restartQuiz}
-                    className="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl font-bold text-xl flex items-center justify-center gap-2 shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    <RotateCw size={20} />
-                    Play Again
-                </motion.button>
+                {/* Attempt Information */}
+                {currentAttemptResult && (
+                    <div className="bg-gray-800/30 p-4 rounded-xl mb-6">
+                        <div className="text-center">
+                            <div className="text-lg font-semibold text-white mb-2">
+                                Attempt #{currentAttemptResult.attemptNumber}{' '}
+                                Results
+                            </div>
+                            <div className="text-gray-300">
+                                Correct Answers:{' '}
+                                {currentAttemptResult.correctAnswers} /{' '}
+                                {currentAttemptResult.totalQuestions}
+                            </div>
+                            <div className="text-gray-300">
+                                Remaining Attempts:{' '}
+                                {currentAttemptResult.remainingAttempts}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Navigation Buttons */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <motion.button
+                        onClick={() => navigate('/quiz/category')}
+                        className="py-3 px-6 bg-blue-950 text-white rounded-xl font-medium flex items-center justify-center gap-2 shadow-lg hover:bg-orange-400 transition-all"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <ChevronLeft size={20} />
+                        Return to Categories
+                    </motion.button>
+
+                    <motion.button
+                        onClick={restartQuiz}
+                        className="py-3 px-6 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-medium flex items-center justify-center gap-2 shadow-lg hover:from-green-600 hover:to-green-700 transition-all"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <RotateCw size={20} />
+                        Retake Quiz
+                    </motion.button>
+                </div>
             </motion.div>
         </motion.div>
     );

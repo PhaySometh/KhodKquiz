@@ -4,16 +4,29 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Sidebar from '../../../components/client/teacher/TeacherSidebar.jsx';
 import QuizList from '../../../components/QuizList.jsx';
-import { DeleteQuizModal, AssignToClassModal, ArchiveQuizModal } from '../../../components/QuizActionModals.jsx';
+import {
+    DeleteQuizModal,
+    AssignToClassModal,
+    ArchiveQuizModal,
+} from '../../../components/QuizActionModals.jsx';
 import UserNavbar from '../../../components/common/UserNavbar.jsx';
 
 const EnhancedTeacherDashboard = () => {
     const navigate = useNavigate();
-    
+
     // Modal states
-    const [deleteModal, setDeleteModal] = useState({ isOpen: false, quiz: null });
-    const [assignModal, setAssignModal] = useState({ isOpen: false, quiz: null });
-    const [archiveModal, setArchiveModal] = useState({ isOpen: false, quiz: null });
+    const [deleteModal, setDeleteModal] = useState({
+        isOpen: false,
+        quiz: null,
+    });
+    const [assignModal, setAssignModal] = useState({
+        isOpen: false,
+        quiz: null,
+    });
+    const [archiveModal, setArchiveModal] = useState({
+        isOpen: false,
+        quiz: null,
+    });
 
     // Quiz action handlers
     const handleCreateQuiz = () => {
@@ -32,13 +45,13 @@ const EnhancedTeacherDashboard = () => {
     const handleConfirmDelete = (quiz) => {
         // Implement actual delete logic here
         toast.success(`Quiz "${quiz.title}" has been deleted`);
-        console.log('Deleting quiz:', quiz);
+        // Delete logic implementation would go here
     };
 
     const handleDuplicateQuiz = (quiz) => {
         // Implement duplicate logic here
         toast.success(`Quiz "${quiz.title}" has been duplicated`);
-        console.log('Duplicating quiz:', quiz);
+        // Duplicate logic implementation would go here
     };
 
     const handleAssignToClass = (quiz) => {
@@ -48,8 +61,12 @@ const EnhancedTeacherDashboard = () => {
     const handleConfirmAssign = (assignmentData) => {
         // Implement actual assignment logic here
         const { quiz, classes, settings } = assignmentData;
-        toast.success(`Quiz "${quiz.title}" assigned to ${classes.length} class${classes.length !== 1 ? 'es' : ''}`);
-        console.log('Assigning quiz:', assignmentData);
+        toast.success(
+            `Quiz "${quiz.title}" assigned to ${classes.length} class${
+                classes.length !== 1 ? 'es' : ''
+            }`
+        );
+        // Assignment logic implementation would go here
     };
 
     const handleArchiveQuiz = (quiz) => {
@@ -59,20 +76,20 @@ const EnhancedTeacherDashboard = () => {
     const handleConfirmArchive = (quiz) => {
         // Implement actual archive logic here
         toast.success(`Quiz "${quiz.title}" has been archived`);
-        console.log('Archiving quiz:', quiz);
+        // Archive logic implementation would go here
     };
 
     return (
         <>
-            <div className='flex h-screen bg-gray-50 overflow-hidden'>
+            <div className="flex h-screen bg-gray-50 overflow-hidden">
                 <Sidebar />
-                <div className='w-full overflow-y-auto'>
+                <div className="w-full overflow-y-auto">
                     <UserNavbar />
 
                     {/* Main Content */}
-                    <div className='p-6 h-full w-full'>
+                    <div className="p-6 h-full w-full">
                         {/* Welcome Section - Simplified version */}
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5 }}
@@ -82,7 +99,8 @@ const EnhancedTeacherDashboard = () => {
                                 Manage Your Quizzes
                             </h3>
                             <p className="text-gray-600 text-center max-w-2xl">
-                                Create, edit, and assign quizzes to your classes. Track student progress and performance.
+                                Create, edit, and assign quizzes to your
+                                classes. Track student progress and performance.
                             </p>
                         </motion.div>
 
@@ -101,21 +119,27 @@ const EnhancedTeacherDashboard = () => {
                 {/* Modals */}
                 <DeleteQuizModal
                     isOpen={deleteModal.isOpen}
-                    onClose={() => setDeleteModal({ isOpen: false, quiz: null })}
+                    onClose={() =>
+                        setDeleteModal({ isOpen: false, quiz: null })
+                    }
                     quiz={deleteModal.quiz}
                     onConfirm={handleConfirmDelete}
                 />
 
                 <AssignToClassModal
                     isOpen={assignModal.isOpen}
-                    onClose={() => setAssignModal({ isOpen: false, quiz: null })}
+                    onClose={() =>
+                        setAssignModal({ isOpen: false, quiz: null })
+                    }
                     quiz={assignModal.quiz}
                     onAssign={handleConfirmAssign}
                 />
 
                 <ArchiveQuizModal
                     isOpen={archiveModal.isOpen}
-                    onClose={() => setArchiveModal({ isOpen: false, quiz: null })}
+                    onClose={() =>
+                        setArchiveModal({ isOpen: false, quiz: null })
+                    }
                     quiz={archiveModal.quiz}
                     onConfirm={handleConfirmArchive}
                 />

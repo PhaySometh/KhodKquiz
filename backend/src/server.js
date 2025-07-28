@@ -11,6 +11,8 @@ import teacherRoutes from './routes/teacher.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import studentRoutes from './routes/student.routes.js';
 import teacherApplicationRoutes from './routes/teacherApplication.routes.js';
+import leaderboardRoutes from './routes/leaderboard.routes.js';
+import publicRoutes from './routes/public.routes.js';
 
 dotenv.config();
 
@@ -24,11 +26,16 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(helmet());
 app.use(morgan('dev'));
 
+// Serve uploaded files statically
+app.use('/uploads', express.static('uploads'));
+
+app.use('/api/public', publicRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/teacher-application', teacherApplicationRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 
 try {
     app.listen(PORT, () => {
